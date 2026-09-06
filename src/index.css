@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { 
+    box-sizing: border-box; 
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 #f1f5f9;
+  }
+  html { scroll-behavior: smooth; }
+  body { 
+    margin: 0; 
+    font-family: 'Tajawal', sans-serif; 
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+  html.dark {
+    scrollbar-color: #168365 #071923;
+  }
+  html.dark body { background: #071923; color: #f8fafc; }
+  button, select, input { font: inherit; }
+  button:disabled { cursor: not-allowed; opacity: .45; }
+  input[type='range'] { width: 100%; cursor: pointer; }
+
+  /* ─── سكرول بار مخصص لكامل الموقع (Webkit) ─── */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+    border: 2px solid #f1f5f9;
+    transition: background 0.2s ease;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
+  }
+
+  /* سكرول بار في الوضع الليلي */
+  html.dark ::-webkit-scrollbar-track {
+    background: #071923;
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #1b3d4f;
+    border: 2px solid #071923;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #168365;
+  }
+}
+
+@layer components {
+  .brand { @apply flex items-center gap-2.5 text-right; }
+  .brand > span { @apply grid h-10 w-10 place-items-center rounded-xl bg-emerald-600 font-arabic text-2xl font-bold text-gold-100 shadow-lg shadow-emerald-700/20; }
+  .brand strong { @apply block text-base font-extrabold text-ink dark:text-white; }
+  .brand small { @apply block text-[11px] text-emerald-600 dark:text-emerald-400; }
+  .nav-link { @apply flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-300; }
+  .nav-link.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
+  .mobile-nav-link { @apply flex w-full items-center gap-3 rounded-lg px-3 py-3 text-right text-sm font-bold text-slate-600 dark:text-slate-200; }
+  .mobile-nav-link.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
+  .icon-button { @apply grid h-9 w-9 place-items-center rounded-xl text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-300; }
+  .theme-switch { @apply flex h-9 items-center rounded-xl border border-emerald-100 bg-emerald-50/70 p-1 dark:border-emerald-900 dark:bg-slate-900; }
+  .theme-switch button { @apply inline-flex h-7 items-center gap-1.5 rounded-lg px-2 text-[11px] font-bold text-slate-500 transition dark:text-slate-400; }
+  .theme-switch button.selected { @apply bg-white text-emerald-700 shadow-sm dark:bg-emerald-800 dark:text-white; }
+  .button-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 font-bold text-white transition hover:bg-emerald-700 disabled:opacity-50; }
+  .button-secondary { @apply inline-flex items-center gap-2 rounded-xl border border-emerald-100 bg-white px-4 py-2.5 text-sm font-bold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-700 dark:bg-slate-900 dark:text-emerald-300 dark:hover:bg-slate-800; }
+  .glass-card { @apply rounded-3xl border border-emerald-100 bg-white shadow-soft dark:border-slate-700 dark:bg-slate-900; }
+  .section-heading { @apply flex flex-wrap items-end justify-between gap-4; }
+  .section-heading h1 { @apply mt-1 text-3xl font-extrabold tracking-tight text-ink dark:text-white sm:text-4xl; }
+  .section-heading p { @apply mt-2 text-sm text-slate-500 dark:text-slate-400 sm:text-base; }
+  .eyebrow { @apply flex items-center gap-1.5 text-xs font-extrabold tracking-wide text-emerald-600 dark:text-emerald-400; }
+  .input-wrap { @apply flex min-w-0 flex-col gap-1.5 text-sm font-bold text-slate-600 dark:text-slate-300; }
+  .input-wrap > span { @apply flex items-center gap-1.5; }
+  .input-wrap select, .input-wrap input:not([type='range']) { @apply w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-ink outline-none ring-emerald-500 transition focus:border-emerald-500 focus:ring-2 dark:border-slate-700 dark:bg-slate-950 dark:text-white; }
+  .bookmark-callout { @apply flex w-full items-center gap-2 rounded-2xl border border-gold-100 bg-gold-50 px-4 py-3 text-right text-sm font-bold text-slate-700 shadow-sm transition hover:bg-gold-100 dark:border-amber-900/50 dark:bg-slate-800 dark:text-slate-200; }
+  .bookmark-callout span { @apply mr-auto text-emerald-700 dark:text-emerald-300; }
+  .quran-paper { @apply rounded-[2rem] border border-gold-100 bg-white p-5 shadow-soft dark:border-slate-700 dark:bg-slate-900 sm:p-9; }
+  /* منطقة التمرير الداخلية لنص القرآن */
+  .quran-scroll-area { padding-inline-end: 0.5rem; scroll-behavior: smooth; }
+  .quran-scroll-area::-webkit-scrollbar { width: 6px; }
+  .quran-scroll-area::-webkit-scrollbar-track { background: transparent; border-radius: 99px; }
+  .quran-scroll-area::-webkit-scrollbar-thumb { background: #c9a84c55; border-radius: 99px; transition: background .2s; }
+  .quran-scroll-area::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
+  html.dark .quran-scroll-area::-webkit-scrollbar-thumb { background: #33555f; }
+  html.dark .quran-scroll-area::-webkit-scrollbar-thumb:hover { background: #168365; }
+  .quran-paper h2 { @apply mt-1 font-arabic text-3xl font-bold text-ink dark:text-white; }
+  .quran-text { @apply font-arabic leading-[2.5] text-ink dark:text-slate-100; text-align: justify; text-align-last: center; }
+  .quran-text .ayah { @apply inline rounded-lg px-1 text-right transition-colors hover:bg-emerald-50 hover:text-emerald-700 focus:bg-emerald-100 focus:outline-none dark:hover:bg-emerald-950 dark:hover:text-emerald-300; }
+  .quran-text .ayah.is-playing { @apply bg-gold-100 text-emerald-800 ring-1 ring-gold-400 dark:bg-amber-900/40 dark:text-emerald-200; }
+  .quran-text sup { @apply mr-1 inline-flex h-7 min-w-7 translate-y-[-.1em] items-center justify-center rounded-full border border-gold-400 px-1 font-sans text-[11px] font-bold text-gold-500; }
+  .basmalah { @apply mb-5 text-center font-arabic text-3xl font-bold text-emerald-700 dark:text-emerald-300; }
+  .tab-list { @apply flex gap-2 overflow-x-auto pb-1; }
+  .tab-list button { @apply shrink-0 rounded-xl border border-emerald-100 bg-white px-4 py-2.5 text-sm font-bold text-slate-600 transition hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300; }
+  .tab-list button.active { @apply border-emerald-600 bg-emerald-600 text-white; }
+  .dhikr-card { @apply rounded-3xl border border-emerald-100 bg-white p-6 shadow-soft transition dark:border-slate-700 dark:bg-slate-900; }
+  .dhikr-card.completed { @apply border-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20; }
+  .dhikr-card > p { @apply font-arabic text-2xl leading-[2] text-ink dark:text-slate-100; }
+  .source-pill { @apply rounded-full bg-gold-50 px-3 py-1 text-xs font-bold text-gold-500 dark:bg-slate-800; }
+  .counter-button { @apply inline-flex min-w-24 items-center justify-center gap-1 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300; }
+  .counter-button strong { @apply text-xl; }
+  .counter-button span { @apply text-xs; }
+  .counter-button.done { @apply border-emerald-600 bg-emerald-600 text-white; }
+  .reciter-card { @apply flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft dark:border-slate-700 dark:bg-slate-900; }
+  .empty-state { @apply grid min-h-52 place-content-center justify-items-center gap-3 rounded-3xl border border-dashed border-emerald-200 bg-emerald-50/30 p-5 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400; }
+  .stream-placeholder { @apply grid aspect-video place-content-center justify-items-center gap-3 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900 to-ink p-6 text-center text-white; }
+  .stream-placeholder p { @apply font-bold; }
+  .stream-placeholder code { @apply rounded bg-white/15 px-1.5 py-0.5; direction: ltr; }
+  .stream-placeholder a { @apply inline-flex items-center gap-1 rounded-lg border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10; }
+  .live-pill { @apply inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-600 dark:bg-rose-950/50 dark:text-rose-300; }
+  .live-pill i { @apply h-2 w-2 rounded-full bg-rose-500; animation: pulse 1.6s infinite; }
+  .skeleton-line { @apply h-8 animate-pulse rounded-lg bg-emerald-100/70 dark:bg-slate-800; }
+  .utility-card { @apply rounded-3xl border border-emerald-100 bg-white p-5 shadow-soft dark:border-slate-700 dark:bg-slate-900 sm:p-6; }
+  .utility-heading { @apply flex items-start justify-between gap-4; }
+  .utility-heading h2 { @apply mt-1 text-xl font-extrabold text-ink dark:text-white; }
+  .utility-empty { @apply grid min-h-40 place-items-center justify-items-center gap-2 py-4 text-center text-sm text-slate-500 dark:text-slate-400; }
+  .utility-empty .button-primary { @apply py-2 text-sm; }
+  .utility-error { @apply mt-5 flex flex-wrap items-center gap-2 rounded-xl bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-950/40 dark:text-rose-200; }
+  .utility-error button { @apply mr-auto font-bold underline underline-offset-4; }
+  .next-prayer { @apply mt-5 flex items-center justify-between rounded-2xl bg-emerald-600 px-4 py-3 text-white; }
+  .next-prayer span { @apply text-sm font-bold; }
+  .next-prayer strong { @apply text-2xl; }
+  .next-prayer small { @apply text-xs text-emerald-100; }
+  .prayer-grid { @apply mt-3 grid grid-cols-5 gap-1.5; }
+  .prayer-grid > div { @apply rounded-xl bg-stone-50 px-1 py-2 text-center dark:bg-slate-800; }
+  .prayer-grid > div.active { @apply bg-gold-100 ring-1 ring-gold-400 dark:bg-amber-900/40; }
+  .prayer-grid span { @apply block text-[10px] font-bold text-slate-500 dark:text-slate-400; }
+  .prayer-grid strong { @apply mt-1 block text-xs text-ink dark:text-white; }
+  .wird-progress { @apply mt-5 flex items-center gap-4; }
+  .wird-circle { @apply relative grid h-20 w-20 shrink-0 place-items-center rounded-full bg-[conic-gradient(#168365_var(--progress),#d4f0e4_0)] before:absolute before:inset-1.5 before:rounded-full before:bg-white dark:before:bg-slate-900; }
+  .wird-circle > * { @apply relative z-10; }
+  .wird-circle strong { @apply text-lg text-emerald-700 dark:text-emerald-300; }
+  .wird-circle span { @apply -mt-3 text-[9px] font-bold text-slate-500; }
+  .wird-progress p { @apply text-sm text-slate-600 dark:text-slate-300; }
+  .wird-progress p b { @apply text-2xl text-ink dark:text-white; }
+  .wird-progress small { @apply mt-1 block text-xs text-slate-500 dark:text-slate-400; }
+  .wird-card select { @apply mr-2 rounded-lg border border-emerald-100 bg-white px-2 py-1 text-xs text-ink outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white; }
+  .wird-add { @apply inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-emerald-700; }
+  .wird-add.complete { @apply bg-gold-500 hover:bg-gold-400; }
+  .contact-social { @apply flex flex-col gap-5 rounded-3xl border border-emerald-100 bg-white p-5 text-center dark:border-slate-700 dark:bg-slate-900 sm:p-6 lg:flex-row lg:items-center lg:justify-between lg:text-right; }
+  .contact-social h2 { @apply mt-1 text-xl font-extrabold text-ink dark:text-white; }
+  .contact-social p:not(.eyebrow) { @apply mt-1 text-sm text-slate-500 dark:text-slate-400; }
+  .social-link { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-3 py-2.5 text-sm font-bold text-emerald-700 transition dark:border-slate-700 dark:bg-slate-950 dark:text-emerald-300; }
+  .contact-social .social-link { @apply h-10 w-10 px-0; }
+  .share-app-button { @apply inline-flex items-center gap-2 rounded-xl bg-ink px-3 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500; }
+  .share-app-button span { @apply grid h-4 w-4 place-items-center; }
+  .contact-open-button { @apply inline-flex items-center gap-2 rounded-xl border border-gold-400 px-3 py-2.5 text-sm font-bold text-gold-500 transition hover:bg-gold-50 dark:hover:bg-slate-800; }
+  .modal-backdrop { @apply fixed inset-0 z-[70] grid place-items-center bg-slate-950/60 p-4 backdrop-blur-sm; }
+  .contact-modal { @apply relative w-full max-w-md rounded-3xl border border-emerald-100 bg-white p-7 shadow-2xl dark:border-slate-700 dark:bg-slate-900; }
+  .contact-modal h2 { @apply mt-1 text-2xl font-extrabold text-ink dark:text-white; }
+  .contact-modal > p { @apply mt-2 mb-6 text-sm leading-7 text-slate-500 dark:text-slate-400; }
+}
+
+.video-js { --vjs-theme-forest: #168365; font-family: 'Tajawal', sans-serif; }
+.video-js .vjs-big-play-button { background-color: #168365; border-color: #168365; border-radius: .8rem; }
+
+html.dark .glass-card,
+html.dark .utility-card,
+html.dark .dhikr-card,
+html.dark .reciter-card,
+html.dark .contact-modal { background-color: #0d2431; border-color: #204655; }
+html.dark .quran-paper { background-color: #102936; border-color: #31515a; }
+html.dark .input-wrap select,
+html.dark .input-wrap input:not([type='range']) { background-color: #081a25; border-color: #2b5260; }
+html.dark .tab-list button:not(.active) { background-color: #0d2431; border-color: #204655; }
+html.dark .prayer-grid > div { background-color: #102936; }
+html.dark .contact-social { background-color: #0d2431; border-color: #204655; }
