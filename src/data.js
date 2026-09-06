@@ -11,18 +11,18 @@ const ALL_SURAH_LIST = Array.from({ length: 114 }, (_, i) => i + 1).join(',')
 
 export const FALLBACK_RECITERS = {
   hafs: [
-    { id: 'minshawi-murattal', name: 'محمد صديق المنشاوي', moshaf: { id: 112, name: 'حفص عن عاصم - مرتل', server: 'https://server10.mp3quran.net/minsh/', surah_list: ALL_SURAH_LIST } },
-    { id: 'abdulbasit-murattal', name: 'عبد الباسط عبد الصمد', moshaf: { id: 53, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/basit/', surah_list: ALL_SURAH_LIST } },
-    { id: 'husary-murattal', name: 'محمود خليل الحصري', moshaf: { id: 118, name: 'حفص عن عاصم - مرتل', server: 'https://server13.mp3quran.net/husr/', surah_list: ALL_SURAH_LIST } },
-    { id: 'afasy-murattal', name: 'مشاري العفاسي', moshaf: { id: 123, name: 'حفص عن عاصم - مرتل', server: 'https://server8.mp3quran.net/afs/', surah_list: ALL_SURAH_LIST } },
-    { id: 'sudais-murattal', name: 'عبد الرحمن السديس', moshaf: { id: 54, name: 'حفص عن عاصم - مرتل', server: 'https://server11.mp3quran.net/sds/', surah_list: ALL_SURAH_LIST } },
-    { id: 'maher-murattal', name: 'ماهر المعيقلي', moshaf: { id: 102, name: 'حفص عن عاصم - مرتل', server: 'https://server12.mp3quran.net/maher/', surah_list: ALL_SURAH_LIST } },
-    { id: 'shuraim-murattal', name: 'سعود الشريم', moshaf: { id: 31, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/shur/', surah_list: ALL_SURAH_LIST } },
-    { id: 'ghamadi-murattal', name: 'سعد الغامدي', moshaf: { id: 30, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/s_gmd/', surah_list: ALL_SURAH_LIST } }
+    { id: '112-112', name: 'محمد صديق المنشاوي', moshaf: { id: 112, name: 'حفص عن عاصم - مرتل', server: 'https://server10.mp3quran.net/minsh/', surah_list: ALL_SURAH_LIST } },
+    { id: '51-53', name: 'عبد الباسط عبد الصمد', moshaf: { id: 53, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/basit/', surah_list: ALL_SURAH_LIST } },
+    { id: '118-118', name: 'محمود خليل الحصري', moshaf: { id: 118, name: 'حفص عن عاصم - مرتل', server: 'https://server13.mp3quran.net/husr/', surah_list: ALL_SURAH_LIST } },
+    { id: '123-123', name: 'مشاري العفاسي', moshaf: { id: 123, name: 'حفص عن عاصم - مرتل', server: 'https://server8.mp3quran.net/afs/', surah_list: ALL_SURAH_LIST } },
+    { id: '54-54', name: 'عبد الرحمن السديس', moshaf: { id: 54, name: 'حفص عن عاصم - مرتل', server: 'https://server11.mp3quran.net/sds/', surah_list: ALL_SURAH_LIST } },
+    { id: '102-102', name: 'ماهر المعيقلي', moshaf: { id: 102, name: 'حفص عن عاصم - مرتل', server: 'https://server12.mp3quran.net/maher/', surah_list: ALL_SURAH_LIST } },
+    { id: '31-31', name: 'سعود الشريم', moshaf: { id: 31, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/shur/', surah_list: ALL_SURAH_LIST } },
+    { id: '30-30', name: 'سعد الغامدي', moshaf: { id: 30, name: 'حفص عن عاصم - مرتل', server: 'https://server7.mp3quran.net/s_gmd/', surah_list: ALL_SURAH_LIST } }
   ],
   warsh: [
-    { id: 'warsh-abdulbasit', name: 'عبد الباسط عبد الصمد', moshaf: { id: 52, name: 'ورش عن نافع - مرتل', server: 'https://server7.mp3quran.net/basit/Rewayat-Warsh-A-n-Nafi/', surah_list: ALL_SURAH_LIST } },
-    { id: 'warsh-husary', name: 'محمود خليل الحصري', moshaf: { id: 120, name: 'ورش عن نافع - مرتل', server: 'https://server13.mp3quran.net/husr/Rewayat-Warsh-A-n-Nafi/', surah_list: ALL_SURAH_LIST } }
+    { id: '51-52', name: 'عبد الباسط عبد الصمد', moshaf: { id: 52, name: 'ورش عن نافع - مرتل', server: 'https://server7.mp3quran.net/basit/Rewayat-Warsh-A-n-Nafi/', surah_list: ALL_SURAH_LIST } },
+    { id: '118-120', name: 'محمود خليل الحصري', moshaf: { id: 120, name: 'ورش عن نافع - مرتل', server: 'https://server13.mp3quran.net/husr/Rewayat-Warsh-A-n-Nafi/', surah_list: ALL_SURAH_LIST } }
   ]
 }
 

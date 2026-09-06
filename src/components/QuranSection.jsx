@@ -70,7 +70,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
   /* التمرير التلقائي السلس للآية المُشغَّلة بدقة داخل حاوية التمرير فقط */
   useEffect(() => {
-    if (!activeAyah || activeSurah !== surah || loading) return
+    if (!activeAyah || Number(activeSurah) !== Number(surah) || loading) return
     const ayahEl = document.getElementById(`ayah-${activeAyah}`)
     const container = scrollRef.current
     if (!ayahEl || !container) return
@@ -237,7 +237,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
                 <button
                   key={verse.key}
                   id={`ayah-${verse.number}`}
-                  className={`ayah ${activeSurah === surah && activeAyah === verse.number ? 'is-playing' : ''}`}
+                  className={`ayah ${Number(activeSurah) === Number(surah) && Number(activeAyah) === Number(verse.number) ? 'is-playing' : ''}`}
                   onClick={() => onPlay(surah, currentReciter, verse.number)}
                   title={`تشغيل الآية ${verse.number}`}
                 >

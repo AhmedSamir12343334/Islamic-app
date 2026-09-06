@@ -83,6 +83,8 @@ export async function getReciters(riwaya, style = 'murattal') {
         .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya))
         .filter((moshaf) => style === 'mujawwad' ? /مجود|mujawwad/i.test(moshaf.name) : !/مجود|mujawwad/i.test(moshaf.name))
 
+      if (!matchingMoshafs.length) return []
+
       // Prioritize standard 'مرتل' with full ayah timing support over old/special recordings
       matchingMoshafs.sort((a, b) => {
         const aIsStandard = /مرتل/i.test(a.name) && !/عام|تسجيل/i.test(a.name)
@@ -92,11 +94,12 @@ export async function getReciters(riwaya, style = 'murattal') {
         return 0
       })
 
-      return matchingMoshafs.map((moshaf) => ({
-        id: `${reciter.id}-${moshaf.id}`,
+      const bestMoshaf = matchingMoshafs[0]
+      return [{
+        id: `${reciter.id}-${bestMoshaf.id}`,
         name: reciter.name,
-        moshaf
-      }))
+        moshaf: bestMoshaf
+      }]
     })
 
     if (reciters.length) {
@@ -118,7 +121,7 @@ export async function getReciters(riwaya, style = 'murattal') {
 }
 
 export async function getAyahTimings(surah, reciter) {
-  const readId = reciter?.moshaf?.id
+  const readId = Number(reciter?.moshaf?.id ?? (typeof reciter?.id === 'string' ? reciter.id.split('-')[1] : reciter?.id) ?? reciter)
   if (!readId) return {}
   try {
     const response = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${readId}`)

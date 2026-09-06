@@ -15,21 +15,33 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     if (!track || !audioRef.current) return
     const audio = audioRef.current
     audio.load()
-    audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+
+    const onCanPlay = () => {
+      const startAyah = track.startAyah || 1
+      const timing = track.timings?.[startAyah]
+      if (timing && timing.start > 0) {
+        audio.currentTime = timing.start
+      }
+      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+    }
+
+    if (audio.readyState >= 2) {
+      onCanPlay()
+    } else {
+      audio.addEventListener('loadeddata', onCanPlay, { once: true })
+    }
   }, [track?.url])
 
   /* الانتقال إلى آية محددة عند تغيير startAyah */
   useEffect(() => {
     const audio = audioRef.current
-    const timing = track?.timings?.[track?.startAyah]
-    if (!audio || !timing) return
-    const seek = () => {
+    if (!audio || !track?.startAyah) return
+    const timing = track.timings?.[track.startAyah]
+    if (timing) {
       audio.currentTime = timing.start
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     }
-    if (audio.readyState >= 1) seek()
-    else audio.addEventListener('loadedmetadata', seek, { once: true })
-  }, [track?.startAyah, track?.timings])
+  }, [track?.startAyah])
 
   if (!track) return null
 
