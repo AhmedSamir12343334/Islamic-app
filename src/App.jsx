@@ -19,12 +19,14 @@ const navItems = [
 /* ── تحميل إعدادات المستخدم من localStorage ── */
 function loadSettings() {
   const savedRiwaya = localStorage.getItem('noor-riwaya')
+  const savedReciter = localStorage.getItem('noor-reciter')
+  const validReciter = (savedReciter && savedReciter.includes('-') && savedReciter !== '112-10924') ? savedReciter : '112-112'
   return {
     surah: Number(localStorage.getItem('noor-surah')) || 1,
     riwaya: (!savedRiwaya || savedRiwaya === 'qaloon') ? 'hafs' : savedRiwaya,
     style: localStorage.getItem('noor-style') || 'murattal',
     fontSize: Number(localStorage.getItem('noor-font')) || 32,
-    reciterId: localStorage.getItem('noor-reciter') || ''
+    reciterId: validReciter
   }
 }
 
