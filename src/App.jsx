@@ -1,4 +1,4 @@
-import { BookOpenText, Headphones, Menu, Moon, Radio, Sun, X } from 'lucide-react'
+import { BookOpenText, Headphones, Menu, Moon, Radio, Smartphone, Sun, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -34,6 +34,23 @@ export default function App() {
   const [track, setTrack] = useState(null)
   const [activeAyah, setActiveAyah] = useState(null)
   const [activeSurah, setActiveSurah] = useState(null)
+  const [installPrompt, setInstallPrompt] = useState(null)
+
+  useEffect(() => {
+    const handleBeforeInstall = (event) => {
+      event.preventDefault()
+      setInstallPrompt(event)
+    }
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall)
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
+  }, [])
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return
+    installPrompt.prompt()
+    const { outcome } = await installPrompt.userChoice
+    if (outcome === 'accepted') setInstallPrompt(null)
+  }
   const playbackRequest = useRef(0)
 
   /* تطبيق الوضع الداكن / الفاتح */
@@ -117,6 +134,17 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {installPrompt && (
+              <button
+                onClick={handleInstallClick}
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:scale-105"
+                title="تثبيت التطبيق على جهازك"
+              >
+                <Smartphone size={15} />
+                <span>تثبيت التطبيق</span>
+              </button>
+            )}
+
             <div className="theme-switch" role="group" aria-label="اختيار المظهر">
               <button onClick={() => setDark(false)} className={!dark ? 'selected' : ''} aria-pressed={!dark} title="تفعيل الوضع الفاتح">
                 <Sun size={16} /><span>فاتح</span>
@@ -138,6 +166,15 @@ export default function App() {
                 <Icon size={18} />{label}
               </button>
             ))}
+            {installPrompt && (
+              <button
+                onClick={() => { handleInstallClick(); setMenuOpen(false) }}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
+              >
+                <Smartphone size={16} />
+                <span>تثبيت تطبيق صدقة جارية</span>
+              </button>
+            )}
           </nav>
         )}
       </header>

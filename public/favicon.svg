@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="50%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#eab308" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#022c22" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Background Rounded Base -->
+  <rect width="512" height="512" rx="128" fill="url(#emeraldGrad)" />
+
+  <!-- Inner Soft Glow Border -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.15" />
+
+  <!-- Quran Open Book Emblem -->
+  <g transform="translate(106, 126)" filter="url(#shadow)">
+    <!-- Book Spine & Pages -->
+    <path d="M150 70 C100 40 40 40 0 50 L0 230 C40 220 100 220 150 250 C200 220 260 220 300 230 L300 50 C260 40 200 40 150 70 Z" fill="#ffffff" fill-opacity="0.95" />
+    
+    <!-- Spine Divider -->
+    <path d="M150 70 L150 250" stroke="#047857" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Left Page Lines -->
+    <path d="M40 95 C75 88 115 88 135 100" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M40 125 C75 118 115 118 135 130" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M40 155 C75 148 115 148 135 160" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M40 185 C75 178 115 178 135 190" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+
+    <!-- Right Page Lines -->
+    <path d="M165 100 C185 88 225 88 260 95" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M165 130 C185 118 225 118 260 125" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M165 160 C185 148 225 148 260 155" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+    <path d="M165 190 C185 178 225 178 260 185" stroke="#059669" stroke-width="5" stroke-linecap="round" />
+
+    <!-- Golden Bookmark Ribbon -->
+    <path d="M150 50 L150 180 L160 165 L170 180 L170 50 Z" fill="url(#goldGrad)" opacity="0.95" />
+  </g>
+
+  <!-- Crescent Star Accent at Top -->
+  <path d="M256 70 A 24 24 0 0 0 274 102 A 20 20 0 1 1 250 72 Z" fill="url(#goldGrad)" />
+</svg>
