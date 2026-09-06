@@ -1,10 +1,11 @@
-import { BookOpenText, Headphones, Menu, Moon, Radio, Smartphone, Sun, X } from 'lucide-react'
+import { BookOpenText, Compass, Headphones, Menu, Moon, Radio, Smartphone, Sun, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
 import AudioSection from './components/AudioSection'
 import ContactSocial from './components/ContactSocial'
 import LiveSection from './components/LiveSection'
+import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, makeAudioUrl } from './services/api'
@@ -13,6 +14,7 @@ const navItems = [
   { id: 'quran', label: 'القرآن', icon: BookOpenText },
   { id: 'audio', label: 'التلاوات', icon: Headphones },
   { id: 'adhkar', label: 'الأذكار', icon: Sun },
+  { id: 'qibla', label: 'القبلة', icon: Compass },
   { id: 'live', label: 'البث المباشر', icon: Radio }
 ]
 
@@ -108,6 +110,7 @@ export default function App() {
       case 'quran': return <QuranSection settings={settings} setSettings={setSettings} onPlay={play} activeAyah={activeAyah} activeSurah={activeSurah} />
       case 'audio': return <AudioSection settings={settings} setSettings={setSettings} onPlay={play} />
       case 'adhkar': return <AdhkarSection />
+      case 'qibla': return <QiblaSection />
       default: return <LiveSection />
     }
   }
