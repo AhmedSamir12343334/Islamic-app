@@ -8,6 +8,20 @@ const headers = () => {
   return clientId && token ? { 'x-client-id': clientId, 'x-auth-token': token } : null
 }
 
+export function cleanAyahText(text, surahNumber, ayahNumber) {
+  if (!text) return ''
+  if (surahNumber === 1) {
+    return text.replace(/^[\uFEFF\u200B-\u200D\s]+/, '').trim()
+  }
+  if (ayahNumber === 1 && surahNumber !== 9) {
+    return text
+      .replace(/^[\uFEFF\u200B-\u200D\s]+/, '')
+      .replace(/^بِسْمِ\s+[\u0600-\u06FF]+\s+[\u0600-\u06FF]+\s+[\u0600-\u06FF]+\s*/u, '')
+      .trim()
+  }
+  return text.replace(/^[\uFEFF\u200B-\u200D\s]+/, '').trim()
+}
+
 export async function getSurah(surah) {
   const auth = headers()
   if (auth) {
@@ -15,7 +29,11 @@ export async function getSurah(surah) {
       const response = await fetch(`${QURAN_COM_BASE}/verses/by_chapter/${surah}?language=ar&fields=text_uthmani&per_page=300`, { headers: auth })
       if (!response.ok) throw new Error('Quran.com unavailable')
       const payload = await response.json()
-      return payload.verses.map((verse, index) => ({ number: index + 1, text: verse.text_uthmani, key: verse.verse_key }))
+      return payload.verses.map((verse, index) => ({
+        number: index + 1,
+        text: cleanAyahText(verse.text_uthmani, surah, index + 1),
+        key: verse.verse_key
+      }))
     } catch (error) {
       console.warn('Quran.com request failed; using the public fallback.', error)
     }
@@ -23,7 +41,11 @@ export async function getSurah(surah) {
   const response = await fetch(`https://api.alquran.cloud/v1/surah/${surah}/quran-uthmani`)
   if (!response.ok) throw new Error('تعذّر جلب نص السورة.')
   const payload = await response.json()
-  return payload.data.ayahs.map((ayah) => ({ number: ayah.numberInSurah, text: ayah.text, key: `${surah}:${ayah.numberInSurah}` }))
+  return payload.data.ayahs.map((ayah) => ({
+    number: ayah.numberInSurah,
+    text: cleanAyahText(ayah.text, surah, ayah.numberInSurah),
+    key: `${surah}:${ayah.numberInSurah}`
+  }))
 }
 
 const matchesRiwaya = (name = '', riwaya) => {
