@@ -23,7 +23,8 @@ function loadSettings() {
     surah: Number(localStorage.getItem('noor-surah')) || 1,
     riwaya: (!savedRiwaya || savedRiwaya === 'qaloon') ? 'hafs' : savedRiwaya,
     style: localStorage.getItem('noor-style') || 'murattal',
-    fontSize: Number(localStorage.getItem('noor-font')) || 32
+    fontSize: Number(localStorage.getItem('noor-font')) || 32,
+    reciterId: localStorage.getItem('noor-reciter') || ''
   }
 }
 
@@ -66,12 +67,16 @@ export default function App() {
     localStorage.setItem('noor-riwaya', settings.riwaya)
     localStorage.setItem('noor-style', settings.style)
     localStorage.setItem('noor-font', settings.fontSize)
+    if (settings.reciterId) localStorage.setItem('noor-reciter', settings.reciterId)
   }, [settings])
 
   const play = async (surah = settings.surah, suppliedReciter, startAyah = 1) => {
     const requestId = ++playbackRequest.current
     let reciter = suppliedReciter
-    if (!reciter) reciter = (await getReciters(settings.riwaya, settings.style))[0]
+    if (!reciter) {
+      const reciters = await getReciters(settings.riwaya, settings.style)
+      reciter = reciters.find((r) => r.id === settings.reciterId) || reciters[0]
+    }
     if (!reciter) { setActive('audio'); return }
     const timings = await getAyahTimings(surah, reciter)
     if (requestId !== playbackRequest.current) return

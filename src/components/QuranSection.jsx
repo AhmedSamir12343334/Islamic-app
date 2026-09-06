@@ -1,7 +1,7 @@
-import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Settings2, Type } from 'lucide-react'
+import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Settings2, Type, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
-import { getSurah } from '../services/api'
+import { getReciters, getSurah } from '../services/api'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
 
@@ -17,6 +17,7 @@ function loadBookmark() {
 
 export default function QuranSection({ settings, setSettings, onPlay, activeAyah, activeSurah }) {
   const [verses, setVerses] = useState([])
+  const [reciters, setReciters] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [showControls, setShowControls] = useState(false)
@@ -33,6 +34,20 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
     window.addEventListener('storage', sync)
     return () => window.removeEventListener('storage', sync)
   }, [])
+
+  /* جلب قائمة الشيوخ حسب الرواية وأسلوب التلاوة */
+  useEffect(() => {
+    let ignore = false
+    getReciters(settings.riwaya, settings.style).then((data) => {
+      if (!ignore) {
+        setReciters(data)
+        if (data.length && (!settings.reciterId || !data.some((r) => r.id === settings.reciterId))) {
+          setSettings((old) => ({ ...old, reciterId: data[0].id }))
+        }
+      }
+    })
+    return () => { ignore = true }
+  }, [settings.riwaya, settings.style])
 
   /* تحميل آيات السورة */
   useEffect(() => {
@@ -88,16 +103,18 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
     window.dispatchEvent(new Event('storage'))
   }
 
+  const currentReciter = reciters.find((r) => r.id === settings.reciterId) || reciters[0]
+
   return (
     <section className="space-y-5 pb-28">
       <div className="section-heading">
         <div>
           <span className="eyebrow">المصحف الشريف</span>
           <h1>اقرأ بطمأنينة</h1>
-          <p>نص عثماني واضح، مع حفظ موضع القراءة على جهازك.</p>
+          <p>نص عثماني واضح، مع إمكانية اختيار قارئك المفضل وحفظ موضع القراءة.</p>
         </div>
         <button className="button-secondary" onClick={() => setShowControls(!showControls)}>
-          <Settings2 size={17} /> إعدادات القراءة
+          <Settings2 size={17} /> إعدادات القراءة والتلاوة
         </button>
       </div>
 
@@ -120,17 +137,28 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         </div>
 
         {showControls && (
-          <div className="mt-4 grid gap-3 border-t border-emerald-100 pt-4 dark:border-slate-700 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 border-t border-emerald-100 pt-4 dark:border-slate-700 sm:grid-cols-2 lg:grid-cols-4">
+            <label className="input-wrap">
+              <span>القارئ / الشيخ</span>
+              <select
+                value={settings.reciterId || (reciters[0]?.id || '')}
+                onChange={(event) => setSettings((old) => ({ ...old, reciterId: event.target.value }))}
+              >
+                {reciters.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </label>
             <label className="input-wrap">
               <span>الرواية</span>
-              <select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value }))}>
+              <select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value, reciterId: '' }))}>
                 <option value="hafs">حفص عن عاصم</option>
                 <option value="warsh">ورش عن نافع</option>
               </select>
             </label>
             <label className="input-wrap">
               <span>أسلوب التلاوة</span>
-              <select value={settings.style} onChange={(event) => setSettings((old) => ({ ...old, style: event.target.value }))}>
+              <select value={settings.style} onChange={(event) => setSettings((old) => ({ ...old, style: event.target.value, reciterId: '' }))}>
                 <option value="murattal">مرتل</option>
                 <option value="mujawwad">مجود</option>
               </select>
@@ -166,11 +194,16 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
             </span>
             <h2>سورة {SURAH_NAMES[surah - 1]}</h2>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            {currentReciter && (
+              <span className="hidden text-xs text-emerald-800 dark:text-emerald-300 md:inline-block font-medium bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+                بصوت: {currentReciter.name}
+              </span>
+            )}
             <button className="icon-button" title="حفظ الموضع" onClick={saveBookmark}>
               <Bookmark size={19} />
             </button>
-            <button className="button-primary py-2 text-sm" onClick={() => onPlay(surah)}>
+            <button className="button-primary py-2 text-sm" onClick={() => onPlay(surah, currentReciter)}>
               <Play size={16} fill="currentColor" /> استمع
             </button>
           </div>
@@ -205,7 +238,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
                   key={verse.key}
                   id={`ayah-${verse.number}`}
                   className={`ayah ${activeSurah === surah && activeAyah === verse.number ? 'is-playing' : ''}`}
-                  onClick={() => onPlay(surah, undefined, verse.number)}
+                  onClick={() => onPlay(surah, currentReciter, verse.number)}
                   title={`تشغيل الآية ${verse.number}`}
                 >
                   {verse.text} <sup>{verse.number}</sup>{' '}

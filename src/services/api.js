@@ -54,6 +54,25 @@ const matchesRiwaya = (name = '', riwaya) => {
   return value.includes('حفص') || value.includes('hafs')
 }
 
+const PRIORITY_NAMES = [
+  'محمد صديق المنشاوي',
+  'المنشاوي',
+  'عبد الباسط عبد الصمد',
+  'عبدالباسط عبدالصمد',
+  'محمود خليل الحصري',
+  'الحصري',
+  'مشاري العفاسي',
+  'العفاسي',
+  'عبد الرحمن السديس',
+  'عبدالرحمن السديس',
+  'ماهر المعيقلي',
+  'المعيقلي',
+  'سعود الشريم',
+  'الشريم',
+  'سعد الغامدي',
+  'الغامدي'
+]
+
 export async function getReciters(riwaya, style = 'murattal') {
   try {
     const response = await fetch(`${MP3QURAN_BASE}/reciters?language=ar`)
@@ -63,7 +82,19 @@ export async function getReciters(riwaya, style = 'murattal') {
       .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya))
       .filter((moshaf) => style === 'mujawwad' ? /مجود|mujawwad/i.test(moshaf.name) : !/مجود|mujawwad/i.test(moshaf.name))
       .map((moshaf) => ({ id: `${reciter.id}-${moshaf.id}`, name: reciter.name, moshaf })))
-    return reciters.length ? reciters : (FALLBACK_RECITERS[riwaya] || [])
+
+    if (reciters.length) {
+      reciters.sort((a, b) => {
+        const idxA = PRIORITY_NAMES.findIndex((p) => a.name.includes(p))
+        const idxB = PRIORITY_NAMES.findIndex((p) => b.name.includes(p))
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB
+        if (idxA !== -1) return -1
+        if (idxB !== -1) return 1
+        return a.name.localeCompare(b.name, 'ar')
+      })
+      return reciters
+    }
+    return FALLBACK_RECITERS[riwaya] || []
   } catch (error) {
     console.warn('MP3Quran request failed; using local choices.', error)
     return FALLBACK_RECITERS[riwaya] || []
