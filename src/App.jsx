@@ -91,11 +91,20 @@ export default function App() {
     <div className="min-h-screen bg-white text-slate-800 transition-colors dark:bg-[#071923] dark:text-slate-100">
       <header className="sticky top-0 z-40 border-b border-emerald-100/80 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
         <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6">
-          <button className="brand" onClick={() => setActive('quran')}>
-            <span>ص</span>
+          <button className="brand group" onClick={() => setActive('quran')}>
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 text-gold-100 shadow-md shadow-emerald-700/20 transition-transform group-hover:scale-105">
+              <svg className="h-6 w-6 text-gold-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                <path d="M6 8h2" strokeWidth="1.5" stroke="#fef08a" />
+                <path d="M16 8h2" strokeWidth="1.5" stroke="#fef08a" />
+                <path d="M6 12h2" strokeWidth="1.5" stroke="#fef08a" />
+                <path d="M16 12h2" strokeWidth="1.5" stroke="#fef08a" />
+              </svg>
+            </span>
             <div>
-              <strong>صدقة جارية</strong>
-              <small>رفيقك اليومي</small>
+              <strong className="text-base font-extrabold text-ink dark:text-white">صدقة جارية</strong>
+              <small className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400">رفيقك اليومي</small>
             </div>
           </button>
 
