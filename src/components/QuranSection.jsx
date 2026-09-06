@@ -1,4 +1,4 @@
-import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Settings2, Type, User } from 'lucide-react'
+import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, User, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah } from '../services/api'
@@ -15,6 +15,28 @@ function loadBookmark() {
   }
 }
 
+/* ── تنظيف وتوحيد الحروف العربية للبحث الذكي ── */
+function normalizeArabic(text = '') {
+  return text
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .toLowerCase()
+    .trim()
+}
+
+const POPULAR_SURAHS = [
+  { id: 1, name: 'الفاتحة' },
+  { id: 2, name: 'البقرة' },
+  { id: 18, name: 'الكهف' },
+  { id: 36, name: 'يس' },
+  { id: 55, name: 'الرحمن' },
+  { id: 56, name: 'الواقعة' },
+  { id: 67, name: 'الملك' },
+  { id: 112, name: 'الإخلاص' }
+]
+
 export default function QuranSection({ settings, setSettings, onPlay, activeAyah, activeSurah }) {
   const [verses, setVerses] = useState([])
   const [reciters, setReciters] = useState([])
@@ -22,11 +44,25 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   const [error, setError] = useState('')
   const [showControls, setShowControls] = useState(false)
   const [attempt, setAttempt] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   /* إدارة الـ bookmark عبر state حتى يتحدّث الـ UI فوراً عند الحفظ */
   const [bookmark, setBookmark] = useState(loadBookmark)
   const surah = settings.surah
   /* ref للـ scroll container الداخلي */
   const scrollRef = useRef(null)
+  const searchWrapRef = useRef(null)
+
+  /* إغلاق قائمة البحث عند النقر خارجها */
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
+        setSearchOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   /* مزامنة الـ bookmark عند تغييره من أي مكان (storage event) */
   useEffect(() => {
@@ -93,7 +129,11 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
     }
   }, [activeAyah, activeSurah, surah, loading])
 
-  const changeSurah = (next) => setSettings((old) => ({ ...old, surah: Math.min(114, Math.max(1, next)) }))
+  const changeSurah = (next) => {
+    setSettings((old) => ({ ...old, surah: Math.min(114, Math.max(1, next)) }))
+    setSearchQuery('')
+    setSearchOpen(false)
+  }
 
   const saveBookmark = () => {
     const data = { surah, ayah: 1, name: SURAH_NAMES[surah - 1] }
@@ -105,23 +145,109 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
   const currentReciter = reciters.find((r) => r.id === settings.reciterId) || reciters[0]
 
+  /* فلترة السور للبحث */
+  const matchingSurahs = searchQuery.trim()
+    ? SURAH_NAMES.map((name, index) => ({ id: index + 1, name }))
+        .filter((item) => {
+          const q = normalizeArabic(searchQuery)
+          return (
+            normalizeArabic(item.name).includes(q) ||
+            String(item.id).includes(searchQuery.trim())
+          )
+        })
+    : []
+
   return (
     <section className="space-y-5 pb-28">
       <div className="section-heading">
         <div>
           <span className="eyebrow">المصحف الشريف</span>
           <h1>اقرأ بطمأنينة</h1>
-          <p>نص عثماني واضح، مع إمكانية اختيار قارئك المفضل وحفظ موضع القراءة.</p>
+          <p>نص عثماني واضح، مع محرك بحث فوري في السور واختيار قارئك المفضل.</p>
         </div>
         <button className="button-secondary" onClick={() => setShowControls(!showControls)}>
           <Settings2 size={17} /> إعدادات القراءة والتلاوة
         </button>
       </div>
 
-      <div className="glass-card p-4 sm:p-5">
-        <div className="grid gap-3 md:grid-cols-[1fr_auto_auto] md:items-center">
+      <div className="glass-card p-4 sm:p-5 space-y-4">
+        {/* شريط البحث المباشر في السور */}
+        <div ref={searchWrapRef} className="relative">
+          <div className="relative flex items-center">
+            <Search className="absolute right-3.5 text-emerald-600 dark:text-emerald-400 pointer-events-none" size={18} />
+            <input
+              type="text"
+              value={searchQuery}
+              onFocus={() => setSearchOpen(true)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setSearchOpen(true)
+              }}
+              placeholder="ابحث عن سورة بالاسم أو الرقم (مثال: الكهف، يس، 18، الرحمن)..."
+              className="w-full rounded-2xl border border-emerald-200/90 bg-emerald-50/40 py-3 pr-10 pl-10 text-sm font-medium text-ink placeholder-slate-400 transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-900/60 dark:text-white dark:focus:bg-slate-900"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute left-3 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                title="مسح البحث"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
+          {/* قائمة نتائج البحث السريع */}
+          {searchOpen && searchQuery.trim() && (
+            <div className="absolute top-full z-50 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-emerald-100 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+              {matchingSurahs.length > 0 ? (
+                <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
+                  {matchingSurahs.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => changeSurah(item.id)}
+                      className={`flex items-center justify-between rounded-xl px-3 py-2 text-right text-xs font-bold transition ${
+                        item.id === surah
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <span>سورة {item.name}</span>
+                      <span className="font-mono text-[10px] opacity-75">{item.id}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                  لا توجد سورة مطابقة لـ «{searchQuery}»
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* أزرار الانتقال السريع لأشهر السور */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 ml-1">انتقال سريع:</span>
+          {POPULAR_SURAHS.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => changeSurah(item.id)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                surah === item.id
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-900/60'
+              }`}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+
+        {/* محدد السورة والأزرار السابقة والتالية */}
+        <div className="grid gap-3 pt-2 border-t border-emerald-100/60 dark:border-slate-800 md:grid-cols-[1fr_auto_auto] md:items-center">
           <label className="input-wrap">
-            <span>السورة</span>
+            <span>اختر السورة من القائمة</span>
             <select value={surah} onChange={(event) => changeSurah(Number(event.target.value))}>
               {SURAH_NAMES.map((name, index) => (
                 <option key={name} value={index + 1}>{index + 1}. {name}</option>
