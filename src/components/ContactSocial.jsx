@@ -80,8 +80,8 @@ function ShareButton({ className = '' }) {
 
   const share = async () => {
     const shareData = {
-      title: 'نور القرآن',
-      text: 'تطبيق نور القرآن الشريف - رفيقك اليومي للقرآن والأذكار ومواقيت الصلاة',
+      title: 'صدقة جارية',
+      text: 'تطبيق صدقة جارية - رفيقك اليومي لقراءة القرآن والأذكار ومواقيت الصلاة والبث المباشر',
       url: window.location.href
     }
     try {

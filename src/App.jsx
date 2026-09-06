@@ -92,9 +92,9 @@ export default function App() {
       <header className="sticky top-0 z-40 border-b border-emerald-100/80 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
         <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6">
           <button className="brand" onClick={() => setActive('quran')}>
-            <span>ن</span>
+            <span>ص</span>
             <div>
-              <strong>نور القرآن</strong>
+              <strong>صدقة جارية</strong>
               <small>رفيقك اليومي</small>
             </div>
           </button>
@@ -141,7 +141,7 @@ export default function App() {
         <div className="mx-auto max-w-7xl">
           <ContactSocial />
           <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-            نور القرآن · اجعل لك ورداً من كتاب الله كل يوم
+            صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
           </p>
           <p className="mt-2 text-center text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-300">
             تم تصميم الموقع بالكامل من قبل AHMED SAMIR FAZZA
