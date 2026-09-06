@@ -29,22 +29,20 @@ function StreamCard({ title, subtitle, videoId, channelId, officialUrl, gradient
   const [status, setStatus] = useState('idle') // idle | loading | playing | blocked
   const iframeRef = useRef(null)
   const embedSrc = videoId
-    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`
-    : `https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1&mute=1&rel=0&modestbranding=1`
+    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
+    : `https://www.youtube-nocookie.com/embed/live_stream?channel=${channelId}&autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
 
-  /* كشف إذا كان الـ embed محجوباً بواسطة YouTube */
+  /* كشف حالة التحميل بدون حجب مبكر على شبكات الهاتف */
   useEffect(() => {
     if (status !== 'loading') return
     const timeout = setTimeout(() => {
-      /* لو ما حصلش onLoad في 8 ثواني → محجوب */
+      /* مهلة كافية لشبكات الهاتف (15 ثانية) */
       setStatus((prev) => (prev === 'loading' ? 'blocked' : prev))
-    }, 8000)
+    }, 15000)
     return () => clearTimeout(timeout)
   }, [status])
 
   const handleLoad = () => {
-    /* YouTube بيرجع صفحة حتى لو محجوب — نحاول نكشف بـ postMessage لكن مستحيل بسبب CORS */
-    /* نفترض النجاح ونخلّي المستخدم يشوف */
     setStatus('playing')
   }
 
