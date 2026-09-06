@@ -126,7 +126,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
               <select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value }))}>
                 <option value="hafs">حفص عن عاصم</option>
                 <option value="warsh">ورش عن نافع</option>
-                <option value="qaloon">قالون عن نافع</option>
               </select>
             </label>
             <label className="input-wrap">

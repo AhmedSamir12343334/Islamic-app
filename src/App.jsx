@@ -18,9 +18,10 @@ const navItems = [
 
 /* ── تحميل إعدادات المستخدم من localStorage ── */
 function loadSettings() {
+  const savedRiwaya = localStorage.getItem('noor-riwaya')
   return {
     surah: Number(localStorage.getItem('noor-surah')) || 1,
-    riwaya: localStorage.getItem('noor-riwaya') || 'hafs',
+    riwaya: (!savedRiwaya || savedRiwaya === 'qaloon') ? 'hafs' : savedRiwaya,
     style: localStorage.getItem('noor-style') || 'murattal',
     fontSize: Number(localStorage.getItem('noor-font')) || 32
   }

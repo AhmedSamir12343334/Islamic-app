@@ -50,9 +50,8 @@ export async function getSurah(surah) {
 
 const matchesRiwaya = (name = '', riwaya) => {
   const value = name.toLowerCase()
-  if (riwaya === 'hafs') return value.includes('حفص') || value.includes('hafs')
   if (riwaya === 'warsh') return value.includes('ورش') || value.includes('warsh')
-  return value.includes('قالون') || value.includes('qaloon') || value.includes('qalon')
+  return value.includes('حفص') || value.includes('hafs')
 }
 
 export async function getReciters(riwaya, style = 'murattal') {

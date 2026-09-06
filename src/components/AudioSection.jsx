@@ -16,7 +16,7 @@ export default function AudioSection({ settings, setSettings, onPlay }) {
   }, [settings.riwaya, settings.style])
   const filtered = reciters.filter((reciter) => reciter.name.includes(query.trim()))
   return <section className="space-y-5 pb-28">
-    <div className="section-heading"><div><span className="eyebrow"><Headphones size={14} /> مكتبة التلاوات</span><h1>استمع للقرآن الكريم</h1><p>القرّاء المعروضون محصورون في الروايات الثلاث التي اخترتها.</p></div></div>
+    <div className="section-heading"><div><span className="eyebrow"><Headphones size={14} /> مكتبة التلاوات</span><h1>استمع للقرآن الكريم</h1><p>القرّاء المعروضون بحسب الرواية المختارة.</p></div></div>
     <div className="glass-card grid gap-4 p-5 lg:grid-cols-4">
       <label className="input-wrap"><span>الرواية</span><select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value }))}>{RIWAYAT.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
       <label className="input-wrap"><span>نوع التلاوة</span><select value={settings.style} onChange={(event) => setSettings((old) => ({ ...old, style: event.target.value }))}><option value="murattal">مرتل</option><option value="mujawwad">مجود</option></select></label>

@@ -4,8 +4,7 @@ export const SURAH_NAMES = [
 
 export const RIWAYAT = [
   { id: 'hafs', apiId: 1, label: 'حفص عن عاصم' },
-  { id: 'warsh', apiId: null, label: 'ورش عن نافع' },
-  { id: 'qaloon', apiId: 5, label: 'قالون عن نافع' }
+  { id: 'warsh', apiId: null, label: 'ورش عن نافع' }
 ]
 
 const ALL_SURAH_LIST = Array.from({ length: 114 }, (_, i) => i + 1).join(',')
@@ -17,10 +16,6 @@ export const FALLBACK_RECITERS = {
   ],
   warsh: [
     { id: 'warsh-husary', name: 'محمود خليل الحصري', moshaf: { id: 14, name: 'ورش عن نافع - مرتل', server: 'https://server13.mp3quran.net/husr/Rewayat-Warsh-A-n-Nafi/', surah_list: ALL_SURAH_LIST } }
-  ],
-  qaloon: [
-    { id: 'qaloon-husary', name: 'محمود خليل الحصري', moshaf: { id: 15, name: 'قالون عن نافع - مرتل', server: 'https://server13.mp3quran.net/husr/Rewayat-Qalon-A-n-Nafi/', surah_list: ALL_SURAH_LIST } },
-    { id: 'qaloon-khayat', name: 'سعد الغامدي', moshaf: { id: 5, name: 'قالون عن نافع - مرتل', server: 'https://server7.mp3quran.net/s_gmd/Rewayat-Qalon-A-n-Nafi/', surah_list: ALL_SURAH_LIST } }
   ]
 }
 
