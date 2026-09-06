@@ -91,8 +91,8 @@
   html.dark .quran-scroll-area::-webkit-scrollbar-thumb:hover { background: #168365; }
   .quran-paper h2 { @apply mt-1 font-arabic text-3xl font-bold text-ink dark:text-white; }
   .quran-text { @apply font-arabic leading-[2.5] text-ink dark:text-slate-100; text-align: justify; text-align-last: center; }
-  .quran-text .ayah { @apply inline rounded-lg px-1 text-right transition-colors hover:bg-emerald-50 hover:text-emerald-700 focus:bg-emerald-100 focus:outline-none dark:hover:bg-emerald-950 dark:hover:text-emerald-300; }
-  .quran-text .ayah.is-playing { @apply bg-gold-100 text-emerald-800 ring-1 ring-gold-400 dark:bg-amber-900/40 dark:text-emerald-200; }
+  .quran-text .ayah { @apply inline rounded-lg px-1.5 py-0.5 text-right transition-all duration-200 hover:bg-emerald-50 hover:text-emerald-700 focus:bg-emerald-100 focus:outline-none dark:hover:bg-emerald-950 dark:hover:text-emerald-300; }
+  .quran-text .ayah.is-playing { @apply bg-amber-100/90 text-emerald-950 ring-2 ring-amber-400 font-medium shadow-sm dark:bg-amber-950/70 dark:text-amber-100 dark:ring-amber-500; }
   .quran-text sup { @apply mr-1 inline-flex h-7 min-w-7 translate-y-[-.1em] items-center justify-center rounded-full border border-gold-400 px-1 font-sans text-[11px] font-bold text-gold-500; }
   .basmalah { @apply mb-5 text-center font-arabic text-3xl font-bold text-emerald-700 dark:text-emerald-300; }
   .tab-list { @apply flex gap-2 overflow-x-auto pb-1; }

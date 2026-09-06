@@ -42,15 +42,45 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   const changeRepeat = () => setRepeat((value) => value === 'off' ? 'surah' : value === 'surah' ? 'verse' : 'off')
   const formatTime = (seconds) => `${Math.floor(seconds / 60) || 0}:${String(Math.floor(seconds % 60) || 0).padStart(2, '0')}`
 
-  /* دمج حسابة الآية النشطة في مكان واحد */
+  /* حساب وتحديث الآية النشطة الحالية بدقة متناهية مع حركة الصوت */
   const onTimeUpdate = (event) => {
     const current = event.currentTarget.currentTime
     setProgress(current)
 
-    /* إيجاد الآية الحالية — حسابة واحدة فقط */
-    const entries = Object.entries(track.timings || {})
-    const currentTiming = entries.find(([, t]) => current >= t.start && current < t.end)
-    if (currentTiming) onActiveAyah?.(track.surah, Number(currentTiming[0]))
+    if (track.timings && Object.keys(track.timings).length > 0) {
+      const timingEntries = Object.entries(track.timings)
+        .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
+        .sort((a, b) => a.start - b.start)
+
+      let active = null
+
+      for (let i = 0; i < timingEntries.length; i++) {
+        const item = timingEntries[i]
+        const nextItem = timingEntries[i + 1]
+        const upperLimit = nextItem ? nextItem.start : (item.end || item.start + 60)
+
+        if (current >= item.start && current < upperLimit) {
+          active = item.ayah
+          break
+        }
+      }
+
+      // إذا كان الصوت في مقدمة التلاوة/البسملة (قبل بداية الآية الأولى)
+      if (active === null && timingEntries.length > 0) {
+        if (current < timingEntries[0].start) {
+          active = timingEntries[0].ayah === 0 ? 1 : timingEntries[0].ayah
+        } else if (current >= timingEntries[timingEntries.length - 1].start) {
+          active = timingEntries[timingEntries.length - 1].ayah
+        }
+      }
+
+      // البسملة التمهيدية (0) ترتبط بالآية الأولى
+      if (active === 0) active = 1
+
+      if (active && Number.isFinite(active)) {
+        onActiveAyah?.(track.surah, active)
+      }
+    }
 
     /* تكرار الآية */
     if (repeat === 'verse' && track.startAyah && track.timings?.[track.startAyah] && current >= track.timings[track.startAyah].end) {
@@ -60,8 +90,23 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   }
 
   const activeAyah = (() => {
-    const match = Object.entries(track.timings || {}).find(([, t]) => progress >= t.start && progress < t.end)
-    return match ? Number(match[0]) : null
+    if (!track?.timings || Object.keys(track.timings).length === 0) return null
+    const timingEntries = Object.entries(track.timings)
+      .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
+      .sort((a, b) => a.start - b.start)
+
+    for (let i = 0; i < timingEntries.length; i++) {
+      const item = timingEntries[i]
+      const nextItem = timingEntries[i + 1]
+      const upperLimit = nextItem ? nextItem.start : (item.end || item.start + 60)
+      if (progress >= item.start && progress < upperLimit) {
+        return item.ayah === 0 ? 1 : item.ayah
+      }
+    }
+    if (timingEntries.length > 0 && progress < timingEntries[0].start) {
+      return 1
+    }
+    return null
   })()
 
   return (

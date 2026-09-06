@@ -78,10 +78,26 @@ export async function getReciters(riwaya, style = 'murattal') {
     const response = await fetch(`${MP3QURAN_BASE}/reciters?language=ar`)
     if (!response.ok) throw new Error('MP3Quran unavailable')
     const payload = await response.json()
-    const reciters = payload.reciters.flatMap((reciter) => reciter.moshaf
-      .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya))
-      .filter((moshaf) => style === 'mujawwad' ? /مجود|mujawwad/i.test(moshaf.name) : !/مجود|mujawwad/i.test(moshaf.name))
-      .map((moshaf) => ({ id: `${reciter.id}-${moshaf.id}`, name: reciter.name, moshaf })))
+    const reciters = payload.reciters.flatMap((reciter) => {
+      const matchingMoshafs = reciter.moshaf
+        .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya))
+        .filter((moshaf) => style === 'mujawwad' ? /مجود|mujawwad/i.test(moshaf.name) : !/مجود|mujawwad/i.test(moshaf.name))
+
+      // Prioritize standard 'مرتل' with full ayah timing support over old/special recordings
+      matchingMoshafs.sort((a, b) => {
+        const aIsStandard = /مرتل/i.test(a.name) && !/عام|تسجيل/i.test(a.name)
+        const bIsStandard = /مرتل/i.test(b.name) && !/عام|تسجيل/i.test(b.name)
+        if (aIsStandard && !bIsStandard) return -1
+        if (!aIsStandard && bIsStandard) return 1
+        return 0
+      })
+
+      return matchingMoshafs.map((moshaf) => ({
+        id: `${reciter.id}-${moshaf.id}`,
+        name: reciter.name,
+        moshaf
+      }))
+    })
 
     if (reciters.length) {
       reciters.sort((a, b) => {
@@ -106,20 +122,50 @@ export async function getAyahTimings(surah, reciter) {
   if (!readId) return {}
   try {
     const response = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${readId}`)
-    if (!response.ok) throw new Error('Timing endpoint unavailable')
-    const payload = await response.json()
-    const entries = Array.isArray(payload) ? payload : (payload.data || payload.ayahs || [])
-    return entries.reduce((timings, entry) => {
-      const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
-      const start = Number(entry.start_time ?? entry.start ?? entry.from)
-      const end = Number(entry.end_time ?? entry.end ?? entry.to)
-      if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) timings[ayah] = { start: start / 1000, end: end / 1000 }
-      return timings
-    }, {})
+    if (response.ok) {
+      const payload = await response.json()
+      const entries = Array.isArray(payload) ? payload : (payload.data || payload.ayahs || [])
+      if (entries.length > 0) {
+        return entries.reduce((timings, entry) => {
+          const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
+          const start = Number(entry.start_time ?? entry.start ?? entry.from)
+          const end = Number(entry.end_time ?? entry.end ?? entry.to)
+          if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
+            timings[ayah] = { start: start / 1000, end: end / 1000 }
+          }
+          return timings
+        }, {})
+      }
+    }
   } catch (error) {
-    console.warn('Verse timing is not available for this recitation.', error)
-    return {}
+    console.warn('Verse timing is not available for this recitation from MP3Quran.', error)
   }
+
+  // Fallback to Quran.com timing if available for major reciters
+  try {
+    const quranComMap = { 112: 6, 53: 2, 118: 5, 54: 3, 123: 7, 31: 4, 30: 1 }
+    const qdcId = quranComMap[readId]
+    if (qdcId) {
+      const qdcRes = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${qdcId}/${surah}?segments=true`)
+      if (qdcRes.ok) {
+        const qdcData = await qdcRes.json()
+        const timestamps = qdcData?.audio_file?.timestamps
+        if (Array.isArray(timestamps) && timestamps.length > 0) {
+          return timestamps.reduce((timings, item, index) => {
+            timings[index + 1] = {
+              start: item.timestamp_from / 1000,
+              end: item.timestamp_to / 1000
+            }
+            return timings
+          }, {})
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Fallback timing request failed.', err)
+  }
+
+  return {}
 }
 
 export const makeAudioUrl = (reciter, surah) => `${reciter.moshaf.server.replace(/\/$/, '')}/${String(surah).padStart(3, '0')}.mp3`
