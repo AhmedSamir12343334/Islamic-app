@@ -358,7 +358,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         <DailyWird />
       </div>
 
-      <article className={`quran-paper mushaf-${settings.mushafTheme || 'paper'} flex flex-col`} style={{ maxHeight: '82vh', minHeight: '500px' }}>
+      <article className={`quran-paper quran-reader-card mushaf-${settings.mushafTheme || 'paper'} flex flex-col`}>
 
         <div className="mushaf-banner shrink-0">
           <span className="mushaf-banner-line" />
