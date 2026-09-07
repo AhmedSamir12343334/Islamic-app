@@ -226,14 +226,14 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           )}
         </div>
 
-        {/* أزرار الانتقال السريع لأشهر السور */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 ml-1">انتقال سريع:</span>
+        {/* أزرار الانتقال السريع لأشهر السور - تمرير أفقي سلس للموبايل */}
+        <div className="flex items-center gap-1.5 pt-1 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 ml-1 shrink-0">انتقال سريع:</span>
           {POPULAR_SURAHS.map((item) => (
             <button
               key={item.id}
               onClick={() => changeSurah(item.id)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 surah === item.id
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-900/60'
@@ -244,9 +244,9 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           ))}
         </div>
 
-        {/* محدد السورة والأزرار السابقة والتالية */}
-        <div className="grid gap-3 pt-2 border-t border-emerald-100/60 dark:border-slate-800 md:grid-cols-[1fr_auto_auto] md:items-center">
-          <label className="input-wrap">
+        {/* محدد السورة والأزرار السابقة والتالية بتصميم مرن للموبايل والديسكتوب */}
+        <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_auto] gap-2.5 pt-2 border-t border-emerald-100/60 dark:border-slate-800 items-end">
+          <label className="input-wrap col-span-2 sm:col-span-1">
             <span>اختر السورة من القائمة</span>
             <select value={surah} onChange={(event) => changeSurah(Number(event.target.value))}>
               {SURAH_NAMES.map((name, index) => (
@@ -254,13 +254,14 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
               ))}
             </select>
           </label>
-          <button className="button-secondary justify-center" onClick={() => changeSurah(surah - 1)} disabled={surah === 1}>
+          <button className="button-secondary justify-center py-2.5" onClick={() => changeSurah(surah - 1)} disabled={surah === 1}>
             <ChevronUp size={17} /> السابقة
           </button>
-          <button className="button-secondary justify-center" onClick={() => changeSurah(surah + 1)} disabled={surah === 114}>
+          <button className="button-secondary justify-center py-2.5" onClick={() => changeSurah(surah + 1)} disabled={surah === 114}>
             التالية <ChevronDown size={17} />
           </button>
         </div>
+
 
         {showControls && (
           <div className="mt-4 grid gap-3 border-t border-emerald-100 pt-4 dark:border-slate-700 sm:grid-cols-2 lg:grid-cols-4">

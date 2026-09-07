@@ -95,14 +95,14 @@ export default function AudioSection({ settings, setSettings, onPlay }) {
           )}
         </div>
 
-        {/* أزرار الفلترة السريعة لكبار الشيوخ */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 ml-1">شيوخ مميزون:</span>
+        {/* أزرار الفلترة السريعة لكبار الشيوخ - تمرير أفقي سلس للموبايل */}
+        <div className="flex items-center gap-1.5 pt-1 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 ml-1 shrink-0">شيوخ مميزون:</span>
           {TOP_SHEIKHS.map((name) => (
             <button
               key={name}
               onClick={() => handleChipClick(name)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 activeFilter === name
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-900/60'
@@ -112,6 +112,7 @@ export default function AudioSection({ settings, setSettings, onPlay }) {
             </button>
           ))}
         </div>
+
 
         {/* خيارات التصفية الإضافية (الرواية، أسلوب التلاوة، السورة) */}
         <div className="grid gap-3 pt-3 border-t border-emerald-100/60 dark:border-slate-800 sm:grid-cols-3">

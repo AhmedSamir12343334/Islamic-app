@@ -34,7 +34,6 @@ function loadSettings() {
 
 export default function App() {
   const [active, setActive] = useState('quran')
-  const [menuOpen, setMenuOpen] = useState(false)
   const [dark, setDark] = useState(() => localStorage.getItem('noor-theme') === 'dark')
   const [settings, setSettings] = useState(loadSettings)
   const [track, setTrack] = useState(null)
@@ -151,11 +150,18 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-slate-800 transition-colors dark:bg-[#071923] dark:text-slate-100">
-      <header className="sticky top-0 z-40 border-b border-emerald-100/80 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
-        <div className="mx-auto flex h-[74px] max-w-7xl items-center justify-between px-4 sm:px-6">
-          <button className="brand group" onClick={() => setActive('quran')}>
-            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 text-gold-100 shadow-md shadow-emerald-700/20 transition-transform group-hover:scale-105">
-              <svg className="h-6 w-6 text-gold-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* ── الرأس (Header) - نظيف وأنيق للموبايل والديسكتوب ── */}
+      <header className="sticky top-0 z-30 border-b border-emerald-100/80 bg-white/90 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/90">
+        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-3.5 sm:h-[74px] sm:px-6">
+          <button
+            className="brand group"
+            onClick={() => {
+              setActive('quran')
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+          >
+            <span className="grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 text-gold-100 shadow-md shadow-emerald-700/20 transition-transform group-hover:scale-105">
+              <svg className="h-5 w-5 sm:h-6 sm:w-6 text-gold-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                 <path d="M6 8h2" strokeWidth="1.5" stroke="#fef08a" />
@@ -165,12 +171,13 @@ export default function App() {
               </svg>
             </span>
             <div>
-              <strong className="text-base font-extrabold text-ink dark:text-white">صدقة جارية</strong>
-              <small className="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400">رفيقك اليومي</small>
+              <strong className="text-sm sm:text-base font-extrabold text-ink dark:text-white">صدقة جارية</strong>
+              <small className="block text-[10px] sm:text-[11px] font-bold text-emerald-600 dark:text-emerald-400">رفيقك اليومي</small>
             </div>
           </button>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          {/* روابط التنقل للشاشات الكبيرة */}
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="التنقل الرئيسي">
             {navItems.map(({ id, label, icon: Icon }) => (
               <button key={id} className={`nav-link ${active === id ? 'active' : ''}`} onClick={() => setActive(id)}>
                 <Icon size={17} />{label}
@@ -178,48 +185,66 @@ export default function App() {
             ))}
           </nav>
 
+          {/* زر تبديل الوضع الداكن/الفاتح */}
           <div className="flex items-center gap-2">
             <div className="theme-switch" role="group" aria-label="اختيار المظهر">
               <button onClick={() => setDark(false)} className={!dark ? 'selected' : ''} aria-pressed={!dark} title="تفعيل الوضع الفاتح">
-                <Sun size={16} /><span>فاتح</span>
+                <Sun size={15} /><span>فاتح</span>
               </button>
               <button onClick={() => setDark(true)} className={dark ? 'selected' : ''} aria-pressed={dark} title="تفعيل الوضع الداكن">
-                <Moon size={16} /><span>داكن</span>
+                <Moon size={15} /><span>داكن</span>
               </button>
             </div>
-            <button onClick={() => setMenuOpen(!menuOpen)} className="icon-button lg:hidden" aria-label="القائمة">
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
           </div>
         </div>
-
-        {menuOpen && (
-          <nav className="border-t border-emerald-100 bg-white p-3 dark:border-slate-800 dark:bg-slate-950 lg:hidden">
-            {navItems.map(({ id, label, icon: Icon }) => (
-              <button key={id} className={`mobile-nav-link ${active === id ? 'active' : ''}`} onClick={() => { setActive(id); setMenuOpen(false) }}>
-                <Icon size={18} />{label}
-              </button>
-            ))}
-          </nav>
-        )}
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+      {/* ── المحتوى الأساسي ── */}
+      <main className={`mx-auto max-w-7xl px-3 py-6 sm:px-6 lg:py-10 ${track ? 'pb-44 sm:pb-36 lg:pb-24' : 'pb-28 lg:pb-12'}`}>
         {renderSection()}
       </main>
 
-      <footer className="border-t border-emerald-100 bg-white px-4 py-7 pb-28 dark:border-slate-800 dark:bg-slate-950">
+      {/* ── الفوتر ── */}
+      <footer className={`border-t border-emerald-100 bg-white px-4 py-7 dark:border-slate-800 dark:bg-slate-950 ${track ? 'pb-44 sm:pb-36 lg:pb-16' : 'pb-28 lg:pb-12'}`}>
         <div className="mx-auto max-w-7xl">
           <ContactSocial onInstallClick={handleInstallClick} isStandalone={isStandalone} />
-          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-6 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
           </p>
-          <p className="mt-2 text-center text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-300">
+          <p className="mt-2 text-center text-[11px] sm:text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-300">
             تم تصميم وتطوير هذه المنصة بواسطة Ahmed Samir Fazza.
           </p>
         </div>
       </footer>
 
+      {/* ── شريط التنقل السفلي الذكي للموبايل (Floating Glassmorphic Bottom Nav) ── */}
+      <nav className="mobile-bottom-bar" aria-label="شريط التنقل السريع">
+        <div className="mx-auto flex max-w-md items-center justify-around">
+          {navItems.map(({ id, label, icon: Icon }) => {
+            const isActive = active === id
+            return (
+              <button
+                key={id}
+                onClick={() => {
+                  setActive(id)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
+                className={`bottom-nav-btn ${isActive ? 'active' : ''}`}
+                aria-label={label}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <div className="nav-icon-wrap">
+                  <Icon size={19} />
+                </div>
+                <span>{label}</span>
+                <span className="nav-dot" />
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+
+      {/* ── مشغل الصوت العائم ── */}
       <AudioPlayer
         track={track}
         onClose={() => { setTrack(null); setActiveAyah(null); setActiveSurah(null) }}
@@ -230,3 +255,4 @@ export default function App() {
     </div>
   )
 }
+

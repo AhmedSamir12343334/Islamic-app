@@ -122,7 +122,26 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   })()
 
   return (
-    <aside className="fixed bottom-0 z-50 w-full border-t border-emerald-100 bg-white/95 px-4 py-3 shadow-[0_-10px_35px_rgba(9,60,47,.12)] backdrop-blur dark:border-slate-700 dark:bg-slate-950/95">
+    <aside className="fixed bottom-[calc(60px+env(safe-area-inset-bottom,0px))] lg:bottom-0 left-0 right-0 z-40 border-t border-emerald-200/80 bg-white/95 px-3 py-2.5 shadow-[0_-8px_30px_rgba(9,60,47,.12)] backdrop-blur-xl transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 sm:px-4 sm:py-3">
+      {/* شريط تقدم نحيف وأنيق في أعلى المشغل مباشرة للموبايل والشاشات كلها */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 bg-slate-100 cursor-pointer group dark:bg-slate-800"
+        onClick={(e) => {
+          if (!duration || !audioRef.current) return
+          const rect = e.currentTarget.getBoundingClientRect()
+          const clickX = e.clientX - rect.left
+          const ratio = clickX / rect.width
+          const newTime = ratio * duration
+          audioRef.current.currentTime = newTime
+          setProgress(newTime)
+        }}
+      >
+        <div
+          className="h-full bg-gradient-to-r from-emerald-600 to-teal-400 transition-all duration-150"
+          style={{ width: `${duration ? (progress / duration) * 100 : 0}%` }}
+        />
+      </div>
+
       <audio
         ref={audioRef}
         src={track.url}
@@ -133,29 +152,35 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
           if (repeat === 'verse' && !track.timings?.[track.startAyah]) audioRef.current?.play()
         }}
       />
-      <div className="mx-auto flex max-w-6xl items-center gap-3">
-        {/* معلومات التلاوة */}
-        <div className="hidden min-w-0 flex-1 sm:block">
-          <p className="truncate font-bold text-ink dark:text-white">{track.surahName}</p>
-          <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-            {track.reciterName} · {track.riwaya}{activeAyah ? ` · الآية ${activeAyah}` : ''}
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 sm:gap-3">
+        {/* معلومات التلاوة (ظاهرة الآن بوضوح على الموبايل والشاشات الكبيرة) */}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs sm:text-sm font-bold text-ink dark:text-white">
+            {track.surahName}
+          </p>
+          <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">
+            {track.reciterName}{activeAyah ? ` · آية ${activeAyah}` : ''}
           </p>
         </div>
 
-        {/* أزرار التحكم */}
-        <div className="flex items-center gap-1">
-          <button onClick={onNext} className="icon-button" aria-label="السورة التالية"><SkipForward size={19} /></button>
+        {/* أزرار التحكم بالتشغيل */}
+        <div className="flex items-center gap-0.5 sm:gap-1">
+          <button onClick={onNext} className="icon-button h-8 w-8 sm:h-9 sm:w-9" aria-label="السورة التالية" title="السورة التالية">
+            <SkipForward size={17} />
+          </button>
           <button
             onClick={toggle}
-            className="grid h-11 w-11 place-items-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/25"
+            className="grid h-9 w-9 sm:h-11 sm:w-11 place-items-center rounded-full bg-emerald-600 text-white shadow-md shadow-emerald-600/30 transition-transform active:scale-95"
             aria-label={playing ? 'إيقاف' : 'تشغيل'}
           >
-            {playing ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" />}
+            {playing ? <Pause size={17} className="sm:w-5 sm:h-5" fill="currentColor" /> : <Play size={17} className="sm:w-5 sm:h-5 mr-0.5" fill="currentColor" />}
           </button>
-          <button onClick={onPrevious} className="icon-button" aria-label="السورة السابقة"><SkipBack size={19} /></button>
+          <button onClick={onPrevious} className="icon-button h-8 w-8 sm:h-9 sm:w-9" aria-label="السورة السابقة" title="السورة السابقة">
+            <SkipBack size={17} />
+          </button>
         </div>
 
-        {/* شريط التقدم */}
+        {/* شريط التمرير الدقيق للشاشات المتوسطة والكبيرة */}
         <div className="hidden flex-[2] items-center gap-2 md:flex">
           <span className="w-9 text-xs tabular-nums text-slate-500">{formatTime(progress)}</span>
           <input
@@ -174,42 +199,54 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
           <span className="w-9 text-xs tabular-nums text-slate-500">{formatTime(duration)}</span>
         </div>
 
-        {/* تكرار */}
-        <button
-          onClick={changeRepeat}
-          className={`icon-button relative ${repeat !== 'off' ? 'text-emerald-600' : ''}`}
-          title={repeatLabels[repeat]}
-          aria-label={repeatLabels[repeat]}
-        >
-          <Repeat2 size={19} />
-          {repeat !== 'off' && (
-            <span className="absolute -bottom-1 -left-1 grid h-4 w-4 place-items-center rounded-full bg-emerald-600 text-[9px] text-white">
-              {repeat === 'surah' ? 'س' : 'آ'}
-            </span>
-          )}
-        </button>
+        {/* أدوات إضافية: التكرار والتحميل والإغلاق */}
+        <div className="flex items-center gap-0.5 sm:gap-1">
+          <button
+            onClick={changeRepeat}
+            className={`icon-button h-8 w-8 sm:h-9 sm:w-9 relative ${repeat !== 'off' ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+            title={repeatLabels[repeat]}
+            aria-label={repeatLabels[repeat]}
+          >
+            <Repeat2 size={16} className="sm:w-[18px] sm:h-[18px]" />
+            {repeat !== 'off' && (
+              <span className="absolute -bottom-0.5 -left-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-emerald-600 text-[8px] font-bold text-white">
+                {repeat === 'surah' ? 'س' : 'آ'}
+              </span>
+            )}
+          </button>
 
-        {/* تنزيل */}
-        <a href={track.url} download target="_blank" rel="noreferrer" className="icon-button" title="تنزيل التلاوة">
-          <Download size={18} />
-        </a>
+          <a
+            href={track.url}
+            download
+            target="_blank"
+            rel="noreferrer"
+            className="icon-button h-8 w-8 sm:h-9 sm:w-9 hidden xs:grid"
+            title="تنزيل التلاوة"
+            aria-label="تنزيل التلاوة"
+          >
+            <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+          </a>
 
-        {/* مستوى الصوت */}
-        <Volume2 className="hidden text-emerald-600 lg:block" size={19} />
-        <input
-          aria-label="مستوى الصوت"
-          className="hidden w-16 accent-emerald-600 lg:block"
-          type="range"
-          min="0"
-          max="1"
-          step="0.05"
-          defaultValue="1"
-          onChange={(event) => { audioRef.current.volume = Number(event.target.value) }}
-        />
+          {/* مستوى الصوت للشاشات الكبيرة */}
+          <Volume2 className="hidden text-emerald-600 lg:block mr-1" size={18} />
+          <input
+            aria-label="مستوى الصوت"
+            className="hidden w-16 accent-emerald-600 lg:block"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            defaultValue="1"
+            onChange={(event) => { audioRef.current.volume = Number(event.target.value) }}
+          />
 
-        {/* إغلاق */}
-        <button onClick={onClose} className="icon-button" aria-label="إغلاق المشغل"><X size={18} /></button>
+          {/* إغلاق المشغل */}
+          <button onClick={onClose} className="icon-button h-8 w-8 sm:h-9 sm:w-9 text-slate-400 hover:text-rose-600" aria-label="إغلاق المشغل" title="إغلاق المشغل">
+            <X size={16} className="sm:w-[18px] sm:h-[18px]" />
+          </button>
+        </div>
       </div>
     </aside>
   )
 }
+

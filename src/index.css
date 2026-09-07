@@ -154,6 +154,29 @@
   .contact-modal { @apply relative w-full max-w-md rounded-3xl border border-emerald-100 bg-white p-7 shadow-2xl dark:border-slate-700 dark:bg-slate-900; }
   .contact-modal h2 { @apply mt-1 text-2xl font-extrabold text-ink dark:text-white; }
   .contact-modal > p { @apply mt-2 mb-6 text-sm leading-7 text-slate-500 dark:text-slate-400; }
+  /* ── شريط التنقل السفلي للموبايل (App-like Bottom Navigation Bar) ── */
+  .mobile-bottom-bar {
+    @apply fixed bottom-0 left-0 right-0 z-40 border-t border-emerald-100/80 bg-white/95 px-2 backdrop-blur-lg transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 lg:hidden;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+  .bottom-nav-btn {
+    @apply relative flex flex-1 flex-col items-center justify-center py-2 px-1 text-[11px] font-bold text-slate-500 transition-all duration-200 active:scale-90 dark:text-slate-400;
+  }
+  .bottom-nav-btn.active {
+    @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
+  }
+  .bottom-nav-btn .nav-icon-wrap {
+    @apply relative grid h-8 w-12 place-items-center rounded-2xl transition-all duration-200;
+  }
+  .bottom-nav-btn.active .nav-icon-wrap {
+    @apply bg-emerald-100/70 text-emerald-700 shadow-sm dark:bg-emerald-950/80 dark:text-emerald-300;
+  }
+  .bottom-nav-btn .nav-dot {
+    @apply absolute -bottom-0.5 h-1 w-1 rounded-full bg-emerald-600 opacity-0 transition-opacity dark:bg-emerald-400;
+  }
+  .bottom-nav-btn.active .nav-dot {
+    @apply opacity-100;
+  }
 }
 
 .video-js { --vjs-theme-forest: #168365; font-family: 'Tajawal', sans-serif; }
@@ -170,3 +193,4 @@ html.dark .input-wrap input:not([type='range']) { background-color: #081a25; bor
 html.dark .tab-list button:not(.active) { background-color: #0d2431; border-color: #204655; }
 html.dark .prayer-grid > div { background-color: #102936; }
 html.dark .contact-social { background-color: #0d2431; border-color: #204655; }
+

@@ -265,33 +265,33 @@ export default function QiblaSection() {
       {/* ── شاشة البوصلة التفاعلية ── */}
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr] items-center">
         {/* البوصلة المركزية */}
-        <div className="glass-card relative flex flex-col items-center justify-center p-6 sm:p-10 overflow-hidden">
+        <div className="glass-card relative flex flex-col items-center justify-center p-4 xs:p-6 sm:p-10 overflow-hidden">
           {/* إشعار حالة المحاذاة */}
-          <div className={`mb-6 flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold transition-all duration-300 ${
+          <div className={`mb-5 flex items-center gap-2 rounded-full px-3.5 py-1.5 text-center text-xs font-bold transition-all duration-300 ${
             isAligned
               ? 'bg-amber-400 text-amber-950 ring-4 ring-amber-400/30 shadow-lg scale-105 animate-pulse'
               : 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300'
           }`}>
             {isAligned ? (
               <>
-                <CheckCircle2 size={16} />
+                <CheckCircle2 size={16} className="shrink-0" />
                 <span>أنت الآن باتجاه القبلة تماماً 🕋</span>
               </>
             ) : sensorAvailable ? (
               <>
-                <Compass size={16} className="animate-spin-slow" />
+                <Compass size={16} className="animate-spin-slow shrink-0" />
                 <span>حرّك هاتفك حتى يتطابق المؤشر مع الكعبة</span>
               </>
             ) : (
               <>
-                <Navigation size={16} />
+                <Navigation size={16} className="shrink-0" />
                 <span>زاوية القبلة الثابتة نحو الشمال الحقيقي</span>
               </>
             )}
           </div>
 
           {/* البوصلة الدائرية الرسومية */}
-          <div className="relative h-72 w-72 sm:h-80 sm:w-80 select-none">
+          <div className="relative h-60 w-60 xs:h-72 xs:w-72 sm:h-80 sm:w-80 select-none">
             {/* الخلفية والإطار الخارجي */}
             <div
               className={`absolute inset-0 rounded-full border-4 transition-all duration-300 shadow-2xl ${
@@ -300,6 +300,7 @@ export default function QiblaSection() {
                   : 'border-gold-300 bg-gradient-to-tr from-emerald-50/50 to-white dark:border-slate-700 dark:bg-slate-900/90'
               }`}
             >
+
               {/* درجات البوصلة */}
               <div
                 className="absolute inset-0 transition-transform duration-200"
