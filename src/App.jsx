@@ -7,7 +7,6 @@ import ContactSocial from './components/ContactSocial'
 import LiveSection from './components/LiveSection'
 import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
-import InstallModal from './components/InstallModal'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, makeAudioUrl } from './services/api'
 
@@ -42,7 +41,6 @@ export default function App() {
   const [activeAyah, setActiveAyah] = useState(null)
   const [activeSurah, setActiveSurah] = useState(null)
   const [installPrompt, setInstallPrompt] = useState(() => window.__pwaInstallPrompt || null)
-  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
@@ -89,10 +87,8 @@ export default function App() {
           setIsStandalone(true)
         }
       } catch (err) {
-        setIsInstallModalOpen(true)
+        console.error('PWA prompt error:', err)
       }
-    } else {
-      setIsInstallModalOpen(true)
     }
   }
   const playbackRequest = useRef(0)
@@ -249,16 +245,6 @@ export default function App() {
         onNext={() => navigateTrack(1)}
         onPrevious={() => navigateTrack(-1)}
         onActiveAyah={(surah, ayah) => { setActiveSurah(surah); setActiveAyah(ayah) }}
-      />
-
-      <InstallModal
-        isOpen={isInstallModalOpen}
-        onClose={() => setIsInstallModalOpen(false)}
-        installPrompt={installPrompt}
-        onInstallSuccess={() => {
-          setInstallPrompt(null)
-          setIsStandalone(true)
-        }}
       />
     </div>
   )
