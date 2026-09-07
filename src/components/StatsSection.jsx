@@ -7,6 +7,7 @@ const LAST_POSITION_KEY = 'noor-last-position'
 const ADHKAR_KEY = 'noor-adhkar-counts'
 const WIRD_KEY = 'noor-wird-v3'
 const KHATMA_DAYS = [7, 15, 30]
+const TELEGRAM_GROUP_URL = import.meta.env.VITE_TELEGRAM_GROUP_URL || 'https://t.me/+FXjbrGYE7uRmMmM0'
 const todayKey = () => new Date().toLocaleDateString('en-CA')
 
 function readJson(key, fallback) {
@@ -128,6 +129,10 @@ export default function StatsSection() {
     window.open(telegramUrl, '_blank', 'noopener,noreferrer')
   }
 
+  const joinTelegramGroup = () => {
+    window.open(TELEGRAM_GROUP_URL, '_blank', 'noopener,noreferrer')
+  }
+
   const progress = Math.min(100, Math.round((stats.pages / Math.max(1, stats.goal)) * 100))
 
   return (
@@ -174,7 +179,7 @@ export default function StatsSection() {
           <div className="mt-5 space-y-4">
             <p className="text-sm leading-7 text-slate-500 dark:text-slate-400">أنشئ رمز دعوة وشاركه مع العائلة أو الأصدقاء. هذه النسخة تنشئ رابط الدعوة محلياً بدون حساب.</p>
             {groupId ? <div className="group-khatma-code"><span>رمز الختمة</span><strong>{groupId}</strong></div> : <button className="button-primary w-full" onClick={createGroupKhatma}><Share2 size={17} /> إنشاء ختمة جماعية</button>}
-            {groupId && <div className="grid gap-2 sm:grid-cols-3"><button className="button-secondary justify-center py-2" onClick={shareGroupKhatma}><Share2 size={16} /> مشاركة</button><button className="button-secondary justify-center py-2" onClick={shareOnTelegram}><Send size={16} /> تليجرام</button><button className="button-secondary justify-center py-2" onClick={async () => { await navigator.clipboard?.writeText(groupId); setNotice('تم نسخ رمز الختمة.') }}><Copy size={16} /> نسخ الرمز</button></div>}
+            {groupId && <div className="grid gap-2 sm:grid-cols-2"><button className="button-secondary justify-center py-2" onClick={shareGroupKhatma}><Share2 size={16} /> مشاركة الرابط</button><button className="button-secondary justify-center py-2" onClick={shareOnTelegram}><Send size={16} /> مشاركة بتليجرام</button><button className="button-secondary justify-center py-2" onClick={joinTelegramGroup}><Send size={16} /> انضم للمجموعة</button><button className="button-secondary justify-center py-2" onClick={async () => { await navigator.clipboard?.writeText(groupId); setNotice('تم نسخ رمز الختمة.') }}><Copy size={16} /> نسخ الرمز</button></div>}
           </div>
         </article>
 
