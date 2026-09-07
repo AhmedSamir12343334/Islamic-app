@@ -1,4 +1,4 @@
-import { BarChart3, BookOpenText, Compass, Ellipsis, Headphones, Moon, Radio, Settings, Sun } from 'lucide-react'
+import { BarChart3, BookOpenText, Compass, Ellipsis, Headphones, Moon, Radio, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -8,7 +8,6 @@ import LiveSection from './components/LiveSection'
 import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
 import StatsSection from './components/StatsSection'
-import SettingsSection from './components/SettingsSection'
 import IosInstallModal, { isIosDevice } from './components/IosInstallModal'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, getSurah, makeAudioUrl } from './services/api'
@@ -19,8 +18,7 @@ const navItems = [
   { id: 'adhkar', label: 'الأذكار', icon: Sun },
   { id: 'qibla', label: 'القبلة', icon: Compass },
   { id: 'live', label: 'البث المباشر', icon: Radio },
-  { id: 'stats', label: 'إحصائياتي', icon: BarChart3 },
-  { id: 'settings', label: 'الإعدادات', icon: Settings }
+  { id: 'stats', label: 'إحصائياتي', icon: BarChart3 }
 ]
 
 const LAST_POSITION_KEY = 'noor-last-position'
@@ -240,7 +238,6 @@ export default function App() {
       case 'adhkar': return <AdhkarSection initialCategory={window.__preferredAdhkarCategory} />
       case 'qibla': return <QiblaSection />
       case 'stats': return <StatsSection />
-      case 'settings': return <SettingsSection settings={settings} setSettings={setSettings} dark={dark} setDark={setDark} />
       default: return <LiveSection />
     }
   }
