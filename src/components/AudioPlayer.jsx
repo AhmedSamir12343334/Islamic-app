@@ -111,7 +111,8 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       for (let i = 0; i < timingEntries.length; i++) {
         const item = timingEntries[i]
         const nextItem = timingEntries[i + 1]
-        const upperLimit = nextItem ? nextItem.start : (item.end || item.start + 60)
+        const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
+        const upperLimit = hasValidEnd ? item.end : (nextItem?.start || item.start + 60)
 
         if (current >= item.start && current < upperLimit) {
           active = item.ayah
@@ -153,7 +154,8 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     for (let i = 0; i < timingEntries.length; i++) {
       const item = timingEntries[i]
       const nextItem = timingEntries[i + 1]
-      const upperLimit = nextItem ? nextItem.start : (item.end || item.start + 60)
+      const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
+      const upperLimit = hasValidEnd ? item.end : (nextItem?.start || item.start + 60)
       if (progress >= item.start && progress < upperLimit) {
         return item.ayah === 0 ? 1 : item.ayah
       }
@@ -165,7 +167,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   })()
 
   return (
-    <aside className="fixed bottom-[calc(58px+env(safe-area-inset-bottom,0px))] lg:bottom-0 left-0 right-0 z-40 border-t border-emerald-200/80 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(9,60,47,.12)] backdrop-blur-xl transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 sm:px-4 sm:py-2.5">
+    <aside className="audio-player fixed left-0 right-0 z-40 border-t border-emerald-200/80 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(9,60,47,.12)] backdrop-blur-xl transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 sm:px-4 sm:py-2.5 lg:bottom-0">
       {/* شريط تقدم نحيف وأنيق في أعلى المشغل مباشرة */}
       <div
         className="absolute top-0 left-0 right-0 h-1 bg-slate-100 cursor-pointer group dark:bg-slate-800"
