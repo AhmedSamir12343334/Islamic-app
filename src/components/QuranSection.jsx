@@ -1,4 +1,4 @@
-import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X } from 'lucide-react'
+import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X, ZoomIn, ZoomOut } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
@@ -49,6 +49,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   const [searchOpen, setSearchOpen] = useState(false)
   const [viewMode, setViewMode] = useState('text')
   const [mushafPage, setMushafPage] = useState(null)
+  const [mushafZoom, setMushafZoom] = useState(1)
   /* إدارة الـ bookmark عبر state حتى يتحدّث الـ UI فوراً عند الحفظ */
   const [bookmark, setBookmark] = useState(loadBookmark)
   const surah = settings.surah
@@ -416,8 +417,13 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
           {!loading && !error && viewMode === 'image' && mushafPage && (
             <div className="mushaf-viewer">
+              <div className="mushaf-zoom-controls" aria-label="تكبير المصحف المصور">
+                <button className="icon-button" onClick={() => setMushafZoom((value) => Math.min(1.6, Number((value + 0.1).toFixed(1))))} title="تكبير" aria-label="تكبير المصحف"><ZoomIn size={17} /></button>
+                <button className="mushaf-zoom-level" onClick={() => setMushafZoom(1)} title="إرجاع الحجم الطبيعي" aria-label="إرجاع الحجم الطبيعي">{Math.round(mushafZoom * 100)}%</button>
+                <button className="icon-button" onClick={() => setMushafZoom((value) => Math.max(0.8, Number((value - 0.1).toFixed(1))))} title="تصغير" aria-label="تصغير المصحف"><ZoomOut size={17} /></button>
+              </div>
               <div className="mushaf-image-frame">
-                <img src={makeMushafImageUrl(mushafPage)} alt={`صفحة المصحف ${mushafPage}`} loading="lazy" onError={() => setViewMode('text')} />
+                <img src={makeMushafImageUrl(mushafPage)} alt={`صفحة المصحف ${mushafPage}`} loading="lazy" style={{ width: `${mushafZoom * 100}%` }} onError={() => setViewMode('text')} />
               </div>
               <div className="mushaf-page-controls">
                 <button className="button-secondary py-2" onClick={() => setPage(mushafPage - 1)} disabled={mushafPage === 1}>الصفحة السابقة</button>

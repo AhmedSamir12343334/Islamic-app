@@ -97,8 +97,10 @@
   .view-toggle button.active { @apply bg-white text-emerald-700 shadow-sm dark:bg-emerald-700 dark:text-white; }
   .view-toggle button:disabled { @apply cursor-not-allowed opacity-50; }
   .mushaf-viewer { @apply flex min-h-full flex-col items-center justify-center gap-4 py-3; }
-  .mushaf-image-frame { @apply w-fit max-w-full overflow-hidden rounded-xl border border-gold-100 bg-[#fffdf7] p-2 shadow-md dark:border-slate-700 dark:bg-[#071923]; }
-  .mushaf-image-frame img { @apply mx-auto block h-auto max-h-[72vh] w-auto max-w-full object-contain; }
+  .mushaf-zoom-controls { @apply flex items-center gap-1 rounded-xl border border-emerald-100 bg-white/80 p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/80; }
+  .mushaf-zoom-level { @apply min-w-12 rounded-lg px-2 py-1.5 text-xs font-black text-emerald-700 transition hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-slate-800; }
+  .mushaf-image-frame { @apply w-full max-w-md max-h-[72vh] overflow-auto rounded-xl border border-gold-100 bg-[#fffdf7] p-2 shadow-md dark:border-slate-700 dark:bg-[#071923]; }
+  .mushaf-image-frame img { @apply mx-auto block h-auto max-w-none object-contain; }
   .mushaf-page-controls { @apply flex w-full flex-wrap items-center justify-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400; }
   .mushaf-page-controls span { @apply min-w-24 text-center; }
   .group-khatma-code { @apply flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-3 dark:border-emerald-900/60 dark:bg-emerald-950/30; }
