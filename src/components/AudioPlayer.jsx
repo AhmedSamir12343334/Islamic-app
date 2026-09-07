@@ -177,7 +177,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   })()
 
   return (
-    <aside className="audio-player fixed left-0 right-0 z-40 border-t border-emerald-200/80 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(9,60,47,.12)] backdrop-blur-xl transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 sm:px-4 sm:py-2.5 lg:bottom-0">
+    <aside className="audio-player fixed z-40 border border-emerald-200/80 bg-white/95 px-3 py-2 shadow-[0_-8px_30px_rgba(9,60,47,.12)] backdrop-blur-xl transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 sm:px-4 sm:py-2.5 lg:bottom-0">
       {/* شريط تقدم نحيف وأنيق في أعلى المشغل مباشرة */}
       <div
         className="absolute top-0 left-0 right-0 h-1 bg-slate-100 cursor-pointer group dark:bg-slate-800"

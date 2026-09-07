@@ -239,9 +239,20 @@
 .video-js { --vjs-theme-forest: #168365; font-family: 'Tajawal', sans-serif; }
 .video-js .vjs-big-play-button { background-color: #168365; border-color: #168365; border-radius: .8rem; }
 
-.audio-player { bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)); }
+.audio-player {
+  bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  left: 0.5rem;
+  right: 0.5rem;
+  border-radius: 1rem;
+}
 @media (min-width: 1024px) {
-  .audio-player { bottom: 0; }
+  .audio-player {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+  }
 }
 
 html.dark .glass-card,
