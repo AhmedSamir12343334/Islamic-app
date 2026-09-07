@@ -151,21 +151,19 @@ export default function App() {
                 <Icon size={17} />{label}
               </button>
             ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
             {!isStandalone && (
               <button
                 onClick={handleInstallClick}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 px-2.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-700/20 transition hover:scale-105 active:scale-95 sm:px-3 sm:py-1.5"
+                className="nav-link text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1.5"
                 title="تثبيت التطبيق على جهازك"
               >
-                <Smartphone size={15} />
-                <span className="hidden xs:inline sm:inline">تثبيت التطبيق</span>
-                <span className="xs:hidden sm:hidden">تثبيت</span>
+                <Smartphone size={17} className="text-amber-500 animate-pulse" />
+                <span>تثبيت التطبيق</span>
               </button>
             )}
+          </nav>
 
+          <div className="flex items-center gap-2">
             <div className="theme-switch" role="group" aria-label="اختيار المظهر">
               <button onClick={() => setDark(false)} className={!dark ? 'selected' : ''} aria-pressed={!dark} title="تفعيل الوضع الفاتح">
                 <Sun size={16} /><span>فاتح</span>
@@ -190,10 +188,10 @@ export default function App() {
             {!isStandalone && (
               <button
                 onClick={() => { handleInstallClick(); setMenuOpen(false) }}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
               >
                 <Smartphone size={16} />
-                <span>تثبيت تطبيق صدقة جارية على هاتفك</span>
+                <span>تثبيت تطبيق صدقة جارية على الهاتف 📲</span>
               </button>
             )}
           </nav>
@@ -206,7 +204,7 @@ export default function App() {
 
       <footer className="border-t border-emerald-100 bg-white px-4 py-7 pb-28 dark:border-slate-800 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl">
-          <ContactSocial />
+          <ContactSocial onInstallClick={handleInstallClick} isStandalone={isStandalone} />
           <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
             صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
           </p>

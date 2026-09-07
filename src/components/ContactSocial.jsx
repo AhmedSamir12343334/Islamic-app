@@ -1,4 +1,4 @@
-import { Check, Copy, ExternalLink, Heart, Send, Share2, Sparkles, X } from 'lucide-react'
+import { Check, Copy, ExternalLink, Heart, Send, Share2, Sparkles, X, Smartphone, Download } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 /* ── الأيقونات الرسمية بدقة ونقاء عالي (Branded SVGs) ── */
@@ -29,7 +29,7 @@ function InstagramIcon({ className = 'w-5 h-5' }) {
 function TikTokIcon({ className = 'w-5 h-5' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.47c1.47-1.47 1.84-3.57 1.84-5.26V7.81a8.28 8.28 0 0 0 4.93 1.54V6.69h-1z" />
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 1082 4.47c1.47-1.47 1.84-3.57 1.84-5.26V7.81a8.28 8.28 0 0 0 4.93 1.54V6.69h-1z" />
     </svg>
   )
 }
@@ -122,7 +122,7 @@ function ShareButton({ className = '' }) {
   )
 }
 
-export default function ContactSocial() {
+export default function ContactSocial({ onInstallClick, isStandalone }) {
   const [open, setOpen] = useState(false)
   const backdropRef = useRef(null)
 
@@ -165,8 +165,20 @@ export default function ContactSocial() {
             </p>
           </div>
 
-          {/* أزرار السوشيال التفاعلية المميزة */}
+          {/* أزرار السوشيال والتثبيت التفاعلية المميزة */}
           <div className="flex flex-wrap items-center gap-3">
+
+            {/* زر تثبيت التطبيق على الموبايل البارز */}
+            {!isStandalone && onInstallClick && (
+              <button
+                onClick={onInstallClick}
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-600/25 transition-all hover:scale-[1.03] hover:shadow-amber-600/40 active:scale-95 animate-pulse"
+                title="تثبيت التطبيق على الهاتف"
+              >
+                <Smartphone size={18} />
+                <span>تثبيت التطبيق على الهاتف 📲</span>
+              </button>
+            )}
 
             {/* أيقونات التواصل المصممة بشكل أنيق */}
             <div className="flex items-center gap-2.5">
