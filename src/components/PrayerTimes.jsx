@@ -12,20 +12,38 @@ const cacheKey = 'noor-prayer-times'
 const cleanTime = (value = '') => value.replace(/\s*\(.*?\)\s*$/, '').trim()
 const dayKey = () => new Date().toLocaleDateString('en-CA')
 
-function getNextPrayer(timings) {
-  const now = new Date()
+function getNextPrayer(timings, now = new Date()) {
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
-  const next = PRAYERS.find(({ key }) => {
+  const nextIndex = PRAYERS.findIndex(({ key }) => {
     const [hours, minutes] = cleanTime(timings[key]).split(':').map(Number)
     return hours * 60 + minutes > currentMinutes
   })
-  return next || PRAYERS[0]
+  const index = nextIndex === -1 ? 0 : nextIndex
+  const next = PRAYERS[index]
+  const [hours, minutes] = cleanTime(timings[next.key]).split(':').map(Number)
+  const nextDate = new Date(now)
+  nextDate.setHours(hours, minutes, 0, 0)
+  if (nextIndex === -1) nextDate.setDate(nextDate.getDate() + 1)
+  return { prayer: next, secondsRemaining: Math.max(0, Math.floor((nextDate - now) / 1000)) }
+}
+
+function formatCountdown(seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const remainingSeconds = seconds % 60
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`
 }
 
 export default function PrayerTimes() {
   const [payload, setPayload] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [now, setNow] = useState(() => new Date())
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   /* تحميل الـ cache عند الـ mount */
   useEffect(() => {
@@ -80,7 +98,8 @@ export default function PrayerTimes() {
     )
   }
 
-  const next = useMemo(() => payload ? getNextPrayer(payload.timings) : null, [payload])
+  const nextInfo = useMemo(() => payload ? getNextPrayer(payload.timings, now) : null, [payload, now])
+  const next = nextInfo?.prayer || null
 
   useEffect(() => {
     if (!next || !payload) return
@@ -143,6 +162,13 @@ export default function PrayerTimes() {
                 <strong>{cleanTime(payload.timings[prayer.key])}</strong>
               </div>
             ))}
+          </div>
+          <div className="prayer-countdown">
+            <div>
+              <span>الوقت المتبقي على {next.label}</span>
+              <strong>{formatCountdown(nextInfo.secondsRemaining)}</strong>
+            </div>
+            <Clock3 size={22} />
           </div>
         </>
       )}

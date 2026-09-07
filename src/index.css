@@ -195,6 +195,10 @@
   .prayer-grid > div.active { @apply bg-gold-100 ring-1 ring-gold-400 dark:bg-amber-900/40; }
   .prayer-grid span { @apply block text-[10px] font-bold text-slate-500 dark:text-slate-400; }
   .prayer-grid strong { @apply mt-1 block text-xs text-ink dark:text-white; }
+  .prayer-countdown { @apply mt-3 flex items-center justify-between gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-3 dark:border-emerald-900/60 dark:bg-emerald-950/30; }
+  .prayer-countdown span { @apply block text-xs font-bold text-emerald-800 dark:text-emerald-200; }
+  .prayer-countdown strong { @apply mt-1 block font-mono text-xl font-black tracking-wider text-emerald-700 dark:text-emerald-300; direction: ltr; }
+  .prayer-countdown > svg { @apply shrink-0 text-emerald-600 dark:text-emerald-400; }
   .wird-progress { @apply mt-5 flex items-center gap-4; }
   .wird-circle { @apply relative grid h-20 w-20 shrink-0 place-items-center rounded-full bg-[conic-gradient(#168365_var(--progress),#d4f0e4_0)] before:absolute before:inset-1.5 before:rounded-full before:bg-white dark:before:bg-slate-900; }
   .wird-circle > * { @apply relative z-10; }
