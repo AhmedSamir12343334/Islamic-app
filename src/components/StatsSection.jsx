@@ -39,8 +39,19 @@ function getStats() {
 }
 
 function getNotificationState() {
-  return readJson(NOTIFICATION_KEY, { enabled: false, time: '08:00', type: 'ورد القرآن' })
+  const saved = readJson(NOTIFICATION_KEY, null)
+  if (saved?.reminders) return saved
+  if (saved?.type && saved?.time) {
+    return { reminders: { quran: { enabled: saved.enabled, time: saved.time }, morning: { enabled: false, time: '07:00' }, evening: { enabled: false, time: '18:00' } } }
+  }
+  return { reminders: { quran: { enabled: false, time: '08:00' }, morning: { enabled: false, time: '07:00' }, evening: { enabled: false, time: '18:00' } } }
 }
+
+const reminderItems = [
+  { id: 'quran', label: 'ورد القرآن' },
+  { id: 'morning', label: 'أذكار الصباح' },
+  { id: 'evening', label: 'أذكار المساء' }
+]
 
 export default function StatsSection() {
   const [khatma, setKhatma] = useState(getInitialKhatma)
@@ -99,7 +110,7 @@ export default function StatsSection() {
   }
 
   const saveNotification = () => {
-    const next = { ...notification, enabled: true }
+    const next = { reminders: notification.reminders }
     saveJson(NOTIFICATION_KEY, next)
     setNotification(next)
     setNotice('تم حفظ تذكير الورد اليومي.')
@@ -185,10 +196,12 @@ export default function StatsSection() {
 
         <article className="utility-card">
           <div className="utility-heading"><div><span className="eyebrow"><Bell size={14} /> التذكيرات</span><h2>تذكير الورد</h2></div></div>
-          <div className="mt-5 space-y-4">
-            <label className="input-wrap"><span>نوع التذكير</span><select value={notification.type} onChange={(event) => setNotification((old) => ({ ...old, type: event.target.value }))}><option>ورد القرآن</option><option>أذكار الصباح</option><option>أذكار المساء</option></select></label>
-            <label className="input-wrap"><span><Clock3 size={14} /> وقت التذكير</span><input type="time" value={notification.time} onChange={(event) => setNotification((old) => ({ ...old, time: event.target.value }))} /></label>
-            <div className="flex flex-wrap items-center justify-between gap-3"><span className="text-xs text-slate-500 dark:text-slate-400">الحالة: {permission === 'granted' ? 'مسموح' : permission === 'unsupported' ? 'غير مدعوم' : 'غير مفعّل'}</span>{permission !== 'granted' && permission !== 'unsupported' ? <button className="button-secondary py-2" onClick={requestNotifications}><Bell size={16} /> السماح</button> : <button className="button-primary py-2" onClick={saveNotification} disabled={permission !== 'granted'}><Check size={16} /> حفظ التذكير</button>}</div>
+          <div className="mt-5 space-y-3">
+            {reminderItems.map((item) => {
+              const reminder = notification.reminders[item.id]
+              return <div key={item.id} className="reminder-row"><label className="flex min-w-0 flex-1 items-center gap-2 text-sm font-bold text-ink dark:text-white"><input type="checkbox" checked={reminder.enabled} onChange={(event) => setNotification((old) => ({ ...old, reminders: { ...old.reminders, [item.id]: { ...reminder, enabled: event.target.checked } } }))} />{item.label}</label><input aria-label={`وقت ${item.label}`} type="time" value={reminder.time} onChange={(event) => setNotification((old) => ({ ...old, reminders: { ...old.reminders, [item.id]: { ...reminder, time: event.target.value } } }))} /></div>
+            })}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2"><span className="text-xs text-slate-500 dark:text-slate-400">الحالة: {permission === 'granted' ? 'مسموح' : permission === 'unsupported' ? 'غير مدعوم' : 'غير مفعّل'}</span>{permission !== 'granted' && permission !== 'unsupported' ? <button className="button-secondary py-2" onClick={requestNotifications}><Bell size={16} /> السماح</button> : <button className="button-primary py-2" onClick={saveNotification} disabled={permission !== 'granted'}><Check size={16} /> حفظ التنبيهات</button>}</div>
             <p className="text-[11px] leading-5 text-slate-400 dark:text-slate-500">على iPhone يجب السماح بالإشعارات من Safari أو من التطبيق المثبت. التذكير يعمل عندما تكون المنصة مفتوحة.</p>
           </div>
         </article>

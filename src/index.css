@@ -62,6 +62,10 @@
   .brand small { @apply block text-[11px] text-emerald-600 dark:text-emerald-400; }
   .nav-link { @apply flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-300; }
   .nav-link.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
+  .desktop-more-wrap { @apply relative; }
+  .desktop-more-menu { @apply absolute right-0 top-full z-50 mt-2 grid min-w-44 gap-1 rounded-2xl border border-emerald-100 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900; }
+  .desktop-more-menu button { @apply flex items-center gap-2 rounded-xl px-3 py-2.5 text-right text-sm font-bold text-slate-600 transition hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-emerald-300; }
+  .desktop-more-menu button.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
   .mobile-nav-link { @apply flex w-full items-center gap-3 rounded-lg px-3 py-3 text-right text-sm font-bold text-slate-600 dark:text-slate-200; }
   .mobile-nav-link.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
   .icon-button { @apply grid h-9 w-9 place-items-center rounded-xl text-slate-500 transition hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-300; }
@@ -252,6 +256,15 @@
   .stat-card strong { @apply text-2xl font-black text-ink dark:text-white; }
   .stat-card span { @apply text-xs font-bold text-slate-500 dark:text-slate-400; }
   .stats-layout { @apply grid gap-5 xl:grid-cols-2; }
+  .settings-grid { @apply grid gap-5 xl:grid-cols-2; }
+  .settings-choice { @apply flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right text-slate-500 transition hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300; }
+  .settings-choice.active { @apply border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300; }
+  .settings-choice span { @apply flex flex-col; }
+  .settings-choice b { @apply text-sm font-bold text-ink dark:text-white; }
+  .settings-choice small { @apply mt-0.5 text-[11px] text-slate-500 dark:text-slate-400; }
+  .reminder-row { @apply flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-3 dark:border-slate-700 dark:bg-slate-800/70; }
+  .reminder-row input[type='time'] { @apply rounded-xl border border-emerald-100 bg-white px-2.5 py-2 text-sm font-bold text-ink outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white; }
+  .reminder-row input[type='checkbox'] { @apply h-4 w-4 accent-emerald-600; }
   .plan-choice { @apply flex flex-col items-center rounded-2xl border border-emerald-100 bg-emerald-50/40 py-3 text-lg font-black text-emerald-700 transition hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-800 dark:text-emerald-300; }
   .plan-choice small { @apply text-[10px] font-bold text-slate-500 dark:text-slate-400; }
   .plan-choice.active { @apply border-emerald-600 bg-emerald-600 text-white dark:bg-emerald-700 dark:text-white; }
@@ -281,6 +294,7 @@
     @apply fixed bottom-0 left-0 right-0 z-50 border-t border-emerald-100/80 bg-white/95 px-2 backdrop-blur-lg transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 lg:hidden;
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
+  .mobile-bottom-bar > div { @apply justify-around; }
   .bottom-nav-btn {
     @apply relative flex flex-1 flex-col items-center justify-center py-2 px-1 text-[11px] font-bold text-slate-500 transition-all duration-200 active:scale-90 dark:text-slate-400;
   }
@@ -299,6 +313,9 @@
   .bottom-nav-btn.active .nav-dot {
     @apply opacity-100;
   }
+  .mobile-more-menu { @apply absolute bottom-full left-2 right-2 mb-2 grid grid-cols-2 gap-2 rounded-2xl border border-emerald-100 bg-white/95 p-2 shadow-xl backdrop-blur-lg dark:border-slate-700 dark:bg-slate-900/95; }
+  .mobile-more-menu button { @apply flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-xs font-bold text-slate-600 transition hover:bg-emerald-50 dark:text-slate-200 dark:hover:bg-slate-800; }
+  .mobile-more-menu button.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
 }
 
 .video-js { --vjs-theme-forest: #168365; font-family: 'Tajawal', sans-serif; }
