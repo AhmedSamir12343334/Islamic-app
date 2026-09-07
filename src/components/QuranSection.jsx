@@ -1,4 +1,4 @@
-import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X } from 'lucide-react'
+import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah } from '../services/api'
@@ -326,6 +326,12 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
       </div>
 
       <article className="quran-paper flex flex-col" style={{ maxHeight: '82vh', minHeight: '500px' }}>
+
+        <div className="mushaf-banner shrink-0">
+          <span className="mushaf-banner-line" />
+          <div><BookOpen size={16} /><span>المصحف الشريف</span></div>
+          <span className="mushaf-banner-line" />
+        </div>
 
         {/* ── Header ثابت ── */}
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gold-100 pb-4 shrink-0">
