@@ -1,4 +1,4 @@
-import { BookOpenText, Compass, Headphones, Menu, Moon, Radio, Smartphone, Sun, X } from 'lucide-react'
+import { BookOpenText, Compass, Headphones, Menu, Moon, Radio, Smartphone, Sun, X, Download } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -7,6 +7,7 @@ import ContactSocial from './components/ContactSocial'
 import LiveSection from './components/LiveSection'
 import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
+import InstallModal from './components/InstallModal'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, makeAudioUrl } from './services/api'
 
@@ -41,8 +42,13 @@ export default function App() {
   const [activeAyah, setActiveAyah] = useState(null)
   const [activeSurah, setActiveSurah] = useState(null)
   const [installPrompt, setInstallPrompt] = useState(null)
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
+    const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+    setIsStandalone(isStandaloneMode)
+
     const handleBeforeInstall = (event) => {
       event.preventDefault()
       setInstallPrompt(event)
@@ -52,10 +58,13 @@ export default function App() {
   }, [])
 
   const handleInstallClick = async () => {
-    if (!installPrompt) return
-    installPrompt.prompt()
-    const { outcome } = await installPrompt.userChoice
-    if (outcome === 'accepted') setInstallPrompt(null)
+    if (installPrompt) {
+      installPrompt.prompt()
+      const { outcome } = await installPrompt.userChoice
+      if (outcome === 'accepted') setInstallPrompt(null)
+    } else {
+      setIsInstallModalOpen(true)
+    }
   }
   const playbackRequest = useRef(0)
 
@@ -145,14 +154,15 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {installPrompt && (
+            {!isStandalone && (
               <button
                 onClick={handleInstallClick}
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:scale-105"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 px-2.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-emerald-700/20 transition hover:scale-105 active:scale-95 sm:px-3 sm:py-1.5"
                 title="تثبيت التطبيق على جهازك"
               >
                 <Smartphone size={15} />
-                <span>تثبيت التطبيق</span>
+                <span className="hidden xs:inline sm:inline">تثبيت التطبيق</span>
+                <span className="xs:hidden sm:hidden">تثبيت</span>
               </button>
             )}
 
@@ -177,13 +187,13 @@ export default function App() {
                 <Icon size={18} />{label}
               </button>
             ))}
-            {installPrompt && (
+            {!isStandalone && (
               <button
                 onClick={() => { handleInstallClick(); setMenuOpen(false) }}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
               >
                 <Smartphone size={16} />
-                <span>تثبيت تطبيق صدقة جارية</span>
+                <span>تثبيت تطبيق صدقة جارية على هاتفك</span>
               </button>
             )}
           </nav>
@@ -212,6 +222,16 @@ export default function App() {
         onNext={() => navigateTrack(1)}
         onPrevious={() => navigateTrack(-1)}
         onActiveAyah={(surah, ayah) => { setActiveSurah(surah); setActiveAyah(ayah) }}
+      />
+
+      <InstallModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        installPrompt={installPrompt}
+        onInstallSuccess={() => {
+          setInstallPrompt(null)
+          setIsStandalone(true)
+        }}
       />
     </div>
   )
