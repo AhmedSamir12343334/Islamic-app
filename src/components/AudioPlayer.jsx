@@ -3,6 +3,11 @@ import { useEffect, useRef, useState } from 'react'
 import { generateEstimatedTimings } from '../services/api'
 
 const repeatLabels = { off: 'بدون تكرار', surah: 'تكرار السورة', verse: 'تكرار الآية' }
+const MOBILE_AYAH_END_GRACE = 0.45
+
+function isMobileDevice() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches
+}
 
 export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActiveAyah }) {
   const audioRef = useRef(null)
@@ -91,6 +96,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
 
   const changeRepeat = () => setRepeat((value) => value === 'off' ? 'surah' : value === 'surah' ? 'verse' : 'off')
   const formatTime = (seconds) => `${Math.floor(seconds / 60) || 0}:${String(Math.floor(seconds % 60) || 0).padStart(2, '0')}`
+  const timingGrace = isMobileDevice() ? MOBILE_AYAH_END_GRACE : 0
 
   /* حساب وتحديث الآية النشطة الحالية مع حركة الصوت بشكل فوري */
   const onTimeUpdate = (event) => {
@@ -112,7 +118,9 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         const item = timingEntries[i]
         const nextItem = timingEntries[i + 1]
         const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
-        const upperLimit = hasValidEnd ? item.end : (nextItem?.start || item.start + 60)
+        const upperLimit = hasValidEnd
+          ? item.end + timingGrace
+          : (nextItem?.start || item.start + 60)
 
         if (current >= item.start && current < upperLimit) {
           active = item.ayah
@@ -155,7 +163,9 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       const item = timingEntries[i]
       const nextItem = timingEntries[i + 1]
       const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
-      const upperLimit = hasValidEnd ? item.end : (nextItem?.start || item.start + 60)
+      const upperLimit = hasValidEnd
+        ? item.end + timingGrace
+        : (nextItem?.start || item.start + 60)
       if (progress >= item.start && progress < upperLimit) {
         return item.ayah === 0 ? 1 : item.ayah
       }
