@@ -316,7 +316,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         </button>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         <PrayerTimes />
         <DailyWird />
       </div>
