@@ -118,14 +118,13 @@
   html.dark .quran-scroll-area::-webkit-scrollbar-thumb:hover { background: #168365; }
   .quran-paper h2 { @apply mt-1 font-arabic text-3xl font-bold text-ink dark:text-white; }
   .quran-text { 
-    @apply font-arabic leading-[2.8] sm:leading-[3] text-ink dark:text-slate-100; 
+    @apply font-arabic leading-[2.6] sm:leading-[2.8] text-ink dark:text-slate-100; 
     width: 100%;
-    max-width: 860px;
+    max-width: 780px;
     margin-inline: auto;
-    padding-inline: 0.75rem;
-    text-align: justify; 
-    text-align-last: center; 
-    word-spacing: 0.08em;
+    padding-inline: 1rem;
+    text-align: center;
+    word-spacing: 0.03em;
   }
   .quran-text .ayah { 
     display: inline;
