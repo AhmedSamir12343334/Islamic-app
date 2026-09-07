@@ -168,15 +168,15 @@ export default function ContactSocial({ onInstallClick, isStandalone }) {
           {/* أزرار السوشيال والتثبيت التفاعلية المميزة */}
           <div className="flex flex-wrap items-center gap-3">
 
-            {/* زر تثبيت التطبيق على الموبايل البارز */}
+            {/* زر تثبيت التطبيق لكافة الأجهزة */}
             {!isStandalone && onInstallClick && (
               <button
                 onClick={onInstallClick}
                 className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-600/25 transition-all hover:scale-[1.03] hover:shadow-amber-600/40 active:scale-95 animate-pulse"
-                title="تثبيت التطبيق على الهاتف"
+                title="تثبيت التطبيق على جهازك"
               >
-                <Smartphone size={18} />
-                <span>تثبيت التطبيق على الهاتف 📲</span>
+                <Download size={18} />
+                <span>تثبيت التطبيق</span>
               </button>
             )}
 
