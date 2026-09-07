@@ -49,6 +49,10 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   const [searchOpen, setSearchOpen] = useState(false)
   const [viewMode, setViewMode] = useState('text')
   const [mushafPage, setMushafPage] = useState(null)
+  const [offlinePages, setOfflinePages] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('noor-offline-mushaf-pages') || '[]') } catch { return [] }
+  })
+  const [offlineNotice, setOfflineNotice] = useState('')
   /* إدارة الـ bookmark عبر state حتى يتحدّث الـ UI فوراً عند الحفظ */
   const [bookmark, setBookmark] = useState(loadBookmark)
   const surah = settings.surah
@@ -102,8 +106,12 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
   useEffect(() => {
     const firstPage = verses.find((verse) => Number.isInteger(Number(verse.page)))?.page
-    if (firstPage) setMushafPage(Number(firstPage))
-  }, [verses])
+    if (!firstPage) return
+    try {
+      const saved = JSON.parse(localStorage.getItem('noor-last-mushaf-page') || 'null')
+      setMushafPage(saved?.surah === surah ? Number(saved.page) : Number(firstPage))
+    } catch { setMushafPage(Number(firstPage)) }
+  }, [verses, surah])
 
   /* إعادة التمرير للأعلى عند تغيير السورة */
   useEffect(() => {
@@ -153,6 +161,30 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
   const currentReciter = reciters.find((r) => r.id === settings.reciterId) || reciters[0]
 
+  const setPage = (page) => {
+    const nextPage = Math.min(604, Math.max(1, page))
+    setMushafPage(nextPage)
+    try { localStorage.setItem('noor-last-mushaf-page', JSON.stringify({ surah, page: nextPage })) } catch { /* التخزين اختياري */ }
+  }
+
+  const saveOfflinePage = async () => {
+    if (!mushafPage || !('caches' in window)) {
+      setOfflineNotice('الحفظ دون إنترنت غير متاح في هذا المتصفح.')
+      return
+    }
+    const url = makeMushafImageUrl(mushafPage)
+    try {
+      const cache = await caches.open('noor-mushaf-pages')
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Image unavailable')
+      await cache.put(url, response.clone())
+      const pages = [...new Set([...offlinePages, mushafPage])]
+      localStorage.setItem('noor-offline-mushaf-pages', JSON.stringify(pages))
+      setOfflinePages(pages)
+      setOfflineNotice(`تم حفظ الصفحة ${mushafPage} للعمل دون إنترنت.`)
+    } catch { setOfflineNotice('تعذر حفظ الصفحة حالياً. تحقق من الاتصال.') }
+  }
+
   /* فلترة السور للبحث */
   const matchingSurahs = searchQuery.trim()
     ? SURAH_NAMES.map((name, index) => ({ id: index + 1, name }))
@@ -163,6 +195,9 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
             String(item.id).includes(searchQuery.trim())
           )
         })
+    : []
+  const matchingAyahs = searchQuery.trim().length >= 2
+    ? verses.filter((verse) => normalizeArabic(verse.text).includes(normalizeArabic(searchQuery))).slice(0, 12)
     : []
 
   return (
@@ -208,7 +243,12 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           {/* قائمة نتائج البحث السريع */}
           {searchOpen && searchQuery.trim() && (
             <div className="absolute top-full z-50 mt-2 max-h-64 w-full overflow-y-auto rounded-2xl border border-emerald-100 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
-              {matchingSurahs.length > 0 ? (
+              {matchingAyahs.length > 0 ? (
+                <div className="space-y-1">
+                  <p className="px-2 py-1 text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300">نتائج داخل سورة {SURAH_NAMES[surah - 1]}</p>
+                  {matchingAyahs.map((verse) => <button key={verse.key} onClick={() => { setSearchOpen(false); onPlay(surah, currentReciter, verse.number, verses) }} className="block w-full rounded-xl bg-slate-50 px-3 py-2 text-right text-xs leading-6 text-slate-700 hover:bg-emerald-50 dark:bg-slate-800 dark:text-slate-200"><b>آية {verse.number}</b> · {verse.text}</button>)}
+                </div>
+              ) : matchingSurahs.length > 0 ? (
                 <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
                   {matchingSurahs.map((item) => (
                     <button
@@ -303,6 +343,14 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
               <input type="range" min="25" max="45" value={settings.fontSize}
                 onChange={(event) => setSettings((old) => ({ ...old, fontSize: Number(event.target.value) }))} />
             </div>
+            <label className="input-wrap">
+              <span>شكل المصحف</span>
+              <select value={settings.mushafTheme} onChange={(event) => setSettings((old) => ({ ...old, mushafTheme: event.target.value }))}>
+                <option value="paper">ورق دافئ</option>
+                <option value="cream">كريمي هادئ</option>
+                <option value="night">ليلي مريح</option>
+              </select>
+            </label>
           </div>
         )}
       </div>
@@ -332,7 +380,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         <DailyWird />
       </div>
 
-      <article className="quran-paper flex flex-col" style={{ maxHeight: '82vh', minHeight: '500px' }}>
+      <article className={`quran-paper mushaf-${settings.mushafTheme || 'paper'} flex flex-col`} style={{ maxHeight: '82vh', minHeight: '500px' }}>
 
         <div className="mushaf-banner shrink-0">
           <span className="mushaf-banner-line" />
@@ -394,10 +442,12 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
                 <img src={makeMushafImageUrl(mushafPage)} alt={`صفحة المصحف ${mushafPage}`} loading="lazy" onError={() => setViewMode('text')} />
               </div>
               <div className="mushaf-page-controls">
-                <button className="button-secondary py-2" onClick={() => setMushafPage((page) => Math.max(1, page - 1))} disabled={mushafPage === 1}>الصفحة السابقة</button>
+                <button className="button-secondary py-2" onClick={() => setPage(mushafPage - 1)} disabled={mushafPage === 1}>الصفحة السابقة</button>
                 <span>صفحة {mushafPage} من 604</span>
-                <button className="button-secondary py-2" onClick={() => setMushafPage((page) => Math.min(604, page + 1))} disabled={mushafPage === 604}>الصفحة التالية</button>
+                <button className="button-secondary py-2" onClick={() => setPage(mushafPage + 1)} disabled={mushafPage === 604}>الصفحة التالية</button>
+                <button className="button-secondary py-2" onClick={saveOfflinePage}><Bookmark size={15} /> حفظ بدون إنترنت</button>
               </div>
+              {offlineNotice && <p className="text-center text-xs font-bold text-emerald-600 dark:text-emerald-300">{offlineNotice}</p>}
             </div>
           )}
 

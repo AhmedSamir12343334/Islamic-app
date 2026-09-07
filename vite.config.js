@@ -96,6 +96,15 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24 * 365
               }
             }
+          },
+          {
+            urlPattern: /^https:\/\/raw\.githubusercontent\.com\/QuranHub\/quran-pages-images\/main\/ayat\/tajweed\/.*\.png$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'noor-mushaf-pages',
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
           }
         ]
       }

@@ -1,4 +1,4 @@
-import { Bell, BookOpen, Check, Clock3, Flame, History, RotateCcw, Target } from 'lucide-react'
+import { Bell, BookOpen, Check, Clock3, Copy, Flame, History, RotateCcw, Send, Share2, Target } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 const KHATMA_KEY = 'noor-khatma-v1'
@@ -48,6 +48,7 @@ export default function StatsSection() {
   const [notification, setNotification] = useState(getNotificationState)
   const [permission, setPermission] = useState(() => typeof Notification === 'undefined' ? 'unsupported' : Notification.permission)
   const [notice, setNotice] = useState('')
+  const [groupId, setGroupId] = useState(() => readJson('noor-group-khatma-v1', null)?.id || '')
 
   useEffect(() => {
     const sync = () => { setStats(getStats()); setKhatma(getInitialKhatma()) }
@@ -103,6 +104,30 @@ export default function StatsSection() {
     setNotice('تم حفظ تذكير الورد اليومي.')
   }
 
+  const createGroupKhatma = () => {
+    const id = Math.random().toString(36).slice(2, 8).toUpperCase()
+    saveJson('noor-group-khatma-v1', { id, createdAt: todayKey(), days: selectedDays })
+    setGroupId(id)
+    setNotice(`تم إنشاء ختمة جماعية برمز ${id}. شارك الرابط مع من تريد.`)
+  }
+
+  const shareGroupKhatma = async () => {
+    if (!groupId) return
+    const url = `${window.location.origin}${window.location.pathname}#group-khatma=${groupId}`
+    try {
+      if (navigator.share) await navigator.share({ title: 'ختمة جماعية', text: `انضم إلى ختمتنا الجماعية: ${groupId}`, url })
+      else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); setNotice('تم نسخ رابط الختمة الجماعية.') }
+    } catch { /* أُلغيَت المشاركة */ }
+  }
+
+  const shareOnTelegram = () => {
+    if (!groupId) return
+    const url = `${window.location.origin}${window.location.pathname}#group-khatma=${groupId}`
+    const text = `انضم إلى ختمتنا الجماعية 🤍\nرمز الختمة: ${groupId}`
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+    window.open(telegramUrl, '_blank', 'noopener,noreferrer')
+  }
+
   const progress = Math.min(100, Math.round((stats.pages / Math.max(1, stats.goal)) * 100))
 
   return (
@@ -143,6 +168,14 @@ export default function StatsSection() {
               <button className="button-primary w-full" onClick={startKhatma}><Target size={17} /> بدء الختمة</button>
             </div>
           )}
+        </article>
+        <article className="utility-card">
+          <div className="utility-heading"><div><span className="eyebrow"><Share2 size={14} /> معاً على الخير</span><h2>ختمة جماعية</h2></div></div>
+          <div className="mt-5 space-y-4">
+            <p className="text-sm leading-7 text-slate-500 dark:text-slate-400">أنشئ رمز دعوة وشاركه مع العائلة أو الأصدقاء. هذه النسخة تنشئ رابط الدعوة محلياً بدون حساب.</p>
+            {groupId ? <div className="group-khatma-code"><span>رمز الختمة</span><strong>{groupId}</strong></div> : <button className="button-primary w-full" onClick={createGroupKhatma}><Share2 size={17} /> إنشاء ختمة جماعية</button>}
+            {groupId && <div className="grid gap-2 sm:grid-cols-3"><button className="button-secondary justify-center py-2" onClick={shareGroupKhatma}><Share2 size={16} /> مشاركة</button><button className="button-secondary justify-center py-2" onClick={shareOnTelegram}><Send size={16} /> تليجرام</button><button className="button-secondary justify-center py-2" onClick={async () => { await navigator.clipboard?.writeText(groupId); setNotice('تم نسخ رمز الختمة.') }}><Copy size={16} /> نسخ الرمز</button></div>}
+          </div>
         </article>
 
         <article className="utility-card">
