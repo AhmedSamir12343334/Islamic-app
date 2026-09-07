@@ -49,10 +49,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   const [searchOpen, setSearchOpen] = useState(false)
   const [viewMode, setViewMode] = useState('text')
   const [mushafPage, setMushafPage] = useState(null)
-  const [offlinePages, setOfflinePages] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('noor-offline-mushaf-pages') || '[]') } catch { return [] }
-  })
-  const [offlineNotice, setOfflineNotice] = useState('')
   /* إدارة الـ bookmark عبر state حتى يتحدّث الـ UI فوراً عند الحفظ */
   const [bookmark, setBookmark] = useState(loadBookmark)
   const surah = settings.surah
@@ -165,24 +161,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
     const nextPage = Math.min(604, Math.max(1, page))
     setMushafPage(nextPage)
     try { localStorage.setItem('noor-last-mushaf-page', JSON.stringify({ surah, page: nextPage })) } catch { /* التخزين اختياري */ }
-  }
-
-  const saveOfflinePage = async () => {
-    if (!mushafPage || !('caches' in window)) {
-      setOfflineNotice('الحفظ دون إنترنت غير متاح في هذا المتصفح.')
-      return
-    }
-    const url = makeMushafImageUrl(mushafPage)
-    try {
-      const cache = await caches.open('noor-mushaf-pages')
-      const response = await fetch(url)
-      if (!response.ok) throw new Error('Image unavailable')
-      await cache.put(url, response.clone())
-      const pages = [...new Set([...offlinePages, mushafPage])]
-      localStorage.setItem('noor-offline-mushaf-pages', JSON.stringify(pages))
-      setOfflinePages(pages)
-      setOfflineNotice(`تم حفظ الصفحة ${mushafPage} للعمل دون إنترنت.`)
-    } catch { setOfflineNotice('تعذر حفظ الصفحة حالياً. تحقق من الاتصال.') }
   }
 
   /* فلترة السور للبحث */
@@ -445,9 +423,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
                 <button className="button-secondary py-2" onClick={() => setPage(mushafPage - 1)} disabled={mushafPage === 1}>الصفحة السابقة</button>
                 <span>صفحة {mushafPage} من 604</span>
                 <button className="button-secondary py-2" onClick={() => setPage(mushafPage + 1)} disabled={mushafPage === 604}>الصفحة التالية</button>
-                <button className="button-secondary py-2" onClick={saveOfflinePage}><Bookmark size={15} /> حفظ بدون إنترنت</button>
               </div>
-              {offlineNotice && <p className="text-center text-xs font-bold text-emerald-600 dark:text-emerald-300">{offlineNotice}</p>}
             </div>
           )}
 
