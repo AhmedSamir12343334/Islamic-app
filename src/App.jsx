@@ -1,4 +1,4 @@
-import { BarChart3, BookOpenText, Compass, Ellipsis, Headphones, Moon, Radio, Sun } from 'lucide-react'
+import { BarChart3, BookOpenText, Compass, Headphones, Moon, Radio, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -64,7 +64,6 @@ export default function App() {
   const [installPrompt, setInstallPrompt] = useState(() => window.__pwaInstallPrompt || null)
   const [isStandalone, setIsStandalone] = useState(false)
   const [showIosInstall, setShowIosInstall] = useState(false)
-  const [showMoreMenu, setShowMoreMenu] = useState(false)
 
   useEffect(() => {
     const openAdhkar = (event) => {
@@ -272,25 +271,11 @@ export default function App() {
 
           {/* روابط التنقل للشاشات الكبيرة */}
           <nav className="hidden items-center gap-1 lg:flex" aria-label="التنقل الرئيسي">
-            {navItems.slice(0, 5).map(({ id, label, icon: Icon }) => (
+            {navItems.map(({ id, label, icon: Icon }) => (
               <button key={id} className={`nav-link ${active === id ? 'active' : ''}`} onClick={() => setActive(id)}>
                 <Icon size={17} />{label}
               </button>
             ))}
-            <div className="desktop-more-wrap">
-              <button className={`nav-link ${showMoreMenu ? 'active' : ''}`} onClick={() => setShowMoreMenu((value) => !value)} aria-expanded={showMoreMenu}>
-                <Ellipsis size={17} />المزيد
-              </button>
-              {showMoreMenu && (
-                <div className="desktop-more-menu">
-                  {navItems.slice(5).map(({ id, label, icon: Icon }) => (
-                    <button key={id} onClick={() => { setActive(id); setShowMoreMenu(false) }} className={active === id ? 'active' : ''}>
-                      <Icon size={16} />{label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </nav>
 
           {/* زر تبديل الوضع الداكن/الفاتح */}
@@ -332,7 +317,7 @@ export default function App() {
       {/* ── شريط التنقل السفلي الذكي للموبايل (Floating Glassmorphic Bottom Nav) ── */}
       <nav className="mobile-bottom-bar" aria-label="شريط التنقل السريع">
         <div className="mx-auto flex max-w-md items-center justify-around">
-          {navItems.slice(0, 5).map(({ id, label, icon: Icon }) => {
+          {navItems.map(({ id, label, icon: Icon }) => {
             const isActive = active === id
             return (
               <button
@@ -353,26 +338,7 @@ export default function App() {
               </button>
             )
           })}
-          <button
-            onClick={() => setShowMoreMenu((value) => !value)}
-            className={`bottom-nav-btn ${showMoreMenu ? 'active' : ''}`}
-            aria-label="المزيد"
-            aria-expanded={showMoreMenu}
-          >
-            <div className="nav-icon-wrap"><Ellipsis size={19} /></div>
-            <span>المزيد</span>
-            <span className="nav-dot" />
-          </button>
         </div>
-        {showMoreMenu && (
-          <div className="mobile-more-menu">
-            {navItems.slice(5).map(({ id, label, icon: Icon }) => (
-              <button key={id} onClick={() => { setActive(id); setShowMobileMore(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className={active === id ? 'active' : ''}>
-                <Icon size={18} />{label}
-              </button>
-            ))}
-          </div>
-        )}
       </nav>
 
       {/* ── مشغل الصوت العائم ── */}
