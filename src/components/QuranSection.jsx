@@ -37,7 +37,7 @@ const POPULAR_SURAHS = [
   { id: 112, name: 'الإخلاص' }
 ]
 
-export default function QuranSection({ settings, setSettings, onPlay, activeAyah, activeSurah }) {
+export default function QuranSection({ settings, setSettings, onPlay, activeAyah, activeSurah, lastPosition }) {
   const [verses, setVerses] = useState([])
   const [reciters, setReciters] = useState([])
   const [loading, setLoading] = useState(true)
@@ -136,7 +136,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   }
 
   const saveBookmark = () => {
-    const data = { surah, ayah: 1, name: SURAH_NAMES[surah - 1] }
+    const data = { surah, ayah: Number(activeAyah) || 1, name: SURAH_NAMES[surah - 1] }
     try { localStorage.setItem('noor-bookmark', JSON.stringify(data)) } catch { return }
     setBookmark(data)
     /* إعلام النوافذ الأخرى */
@@ -298,6 +298,16 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           </div>
         )}
       </div>
+
+      {lastPosition && (
+        <button onClick={() => {
+          setSettings((old) => ({ ...old, surah: lastPosition.surah }))
+          onPlay(lastPosition.surah, undefined, lastPosition.ayah)
+        }} className="bookmark-callout">
+          <BookmarkCheck size={18} /> استئناف القراءة: سورة {lastPosition.name}، آية {lastPosition.ayah}
+          <span>متابعة</span>
+        </button>
+      )}
 
       {bookmark && (
         <button onClick={() => changeSurah(bookmark.surah)} className="bookmark-callout">

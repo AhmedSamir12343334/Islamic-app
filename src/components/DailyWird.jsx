@@ -65,12 +65,15 @@ export default function DailyWird() {
 
   useEffect(() => {
     const syncAdhkar = () => setAdhkarCounts(loadAdhkarCounts())
+    const syncWird = () => setWird(loadWird())
     const syncPrayer = (event) => setNextPrayer(event.detail || null)
     window.addEventListener('adhkar-counts-updated', syncAdhkar)
+    window.addEventListener('wird-updated', syncWird)
     window.addEventListener('storage', syncAdhkar)
     window.addEventListener('prayer-updated', syncPrayer)
     return () => {
       window.removeEventListener('adhkar-counts-updated', syncAdhkar)
+      window.removeEventListener('wird-updated', syncWird)
       window.removeEventListener('storage', syncAdhkar)
       window.removeEventListener('prayer-updated', syncPrayer)
     }

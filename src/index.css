@@ -206,6 +206,18 @@
   .smart-wird-item.complete span { @apply text-emerald-600 dark:text-emerald-300; }
   .smart-wird-icon { @apply grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-white text-emerald-600 shadow-sm dark:bg-slate-900 dark:text-emerald-300; }
   .smart-wird-percent { @apply mr-auto rounded-full bg-white px-2 py-1 text-[10px] font-extrabold text-emerald-700 dark:bg-slate-900 dark:text-emerald-300; }
+  .stats-grid { @apply grid gap-3 sm:grid-cols-2 xl:grid-cols-4; }
+  .stat-card { @apply flex items-center gap-3 rounded-3xl border border-emerald-100 bg-white p-4 shadow-soft dark:border-slate-700 dark:bg-slate-900; }
+  .stat-card svg { @apply shrink-0 text-emerald-600 dark:text-emerald-400; }
+  .stat-card strong { @apply text-2xl font-black text-ink dark:text-white; }
+  .stat-card span { @apply text-xs font-bold text-slate-500 dark:text-slate-400; }
+  .stats-layout { @apply grid gap-5 xl:grid-cols-2; }
+  .plan-choice { @apply flex flex-col items-center rounded-2xl border border-emerald-100 bg-emerald-50/40 py-3 text-lg font-black text-emerald-700 transition hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-800 dark:text-emerald-300; }
+  .plan-choice small { @apply text-[10px] font-bold text-slate-500 dark:text-slate-400; }
+  .plan-choice.active { @apply border-emerald-600 bg-emerald-600 text-white dark:bg-emerald-700 dark:text-white; }
+  .plan-choice.active small { @apply text-emerald-100; }
+  .khatma-progress { @apply h-3 overflow-hidden rounded-full bg-emerald-100 dark:bg-slate-800; }
+  .khatma-progress span { @apply block h-full rounded-full bg-emerald-600 transition-all; }
   .wird-controls { @apply flex-wrap; }
   @media (max-width: 380px) {
     .wird-controls { @apply items-stretch; }

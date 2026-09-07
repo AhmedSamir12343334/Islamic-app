@@ -1,4 +1,4 @@
-import { BookOpenText, Compass, Headphones, Moon, Radio, Sun } from 'lucide-react'
+import { BarChart3, BookOpenText, Compass, Headphones, Moon, Radio, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -7,6 +7,7 @@ import ContactSocial from './components/ContactSocial'
 import LiveSection from './components/LiveSection'
 import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
+import StatsSection from './components/StatsSection'
 import IosInstallModal, { isIosDevice } from './components/IosInstallModal'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, getSurah, makeAudioUrl } from './services/api'
@@ -16,8 +17,15 @@ const navItems = [
   { id: 'audio', label: 'التلاوات', icon: Headphones },
   { id: 'adhkar', label: 'الأذكار', icon: Sun },
   { id: 'qibla', label: 'القبلة', icon: Compass },
-  { id: 'live', label: 'البث المباشر', icon: Radio }
+  { id: 'live', label: 'البث المباشر', icon: Radio },
+  { id: 'stats', label: 'إحصائياتي', icon: BarChart3 }
 ]
+
+const LAST_POSITION_KEY = 'noor-last-position'
+
+function loadLastPosition() {
+  try { return JSON.parse(localStorage.getItem(LAST_POSITION_KEY) || 'null') } catch { return null }
+}
 
 /* ── تحميل إعدادات المستخدم من localStorage ── */
 function loadSettings() {
@@ -51,6 +59,7 @@ export default function App() {
   const [track, setTrack] = useState(null)
   const [activeAyah, setActiveAyah] = useState(null)
   const [activeSurah, setActiveSurah] = useState(null)
+  const [lastPosition, setLastPosition] = useState(loadLastPosition)
   const [installPrompt, setInstallPrompt] = useState(() => window.__pwaInstallPrompt || null)
   const [isStandalone, setIsStandalone] = useState(false)
   const [showIosInstall, setShowIosInstall] = useState(false)
@@ -62,6 +71,27 @@ export default function App() {
     }
     window.addEventListener('open-adhkar', openAdhkar)
     return () => window.removeEventListener('open-adhkar', openAdhkar)
+  }, [])
+
+  useEffect(() => {
+    const notify = () => {
+      if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
+      try {
+        const settings = JSON.parse(localStorage.getItem('noor-notifications-v1') || 'null')
+        if (!settings?.enabled || !settings.time) return
+        const now = new Date()
+        const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+        const today = now.toLocaleDateString('en-CA')
+        const marker = `${today}-${time}-${settings.type}`
+        if (time === settings.time && localStorage.getItem('noor-last-notification') !== marker) {
+          new Notification('صدقة جارية', { body: `حان وقت ${settings.type}` })
+          localStorage.setItem('noor-last-notification', marker)
+        }
+      } catch { /* التذكير اختياري */ }
+    }
+    notify()
+    const interval = window.setInterval(notify, 30 * 1000)
+    return () => window.clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -158,6 +188,9 @@ export default function App() {
     if (requestId !== playbackRequest.current) return
     setActiveAyah(startAyah)
     setActiveSurah(surah)
+    const position = { surah, ayah: startAyah, name: SURAH_NAMES[surah - 1], updatedAt: Date.now() }
+    saveItem(LAST_POSITION_KEY, JSON.stringify(position))
+    setLastPosition(position)
     setTrack({
       url: makeAudioUrl(reciter, surah),
       surah,
@@ -178,12 +211,21 @@ export default function App() {
     play(surah, track.reciter)
   }
 
+  const handleActiveAyah = (surah, ayah) => {
+    const position = { surah, ayah, name: SURAH_NAMES[surah - 1], updatedAt: Date.now() }
+    saveItem(LAST_POSITION_KEY, JSON.stringify(position))
+    setLastPosition(position)
+    setActiveSurah(surah)
+    setActiveAyah(ayah)
+  }
+
   const renderSection = () => {
     switch (active) {
-      case 'quran': return <QuranSection settings={settings} setSettings={setSettings} onPlay={play} activeAyah={activeAyah} activeSurah={activeSurah} />
+      case 'quran': return <QuranSection settings={settings} setSettings={setSettings} onPlay={play} activeAyah={activeAyah} activeSurah={activeSurah} lastPosition={lastPosition} />
       case 'audio': return <AudioSection settings={settings} setSettings={setSettings} onPlay={play} />
       case 'adhkar': return <AdhkarSection initialCategory={window.__preferredAdhkarCategory} />
       case 'qibla': return <QiblaSection />
+      case 'stats': return <StatsSection />
       default: return <LiveSection />
     }
   }
@@ -294,7 +336,7 @@ export default function App() {
         onClose={() => { setTrack(null); setActiveAyah(null); setActiveSurah(null) }}
         onNext={() => navigateTrack(1)}
         onPrevious={() => navigateTrack(-1)}
-        onActiveAyah={(surah, ayah) => { setActiveSurah(surah); setActiveAyah(ayah) }}
+        onActiveAyah={handleActiveAyah}
       />
 
       {/* ── نافذة تعليمات تثبيت التطبيق لأجهزة الآيفون (iOS) ── */}
