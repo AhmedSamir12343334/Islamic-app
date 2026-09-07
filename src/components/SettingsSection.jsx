@@ -1,4 +1,4 @@
-import { Bell, BookOpen, Moon, Palette, Save, Sun, Type } from 'lucide-react'
+import { BookOpen, Moon, Palette, Save, Sun, Type } from 'lucide-react'
 import { useState } from 'react'
 import { RIWAYAT } from '../data'
 
@@ -39,11 +39,6 @@ export default function SettingsSection({ settings, setSettings, dark, setDark }
           </div>
         </article>
 
-        <article className="utility-card">
-          <div className="utility-heading"><div><span className="eyebrow"><Bell size={14} /> مركز التنبيهات</span><h2>تنبيهاتك اليومية</h2></div></div>
-          <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-400">يمكنك ضبط كل تذكير من صفحة الإحصائيات: ورد القرآن، أذكار الصباح، وأذكار المساء.</p>
-          <button className="button-secondary mt-4 w-full justify-center" onClick={() => window.dispatchEvent(new CustomEvent('open-stats'))}><Bell size={17} /> إدارة التنبيهات</button>
-        </article>
       </div>
     </section>
   )
