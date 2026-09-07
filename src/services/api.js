@@ -26,13 +26,14 @@ export async function getSurah(surah) {
   const auth = headers()
   if (auth) {
     try {
-      const response = await fetch(`${QURAN_COM_BASE}/verses/by_chapter/${surah}?language=ar&fields=text_uthmani&per_page=300`, { headers: auth })
+      const response = await fetch(`${QURAN_COM_BASE}/verses/by_chapter/${surah}?language=ar&fields=text_uthmani,page_number&per_page=300`, { headers: auth })
       if (!response.ok) throw new Error('Quran.com unavailable')
       const payload = await response.json()
       return payload.verses.map((verse, index) => ({
         number: index + 1,
         text: cleanAyahText(verse.text_uthmani, surah, index + 1),
-        key: verse.verse_key
+        key: verse.verse_key,
+        page: verse.page_number
       }))
     } catch (error) {
       console.warn('Quran.com request failed; using the public fallback.', error)
@@ -44,7 +45,8 @@ export async function getSurah(surah) {
   return payload.data.ayahs.map((ayah) => ({
     number: ayah.numberInSurah,
     text: cleanAyahText(ayah.text, surah, ayah.numberInSurah),
-    key: `${surah}:${ayah.numberInSurah}`
+    key: `${surah}:${ayah.numberInSurah}`,
+    page: ayah.page
   }))
 }
 
@@ -259,6 +261,7 @@ export async function getAyahTimings(surah, reciter) {
 }
 
 export const makeAudioUrl = (reciter, surah) => `${reciter.moshaf.server.replace(/\/$/, '')}/${String(surah).padStart(3, '0')}.mp3`
+export const makeMushafImageUrl = (page) => `https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/ayat/tajweed/${page}.png`
 
 export const getSurahLabel = (surah) => `سورة ${SURAH_NAMES[surah - 1] || surah}`
 export const allowedRiwayat = RIWAYAT

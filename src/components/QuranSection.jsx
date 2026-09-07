@@ -1,7 +1,7 @@
 import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
-import { getReciters, getSurah } from '../services/api'
+import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
 import TodayStatus from './TodayStatus'
@@ -47,6 +47,8 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
   const [attempt, setAttempt] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [viewMode, setViewMode] = useState('text')
+  const [mushafPage, setMushafPage] = useState(null)
   /* إدارة الـ bookmark عبر state حتى يتحدّث الـ UI فوراً عند الحفظ */
   const [bookmark, setBookmark] = useState(loadBookmark)
   const surah = settings.surah
@@ -97,6 +99,11 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
       .finally(() => { if (!ignore) setLoading(false) })
     return () => { ignore = true }
   }, [surah, attempt])
+
+  useEffect(() => {
+    const firstPage = verses.find((verse) => Number.isInteger(Number(verse.page)))?.page
+    if (firstPage) setMushafPage(Number(firstPage))
+  }, [verses])
 
   /* إعادة التمرير للأعلى عند تغيير السورة */
   useEffect(() => {
@@ -342,6 +349,10 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
             <h2>سورة {SURAH_NAMES[surah - 1]}</h2>
           </div>
           <div className="flex items-center gap-2">
+            <div className="view-toggle" role="group" aria-label="طريقة عرض المصحف">
+              <button className={viewMode === 'text' ? 'active' : ''} onClick={() => setViewMode('text')}>نص</button>
+              <button className={viewMode === 'image' ? 'active' : ''} onClick={() => setViewMode('image')} disabled={!mushafPage}>مصور</button>
+            </div>
             {currentReciter && (
               <span className="hidden text-xs text-emerald-800 dark:text-emerald-300 md:inline-block font-medium bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                 بصوت: {currentReciter.name}
@@ -377,7 +388,20 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
             </div>
           )}
 
-          {!loading && !error && (
+          {!loading && !error && viewMode === 'image' && mushafPage && (
+            <div className="mushaf-viewer">
+              <div className="mushaf-image-frame">
+                <img src={makeMushafImageUrl(mushafPage)} alt={`صفحة المصحف ${mushafPage}`} loading="lazy" onError={() => setViewMode('text')} />
+              </div>
+              <div className="mushaf-page-controls">
+                <button className="button-secondary py-2" onClick={() => setMushafPage((page) => Math.max(1, page - 1))} disabled={mushafPage === 1}>الصفحة السابقة</button>
+                <span>صفحة {mushafPage} من 604</span>
+                <button className="button-secondary py-2" onClick={() => setMushafPage((page) => Math.min(604, page + 1))} disabled={mushafPage === 604}>الصفحة التالية</button>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && viewMode === 'text' && (
             <div className="quran-text" style={{ fontSize: `${settings.fontSize}px` }}>
               {surah !== 1 && surah !== 9 && <p className="basmalah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>}
               {verses.map((verse) => {
