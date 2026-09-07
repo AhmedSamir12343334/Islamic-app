@@ -119,6 +119,10 @@
   .quran-paper h2 { @apply mt-1 font-arabic text-3xl font-bold text-ink dark:text-white; }
   .quran-text { 
     @apply font-arabic leading-[2.8] sm:leading-[3] text-ink dark:text-slate-100; 
+    width: 100%;
+    max-width: 860px;
+    margin-inline: auto;
+    padding-inline: 0.75rem;
     text-align: justify; 
     text-align-last: center; 
     word-spacing: 0.08em;
