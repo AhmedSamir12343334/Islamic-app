@@ -91,7 +91,9 @@
   .quran-paper.mushaf-night { background-color: #102936; border-color: #31515a; }
   .quran-paper.mushaf-night::before { border-color: #49616a; }
   .quran-reader-card { min-height: 620px; }
+  .quran-reader-card.text-mode { max-height: calc(100vh - 110px); }
   @media (max-width: 640px) { .quran-reader-card { min-height: 500px; } }
+  @media (max-width: 640px) { .quran-reader-card.text-mode { max-height: calc(100vh - 150px); } }
   .view-toggle { @apply flex items-center rounded-xl border border-emerald-100 bg-emerald-50/60 p-1 dark:border-slate-700 dark:bg-slate-800; }
   .view-toggle button { @apply rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-slate-500 transition dark:text-slate-400; }
   .view-toggle button.active { @apply bg-white text-emerald-700 shadow-sm dark:bg-emerald-700 dark:text-white; }

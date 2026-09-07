@@ -359,7 +359,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         <DailyWird />
       </div>
 
-      <article className={`quran-paper quran-reader-card mushaf-${settings.mushafTheme || 'paper'} flex flex-col`}>
+      <article className={`quran-paper quran-reader-card ${viewMode === 'text' ? 'text-mode' : 'image-mode'} mushaf-${settings.mushafTheme || 'paper'} flex flex-col`}>
 
         <div className="mushaf-banner shrink-0">
           <span className="mushaf-banner-line" />
