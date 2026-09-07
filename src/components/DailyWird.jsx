@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpen, BookOpenCheck, Check, CheckCircle2, Clock3, Flame, Minus, Plus, RotateCcw, Sun, Moon } from 'lucide-react'
+import { ArrowLeft, BookOpen, BookOpenCheck, Check, CheckCircle2, Flame, Minus, Plus, RotateCcw, Sun, Moon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ADHKAR } from '../data'
 
@@ -49,7 +49,6 @@ function getAdhkarProgress(category, counts) {
 export default function DailyWird() {
   const [wird, setWird] = useState(loadWird)
   const [adhkarCounts, setAdhkarCounts] = useState(loadAdhkarCounts)
-  const [nextPrayer, setNextPrayer] = useState(() => window.__nextPrayer || null)
   const [justDone, setJustDone] = useState(false)
 
   const motivation = MOTIVATIONS[new Date().getDay() % MOTIVATIONS.length]
@@ -66,16 +65,13 @@ export default function DailyWird() {
   useEffect(() => {
     const syncAdhkar = () => setAdhkarCounts(loadAdhkarCounts())
     const syncWird = () => setWird(loadWird())
-    const syncPrayer = (event) => setNextPrayer(event.detail || null)
     window.addEventListener('adhkar-counts-updated', syncAdhkar)
     window.addEventListener('wird-updated', syncWird)
     window.addEventListener('storage', syncAdhkar)
-    window.addEventListener('prayer-updated', syncPrayer)
     return () => {
       window.removeEventListener('adhkar-counts-updated', syncAdhkar)
       window.removeEventListener('wird-updated', syncWird)
       window.removeEventListener('storage', syncAdhkar)
-      window.removeEventListener('prayer-updated', syncPrayer)
     }
   }, [])
 
@@ -183,16 +179,6 @@ export default function DailyWird() {
             </div>
             {eveningProgress.percent === 100 ? <Check size={17} /> : <ArrowLeft size={15} />}
           </button>
-          {nextPrayer && (
-            <div className="smart-wird-item sm:col-span-2">
-              <div className="smart-wird-icon"><Clock3 size={16} /></div>
-              <div className="min-w-0 flex-1">
-                <p>الصلاة القادمة: {nextPrayer.label}</p>
-                <span>{nextPrayer.time || 'جاري حساب الوقت'}</span>
-              </div>
-              <span className="smart-wird-percent">موعد اليوم</span>
-            </div>
-          )}
         </div>
       </div>
 

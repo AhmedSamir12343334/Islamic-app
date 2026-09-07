@@ -101,13 +101,6 @@ export default function PrayerTimes() {
   const nextInfo = useMemo(() => payload ? getNextPrayer(payload.timings, now) : null, [payload, now])
   const next = nextInfo?.prayer || null
 
-  useEffect(() => {
-    if (!next || !payload) return
-    const prayer = { label: next.label, time: cleanTime(payload.timings[next.key]) }
-    window.__nextPrayer = prayer
-    window.dispatchEvent(new CustomEvent('prayer-updated', { detail: prayer }))
-  }, [next, payload])
-
   return (
     <section className="utility-card prayer-card">
       <div className="utility-heading">
