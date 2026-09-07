@@ -175,9 +175,9 @@ export default function StatsSection() {
           )}
         </article>
         <article className="utility-card">
-          <div className="utility-heading"><div><span className="eyebrow"><Share2 size={14} /> معاً على الخير</span><h2>ختمة جماعية</h2></div></div>
+          <div className="utility-heading"><div><span className="eyebrow"><Share2 size={14} /> ختمتنا معاً</span><h2>ختمتنا معاً</h2></div></div>
           <div className="mt-5 space-y-4">
-            <p className="text-sm leading-7 text-slate-500 dark:text-slate-400">أنشئ رمز دعوة وشاركه مع العائلة أو الأصدقاء. هذه النسخة تنشئ رابط الدعوة محلياً بدون حساب.</p>
+            <p className="text-sm leading-7 text-slate-500 dark:text-slate-400">شارك أهلك وأصدقاءك في ختم القرآن، واختر مدة الختمة ثم شارك الدعوة عبر تليجرام.</p>
             {groupId ? <div className="group-khatma-code"><span>رمز الختمة</span><strong>{groupId}</strong></div> : <button className="button-primary w-full" onClick={createGroupKhatma}><Share2 size={17} /> إنشاء ختمة جماعية</button>}
             {groupId && <div className="grid gap-2 sm:grid-cols-2"><button className="button-secondary justify-center py-2" onClick={shareGroupKhatma}><Share2 size={16} /> مشاركة الرابط</button><button className="button-secondary justify-center py-2" onClick={shareOnTelegram}><Send size={16} /> مشاركة بتليجرام</button><button className="button-secondary justify-center py-2" onClick={joinTelegramGroup}><Send size={16} /> انضم للمجموعة</button><button className="button-secondary justify-center py-2" onClick={async () => { await navigator.clipboard?.writeText(groupId); setNotice('تم نسخ رمز الختمة.') }}><Copy size={16} /> نسخ الرمز</button></div>}
           </div>
