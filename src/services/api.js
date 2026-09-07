@@ -98,7 +98,8 @@ export async function getReciters(riwaya, style = 'murattal') {
       return [{
         id: `${reciter.id}-${bestMoshaf.id}`,
         name: reciter.name,
-        moshaf: bestMoshaf
+        moshaf: bestMoshaf,
+        allMoshafs: reciter.moshaf
       }]
     })
 
@@ -120,34 +121,120 @@ export async function getReciters(riwaya, style = 'murattal') {
   }
 }
 
-export async function getAyahTimings(surah, reciter) {
-  const readId = Number(reciter?.moshaf?.id ?? (typeof reciter?.id === 'string' ? reciter.id.split('-')[1] : reciter?.id) ?? reciter)
-  if (!readId) return {}
-  try {
-    const response = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${readId}`)
-    if (response.ok) {
-      const payload = await response.json()
-      const entries = Array.isArray(payload) ? payload : (payload.data || payload.ayahs || [])
-      if (entries.length > 0) {
-        return entries.reduce((timings, entry) => {
-          const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
-          const start = Number(entry.start_time ?? entry.start ?? entry.from)
-          const end = Number(entry.end_time ?? entry.end ?? entry.to)
-          if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
-            timings[ayah] = { start: start / 1000, end: end / 1000 }
-          }
-          return timings
-        }, {})
-      }
+// Quran.com Recitation ID Mapping
+const QURAN_COM_NAME_MAP = [
+  { test: /المنشاوي/i, murattal: 9, mujawwad: 8 },
+  { test: /عبد\s*الباسط/i, murattal: 2, mujawwad: 1 },
+  { test: /الحصري/i, murattal: 6, mujawwad: 6, muallim: 12 },
+  { test: /العفاسي/i, murattal: 7 },
+  { test: /السديس/i, murattal: 3 },
+  { test: /الشريم/i, murattal: 10 },
+  { test: /الشاطر/i, murattal: 4 },
+  { test: /الرفاعي/i, murattal: 5 },
+  { test: /الطبلاوي/i, murattal: 11 }
+]
+
+export function generateEstimatedTimings(duration, verses) {
+  if (!duration || !verses || verses.length === 0) return {}
+  
+  // Calculate relative weight for each ayah based on text length + punctuation pause
+  const weights = verses.map((v) => Math.max(10, (v.text || '').trim().length + 15))
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0)
+  if (totalWeight <= 0) return {}
+
+  const timings = {}
+  let accumulatedTime = 0
+
+  for (let i = 0; i < verses.length; i++) {
+    const ayahNum = verses[i].number || (i + 1)
+    const ayahDuration = (weights[i] / totalWeight) * duration
+    const start = accumulatedTime
+    const end = i === verses.length - 1 ? duration : accumulatedTime + ayahDuration
+
+    timings[ayahNum] = {
+      start: Number(start.toFixed(2)),
+      end: Number(end.toFixed(2))
     }
-  } catch (error) {
-    console.warn('Verse timing is not available for this recitation from MP3Quran.', error)
+    accumulatedTime = end
   }
 
-  // Fallback to Quran.com timing if available for major reciters
+  return timings
+}
+
+export async function getAyahTimings(surah, reciter) {
+  const readId = Number(reciter?.moshaf?.id ?? (typeof reciter?.id === 'string' ? reciter.id.split('-')[1] : reciter?.id) ?? reciter)
+  
+  // 1. Try MP3Quran Timing API
+  if (readId) {
+    try {
+      const response = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${readId}`)
+      if (response.ok) {
+        const payload = await response.json()
+        const entries = Array.isArray(payload) ? payload : (payload.data || payload.ayahs || [])
+        if (entries.length > 0) {
+          const timings = entries.reduce((acc, entry) => {
+            const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
+            const start = Number(entry.start_time ?? entry.start ?? entry.from)
+            const end = Number(entry.end_time ?? entry.end ?? entry.to)
+            if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
+              acc[ayah] = { start: start / 1000, end: end / 1000 }
+            }
+            return acc
+          }, {})
+          if (Object.keys(timings).length > 0) return timings
+        }
+      }
+    } catch (error) {
+      console.warn('Verse timing is not available for this recitation from MP3Quran.', error)
+    }
+  }
+
+  // 2. Try alternative moshaf for the same reciter if available in reciter object
+  if (reciter?.allMoshafs && Array.isArray(reciter.allMoshafs)) {
+    for (const altMoshaf of reciter.allMoshafs) {
+      if (altMoshaf.id !== readId) {
+        try {
+          const altRes = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${altMoshaf.id}`)
+          if (altRes.ok) {
+            const altPayload = await altRes.json()
+            const entries = Array.isArray(altPayload) ? altPayload : (altPayload.data || altPayload.ayahs || [])
+            if (entries.length > 0) {
+              const timings = entries.reduce((acc, entry) => {
+                const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
+                const start = Number(entry.start_time ?? entry.start ?? entry.from)
+                const end = Number(entry.end_time ?? entry.end ?? entry.to)
+                if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
+                  acc[ayah] = { start: start / 1000, end: end / 1000 }
+                }
+                return acc
+              }, {})
+              if (Object.keys(timings).length > 0) return timings
+            }
+          }
+        } catch {
+          // ignore alternative moshaf failure
+        }
+      }
+    }
+  }
+
+  // 3. Fallback to Quran.com timing API if matching reciter
   try {
-    const quranComMap = { 112: 6, 53: 2, 118: 5, 54: 3, 123: 7, 31: 4, 30: 1 }
-    const qdcId = quranComMap[readId]
+    const reciterName = reciter?.name || ''
+    let qdcId = null
+
+    for (const item of QURAN_COM_NAME_MAP) {
+      if (item.test.test(reciterName)) {
+        qdcId = item.murattal
+        break
+      }
+    }
+
+    if (!qdcId) {
+      const quranComMap = { 112: 9, 113: 8, 53: 2, 118: 6, 119: 6, 54: 3, 123: 7, 31: 4, 30: 1, 102: 133 }
+      qdcId = quranComMap[readId]
+    }
+
     if (qdcId) {
       const qdcRes = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${qdcId}/${surah}?segments=true`)
       if (qdcRes.ok) {

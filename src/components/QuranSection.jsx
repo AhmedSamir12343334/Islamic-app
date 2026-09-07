@@ -330,7 +330,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
             <button className="icon-button" title="حفظ الموضع" onClick={saveBookmark}>
               <Bookmark size={19} />
             </button>
-            <button className="button-primary py-2 text-sm" onClick={() => onPlay(surah, currentReciter)}>
+            <button className="button-primary py-2 text-sm" onClick={() => onPlay(surah, currentReciter, 1, verses)}>
               <Play size={16} fill="currentColor" /> استمع
             </button>
           </div>
@@ -360,17 +360,33 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           {!loading && !error && (
             <div className="quran-text" style={{ fontSize: `${settings.fontSize}px` }}>
               {surah !== 1 && surah !== 9 && <p className="basmalah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>}
-              {verses.map((verse) => (
-                <button
-                  key={verse.key}
-                  id={`ayah-${verse.number}`}
-                  className={`ayah ${Number(activeSurah) === Number(surah) && Number(activeAyah) === Number(verse.number) ? 'is-playing' : ''}`}
-                  onClick={() => onPlay(surah, currentReciter, verse.number)}
-                  title={`تشغيل الآية ${verse.number}`}
-                >
-                  {verse.text} <sup>{verse.number}</sup>{' '}
-                </button>
-              ))}
+              {verses.map((verse) => {
+                const isPlaying = Number(activeSurah) === Number(surah) && Number(activeAyah) === Number(verse.number)
+                return (
+                  <span
+                    key={verse.key}
+                    id={`ayah-${verse.number}`}
+                    role="button"
+                    tabIndex={0}
+                    className={`ayah ${isPlaying ? 'is-playing' : ''}`}
+                    onClick={() => onPlay(surah, currentReciter, verse.number, verses)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        onPlay(surah, currentReciter, verse.number, verses)
+                      }
+                    }}
+                    title={`تشغيل الآية ${verse.number}`}
+                  >
+                    <span className="ayah-text">{verse.text}</span>
+                    <span className="ayah-end">
+                      <span className="ayah-symbol">۝</span>
+                      <span className="ayah-num">{verse.number}</span>
+                    </span>
+                    {' '}
+                  </span>
+                )
+              })}
             </div>
           )}
         </div>

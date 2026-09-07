@@ -9,7 +9,7 @@ import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
 import IosInstallModal, { isIosDevice } from './components/IosInstallModal'
 import { SURAH_NAMES } from './data'
-import { getAyahTimings, getReciters, makeAudioUrl } from './services/api'
+import { getAyahTimings, getReciters, getSurah, makeAudioUrl } from './services/api'
 
 const navItems = [
   { id: 'quran', label: 'القرآن', icon: BookOpenText },
@@ -116,7 +116,7 @@ export default function App() {
     if (settings.reciterId) localStorage.setItem('noor-reciter', settings.reciterId)
   }, [settings])
 
-  const play = async (surah = settings.surah, suppliedReciter, startAyah = 1) => {
+  const play = async (surah = settings.surah, suppliedReciter, startAyah = 1, suppliedVerses = null) => {
     const requestId = ++playbackRequest.current
     let reciter = suppliedReciter
     if (!reciter) {
@@ -124,6 +124,16 @@ export default function App() {
       reciter = reciters.find((r) => r.id === settings.reciterId) || reciters[0]
     }
     if (!reciter) { setActive('audio'); return }
+
+    let verses = suppliedVerses
+    if (!verses || verses.length === 0) {
+      try {
+        verses = await getSurah(surah)
+      } catch {
+        verses = []
+      }
+    }
+
     const timings = await getAyahTimings(surah, reciter)
     if (requestId !== playbackRequest.current) return
     setActiveAyah(startAyah)
@@ -133,6 +143,7 @@ export default function App() {
       surah,
       startAyah,
       timings,
+      verses,
       surahName: `سورة ${SURAH_NAMES[surah - 1]}`,
       reciterName: reciter.name,
       riwaya: reciter.moshaf.name,
