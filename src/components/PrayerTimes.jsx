@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, Clock3, LocateFixed, MapPin, RefreshCw } from 'lucide-react'
+import { AlertCircle, Clock3, LocateFixed, MapPin, RefreshCw } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 const PRAYERS = [
@@ -169,14 +169,6 @@ export default function PrayerTimes() {
               <strong>{formatCountdown(nextInfo.secondsRemaining)}</strong>
             </div>
             <Clock3 size={22} />
-          </div>
-          <div className="prayer-prep">
-            <div className="prayer-prep-heading"><CheckCircle2 size={16} /><span>استعد للصلاة</span></div>
-            <div className="prayer-prep-list">
-              <span>توضأ</span>
-              <span>صلِّ في أول الوقت</span>
-              <span>أكثر من الدعاء</span>
-            </div>
           </div>
         </>
       )}

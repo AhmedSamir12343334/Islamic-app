@@ -4,6 +4,7 @@ import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah } from '../services/api'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
+import TodayStatus from './TodayStatus'
 
 /* ── قراءة الـ bookmark من localStorage ── */
 function loadBookmark() {
@@ -317,7 +318,10 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
       )}
 
       <div className="grid items-start gap-5 lg:grid-cols-2">
-        <PrayerTimes />
+        <div className="space-y-5">
+          <PrayerTimes />
+          <TodayStatus />
+        </div>
         <DailyWird />
       </div>
 
