@@ -26,9 +26,11 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   useEffect(() => {
     if (!track || !audioRef.current) return
     const audio = audioRef.current
+    let cancelled = false
     audio.load()
 
     const onCanPlay = () => {
+      if (cancelled) return
       const startAyah = track.startAyah || 1
       const timing = activeTimings[startAyah] || track.timings?.[startAyah]
       if (timing && timing.start > 0) {
@@ -41,6 +43,12 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       onCanPlay()
     } else {
       audio.addEventListener('loadeddata', onCanPlay, { once: true })
+    }
+
+    return () => {
+      cancelled = true
+      audio.removeEventListener('loadeddata', onCanPlay)
+      audio.pause()
     }
   }, [track?.url])
 

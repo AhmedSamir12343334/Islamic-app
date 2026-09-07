@@ -1,4 +1,4 @@
-import { Check, Copy, ExternalLink, Heart, Send, Share2, Sparkles, X, Smartphone, Download } from 'lucide-react'
+import { Check, ExternalLink, Heart, Send, Share2, Sparkles, X, Download } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 /* ── الأيقونات الرسمية بدقة ونقاء عالي (Branded SVGs) ── */
@@ -87,13 +87,13 @@ function ShareButton({ className = '' }) {
     try {
       if (navigator.share) {
         await navigator.share(shareData)
-      } else {
+      } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(window.location.href)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }
     } catch (error) {
-      if (error?.name !== 'AbortError') {
+      if (error?.name !== 'AbortError' && navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(window.location.href)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
@@ -122,7 +122,7 @@ function ShareButton({ className = '' }) {
   )
 }
 
-export default function ContactSocial({ onInstallClick, isStandalone }) {
+export default function ContactSocial({ onInstallClick, isStandalone, canInstall }) {
   const [open, setOpen] = useState(false)
   const backdropRef = useRef(null)
 
@@ -169,7 +169,7 @@ export default function ContactSocial({ onInstallClick, isStandalone }) {
           <div className="flex flex-wrap items-center gap-3">
 
             {/* زر تثبيت التطبيق لكافة الأجهزة */}
-            {!isStandalone && onInstallClick && (
+            {!isStandalone && onInstallClick && canInstall && (
               <button
                 onClick={onInstallClick}
                 className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-600/25 transition-all hover:scale-[1.03] hover:shadow-amber-600/40 active:scale-95 animate-pulse"

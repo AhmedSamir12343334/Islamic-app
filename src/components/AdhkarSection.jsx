@@ -10,12 +10,14 @@ function loadCounts() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')
     if (saved?.date === todayKey()) return saved.counts
-  } catch { localStorage.removeItem(STORAGE_KEY) }
+  } catch {
+    try { localStorage.removeItem(STORAGE_KEY) } catch { /* التخزين محظور */ }
+  }
   return {}
 }
 
 function saveCounts(counts) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), counts }))
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), counts })) } catch { /* التخزين اختياري */ }
 }
 
 export default function AdhkarSection() {
@@ -33,14 +35,19 @@ export default function AdhkarSection() {
     setCounts((old) => ({ ...old, [key]: Math.min((old[key] || 0) + 1, target) }))
 
   const copy = async (key, text) => {
-    await navigator.clipboard.writeText(text)
-    setCopied(key)
-    setTimeout(() => setCopied(''), 1800)
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(text)
+      setCopied(key)
+      setTimeout(() => setCopied(''), 1800)
+    } catch { setCopied('') }
   }
 
   const share = async (text) => {
-    if (navigator.share) await navigator.share({ title: 'ذكر من الأذكار', text })
-    else await navigator.clipboard.writeText(text)
+    try {
+      if (navigator.share) await navigator.share({ title: 'ذكر من الأذكار', text })
+      else if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text)
+    } catch { /* إلغاء المشاركة أو غياب الصلاحية ليس خطأً قاتلاً */ }
   }
 
   /* إعادة ضبط العداد مع تأكيد مرئي بسيط (تمييز الزر للحظة) */

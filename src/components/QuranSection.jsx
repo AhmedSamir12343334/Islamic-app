@@ -1,4 +1,4 @@
-import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, User, X } from 'lucide-react'
+import { AlertCircle, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah } from '../services/api'
@@ -10,7 +10,7 @@ function loadBookmark() {
   try {
     return JSON.parse(localStorage.getItem('noor-bookmark') || 'null')
   } catch {
-    localStorage.removeItem('noor-bookmark')
+    try { localStorage.removeItem('noor-bookmark') } catch { /* التخزين محظور */ }
     return null
   }
 }
@@ -137,7 +137,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
 
   const saveBookmark = () => {
     const data = { surah, ayah: 1, name: SURAH_NAMES[surah - 1] }
-    localStorage.setItem('noor-bookmark', JSON.stringify(data))
+    try { localStorage.setItem('noor-bookmark', JSON.stringify(data)) } catch { return }
     setBookmark(data)
     /* إعلام النوافذ الأخرى */
     window.dispatchEvent(new Event('storage'))

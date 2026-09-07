@@ -32,7 +32,9 @@ export default function PrayerTimes() {
     try {
       const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null')
       if (cached?.date === dayKey() && cached?.data?.timings) setPayload(cached.data)
-    } catch { localStorage.removeItem(cacheKey) }
+    } catch {
+      try { localStorage.removeItem(cacheKey) } catch { /* التخزين محظور */ }
+    }
   }, [])
 
   /* كشف تغيير اليوم (مثلاً لو فتح الموقع بعد منتصف الليل) */
@@ -59,7 +61,7 @@ export default function PrayerTimes() {
       const result = await response.json()
       if (!result?.data?.timings) throw new Error('بيانات المواقيت غير مكتملة.')
       setPayload(result.data)
-      localStorage.setItem(cacheKey, JSON.stringify({ date: dayKey(), data: result.data }))
+      try { localStorage.setItem(cacheKey, JSON.stringify({ date: dayKey(), data: result.data })) } catch { /* التخزين اختياري */ }
     } catch (requestError) {
       setError(requestError.message || 'تعذر جلب مواقيت الصلاة حالياً.')
     } finally {

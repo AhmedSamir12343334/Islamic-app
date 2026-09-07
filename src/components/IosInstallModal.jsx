@@ -1,4 +1,4 @@
-import { CheckCircle2, PlusSquare, Share, Sparkles, X, Smartphone, Compass } from 'lucide-react'
+import { CheckCircle2, PlusSquare, Share, X, Smartphone, Compass } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 /**

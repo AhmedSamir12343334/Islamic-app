@@ -20,12 +20,14 @@ function loadWird() {
       const streak = raw.date === todayStr() ? (raw.streak || 0) : raw.yesterdayDone ? (raw.streak || 0) : 0
       return { ...raw, progress, streak, date: todayStr() }
     }
-  } catch { localStorage.removeItem(STORAGE_KEY) }
+  } catch {
+    try { localStorage.removeItem(STORAGE_KEY) } catch { /* التخزين محظور */ }
+  }
   return { date: todayStr(), progress: 0, goal: 20, streak: 0 }
 }
 
 function saveWird(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch { /* التخزين اختياري */ }
 }
 
 export default function DailyWird() {

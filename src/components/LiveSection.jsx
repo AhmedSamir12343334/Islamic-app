@@ -1,4 +1,4 @@
-import { ExternalLink, Play, Radio, Sparkles, Tv, Wifi } from 'lucide-react'
+import { ExternalLink, Play, Radio, Wifi } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 /* ─── قائمة القنوات الرسمية للحرمين الشريفين ─────────────────────────── */

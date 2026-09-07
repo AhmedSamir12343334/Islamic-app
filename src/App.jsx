@@ -1,4 +1,4 @@
-import { BookOpenText, Compass, Headphones, Menu, Moon, Radio, Smartphone, Sun, X, Download } from 'lucide-react'
+import { BookOpenText, Compass, Headphones, Moon, Radio, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import AdhkarSection from './components/AdhkarSection'
 import AudioPlayer from './components/AudioPlayer'
@@ -21,21 +21,32 @@ const navItems = [
 
 /* ── تحميل إعدادات المستخدم من localStorage ── */
 function loadSettings() {
-  const savedRiwaya = localStorage.getItem('noor-riwaya')
-  const savedReciter = localStorage.getItem('noor-reciter')
+  const getItem = (key) => {
+    try { return window.localStorage.getItem(key) } catch { return null }
+  }
+  const savedRiwaya = getItem('noor-riwaya')
+  const savedReciter = getItem('noor-reciter')
   const validReciter = (savedReciter && savedReciter.includes('-') && savedReciter !== '112-10924') ? savedReciter : '112-112'
+  const savedSurah = Number(getItem('noor-surah'))
+  const savedFontSize = Number(getItem('noor-font'))
   return {
-    surah: Number(localStorage.getItem('noor-surah')) || 1,
+    surah: Number.isInteger(savedSurah) && savedSurah >= 1 && savedSurah <= 114 ? savedSurah : 1,
     riwaya: (!savedRiwaya || savedRiwaya === 'qaloon') ? 'hafs' : savedRiwaya,
-    style: localStorage.getItem('noor-style') || 'murattal',
-    fontSize: Number(localStorage.getItem('noor-font')) || 32,
+    style: getItem('noor-style') || 'murattal',
+    fontSize: Number.isFinite(savedFontSize) && savedFontSize >= 25 && savedFontSize <= 45 ? savedFontSize : 32,
     reciterId: validReciter
   }
 }
 
+function saveItem(key, value) {
+  try { window.localStorage.setItem(key, value) } catch { /* التخزين قد يكون محظوراً في بعض المتصفحات */ }
+}
+
 export default function App() {
   const [active, setActive] = useState('quran')
-  const [dark, setDark] = useState(() => localStorage.getItem('noor-theme') === 'dark')
+  const [dark, setDark] = useState(() => {
+    try { return window.localStorage.getItem('noor-theme') === 'dark' } catch { return false }
+  })
   const [settings, setSettings] = useState(loadSettings)
   const [track, setTrack] = useState(null)
   const [activeAyah, setActiveAyah] = useState(null)
@@ -104,16 +115,16 @@ export default function App() {
   /* تطبيق الوضع الداكن / الفاتح */
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('noor-theme', dark ? 'dark' : 'light')
+    saveItem('noor-theme', dark ? 'dark' : 'light')
   }, [dark])
 
   /* حفظ الإعدادات تلقائياً */
   useEffect(() => {
-    localStorage.setItem('noor-surah', settings.surah)
-    localStorage.setItem('noor-riwaya', settings.riwaya)
-    localStorage.setItem('noor-style', settings.style)
-    localStorage.setItem('noor-font', settings.fontSize)
-    if (settings.reciterId) localStorage.setItem('noor-reciter', settings.reciterId)
+    saveItem('noor-surah', settings.surah)
+    saveItem('noor-riwaya', settings.riwaya)
+    saveItem('noor-style', settings.style)
+    saveItem('noor-font', settings.fontSize)
+    if (settings.reciterId) saveItem('noor-reciter', settings.reciterId)
   }, [settings])
 
   const play = async (surah = settings.surah, suppliedReciter, startAyah = 1, suppliedVerses = null) => {
@@ -227,7 +238,11 @@ export default function App() {
       {/* ── الفوتر ── */}
       <footer className={`border-t border-emerald-100 bg-white px-4 py-7 dark:border-slate-800 dark:bg-slate-950 ${track ? 'pb-44 sm:pb-36 lg:pb-16' : 'pb-28 lg:pb-12'}`}>
         <div className="mx-auto max-w-7xl">
-          <ContactSocial onInstallClick={handleInstallClick} isStandalone={isStandalone} />
+          <ContactSocial
+            onInstallClick={handleInstallClick}
+            isStandalone={isStandalone}
+            canInstall={isIosDevice() || Boolean(installPrompt)}
+          />
           <p className="mt-6 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
           </p>

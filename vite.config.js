@@ -52,7 +52,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,ttf}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.quran\.com\/api\/v4\/.*/i,
+            urlPattern: /^https:\/\/apis\.quran\.foundation\/content\/api\/v4\/.*/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'quran-api-cache',
