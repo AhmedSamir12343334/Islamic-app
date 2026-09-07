@@ -215,7 +215,7 @@ export default function App() {
             صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
           </p>
           <p className="mt-2 text-center text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-300">
-            تم تصميم الموقع بالكامل من قبل AHMED SAMIR FAZZA
+            تم تصميم وتطوير هذه المنصة بواسطة Ahmed Samir Fazza.
           </p>
         </div>
       </footer>
