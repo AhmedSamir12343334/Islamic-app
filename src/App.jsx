@@ -56,6 +56,15 @@ export default function App() {
   const [showIosInstall, setShowIosInstall] = useState(false)
 
   useEffect(() => {
+    const openAdhkar = (event) => {
+      window.__preferredAdhkarCategory = event.detail?.category || window.__preferredAdhkarCategory
+      setActive('adhkar')
+    }
+    window.addEventListener('open-adhkar', openAdhkar)
+    return () => window.removeEventListener('open-adhkar', openAdhkar)
+  }, [])
+
+  useEffect(() => {
     const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
     setIsStandalone(isStandaloneMode)
 
@@ -173,7 +182,7 @@ export default function App() {
     switch (active) {
       case 'quran': return <QuranSection settings={settings} setSettings={setSettings} onPlay={play} activeAyah={activeAyah} activeSurah={activeSurah} />
       case 'audio': return <AudioSection settings={settings} setSettings={setSettings} onPlay={play} />
-      case 'adhkar': return <AdhkarSection />
+      case 'adhkar': return <AdhkarSection initialCategory={window.__preferredAdhkarCategory} />
       case 'qibla': return <QiblaSection />
       default: return <LiveSection />
     }

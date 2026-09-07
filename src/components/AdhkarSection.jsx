@@ -20,16 +20,27 @@ function saveCounts(counts) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), counts })) } catch { /* التخزين اختياري */ }
 }
 
-export default function AdhkarSection() {
+export default function AdhkarSection({ initialCategory }) {
   const categories = Object.keys(ADHKAR)
-  const [active, setActive] = useState(categories[0])
+  const [active, setActive] = useState(() => categories.includes(initialCategory) ? initialCategory : categories[0])
   const [counts, setCounts] = useState(loadCounts)
   const [copied, setCopied] = useState('')
   /* مفتاح الزر الذي يُعاد ضبطه (لعرض تأكيد مؤقت) */
   const [resetting, setResetting] = useState('')
 
   /* حفظ العداد كلما تغيّر */
-  useEffect(() => { saveCounts(counts) }, [counts])
+  useEffect(() => {
+    saveCounts(counts)
+    window.dispatchEvent(new Event('adhkar-counts-updated'))
+  }, [counts])
+
+  useEffect(() => {
+    const openCategory = (event) => {
+      if (event.detail?.category && categories.includes(event.detail.category)) setActive(event.detail.category)
+    }
+    window.addEventListener('open-adhkar', openCategory)
+    return () => window.removeEventListener('open-adhkar', openCategory)
+  }, [categories])
 
   const increment = (key, target) =>
     setCounts((old) => ({ ...old, [key]: Math.min((old[key] || 0) + 1, target) }))
