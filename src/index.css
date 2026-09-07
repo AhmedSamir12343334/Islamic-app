@@ -144,15 +144,15 @@
   .quran-text .ayah.is-playing { 
     background-color: rgba(245, 158, 11, 0.18);
     color: #064e3b;
-    border: 1.5px solid #d97706;
-    box-shadow: 0 0 14px rgba(217, 119, 6, 0.28);
+    border: 0;
+    box-shadow: inset 0 -0.12em 0 #d97706;
     font-weight: 600;
   }
   html.dark .quran-text .ayah.is-playing {
     background-color: rgba(245, 158, 11, 0.22);
     color: #fef08a;
-    border: 1.5px solid #f59e0b;
-    box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+    border: 0;
+    box-shadow: inset 0 -0.12em 0 #f59e0b;
   }
   .ayah-end {
     display: inline-flex;
