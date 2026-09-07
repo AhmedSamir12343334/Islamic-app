@@ -7,6 +7,7 @@ import ContactSocial from './components/ContactSocial'
 import LiveSection from './components/LiveSection'
 import QiblaSection from './components/QiblaSection'
 import QuranSection from './components/QuranSection'
+import IosInstallModal, { isIosDevice } from './components/IosInstallModal'
 import { SURAH_NAMES } from './data'
 import { getAyahTimings, getReciters, makeAudioUrl } from './services/api'
 
@@ -41,6 +42,7 @@ export default function App() {
   const [activeSurah, setActiveSurah] = useState(null)
   const [installPrompt, setInstallPrompt] = useState(() => window.__pwaInstallPrompt || null)
   const [isStandalone, setIsStandalone] = useState(false)
+  const [showIosInstall, setShowIosInstall] = useState(false)
 
   useEffect(() => {
     const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
@@ -75,6 +77,13 @@ export default function App() {
   }, [])
 
   const handleInstallClick = async () => {
+    // إذا كان المستخدم على جهاز آيفون أو آيباد، يتم فتح نافذة إرشادات التثبيت المخصصة لـ iOS
+    if (isIosDevice()) {
+      setShowIosInstall(true)
+      return
+    }
+
+    // للأنظمة الأخرى (أندرويد والكمبيوتر) يتم تشغيل التثبيت التلقائي المباشر
     const promptEvent = installPrompt || window.__pwaInstallPrompt
     if (promptEvent) {
       try {
@@ -251,6 +260,12 @@ export default function App() {
         onNext={() => navigateTrack(1)}
         onPrevious={() => navigateTrack(-1)}
         onActiveAyah={(surah, ayah) => { setActiveSurah(surah); setActiveAyah(ayah) }}
+      />
+
+      {/* ── نافذة تعليمات تثبيت التطبيق لأجهزة الآيفون (iOS) ── */}
+      <IosInstallModal
+        isOpen={showIosInstall}
+        onClose={() => setShowIosInstall(false)}
       />
     </div>
   )
