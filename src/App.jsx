@@ -41,7 +41,7 @@ export default function App() {
   const [track, setTrack] = useState(null)
   const [activeAyah, setActiveAyah] = useState(null)
   const [activeSurah, setActiveSurah] = useState(null)
-  const [installPrompt, setInstallPrompt] = useState(null)
+  const [installPrompt, setInstallPrompt] = useState(() => window.__pwaInstallPrompt || null)
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
 
@@ -49,19 +49,48 @@ export default function App() {
     const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
     setIsStandalone(isStandaloneMode)
 
+    if (window.__pwaInstallPrompt) {
+      setInstallPrompt(window.__pwaInstallPrompt)
+    }
+
     const handleBeforeInstall = (event) => {
       event.preventDefault()
+      window.__pwaInstallPrompt = event
       setInstallPrompt(event)
     }
+    const handlePromptReady = () => {
+      if (window.__pwaInstallPrompt) setInstallPrompt(window.__pwaInstallPrompt)
+    }
+    const handleAppInstalled = () => {
+      setIsStandalone(true)
+      setInstallPrompt(null)
+      window.__pwaInstallPrompt = null
+    }
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstall)
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
+    window.addEventListener('pwa-prompt-ready', handlePromptReady)
+    window.addEventListener('appinstalled', handleAppInstalled)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
+      window.removeEventListener('pwa-prompt-ready', handlePromptReady)
+      window.removeEventListener('appinstalled', handleAppInstalled)
+    }
   }, [])
 
   const handleInstallClick = async () => {
-    if (installPrompt) {
-      installPrompt.prompt()
-      const { outcome } = await installPrompt.userChoice
-      if (outcome === 'accepted') setInstallPrompt(null)
+    const promptEvent = installPrompt || window.__pwaInstallPrompt
+    if (promptEvent) {
+      try {
+        await promptEvent.prompt()
+        const { outcome } = await promptEvent.userChoice
+        if (outcome === 'accepted') {
+          setInstallPrompt(null)
+          window.__pwaInstallPrompt = null
+          setIsStandalone(true)
+        }
+      } catch (err) {
+        setIsInstallModalOpen(true)
+      }
     } else {
       setIsInstallModalOpen(true)
     }
