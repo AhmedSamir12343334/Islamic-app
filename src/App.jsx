@@ -176,16 +176,6 @@ export default function App() {
                 <Icon size={17} />{label}
               </button>
             ))}
-            {!isStandalone && (
-              <button
-                onClick={handleInstallClick}
-                className="nav-link text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1.5"
-                title="تثبيت التطبيق على جهازك"
-              >
-                <Smartphone size={17} className="text-amber-500 animate-pulse" />
-                <span>تثبيت التطبيق</span>
-              </button>
-            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -210,15 +200,6 @@ export default function App() {
                 <Icon size={18} />{label}
               </button>
             ))}
-            {!isStandalone && (
-              <button
-                onClick={() => { handleInstallClick(); setMenuOpen(false) }}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-2.5 text-sm font-bold text-white shadow-sm"
-              >
-                <Smartphone size={16} />
-                <span>تثبيت تطبيق صدقة جارية على الهاتف 📲</span>
-              </button>
-            )}
           </nav>
         )}
       </header>
