@@ -38,7 +38,7 @@ const socialChannels = [
   {
     id: 'whatsapp',
     title: 'واتساب',
-    subtitle: 'تواصل مباشر وسريع',
+    subtitle: 'حسابي الشخصي للتواصل',
     icon: WhatsAppIcon,
     href: import.meta.env.VITE_WHATSAPP_NUMBER
       ? `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}`
@@ -49,7 +49,7 @@ const socialChannels = [
   {
     id: 'facebook',
     title: 'فيسبوك',
-    subtitle: 'الصفحة الرسمية والمنشورات',
+    subtitle: 'حسابي الشخصي على فيسبوك',
     icon: FacebookIcon,
     href: import.meta.env.VITE_FACEBOOK_URL || 'https://www.facebook.com/AhmedSamirFazza',
     brandColor: 'from-[#1877F2] to-[#0d5ec4]',
@@ -58,7 +58,7 @@ const socialChannels = [
   {
     id: 'instagram',
     title: 'إنستاجرام',
-    subtitle: 'تلاوات وتصميمات يومية',
+    subtitle: 'حسابي الشخصي على إنستاجرام',
     icon: InstagramIcon,
     href: import.meta.env.VITE_INSTAGRAM_URL || 'https://www.instagram.com/ahmed.fazza1',
     brandColor: 'from-[#f09433] via-[#dc2743] to-[#bc1888]',
@@ -67,7 +67,7 @@ const socialChannels = [
   {
     id: 'tiktok',
     title: 'تيك توك',
-    subtitle: 'مقاطع قرآنية قصيرة وتلاوات',
+    subtitle: 'حسابي الشخصي على تيك توك',
     icon: TikTokIcon,
     href: import.meta.env.VITE_TIKTOK_URL || 'https://www.tiktok.com/@ahmedsamirtech',
     brandColor: 'from-[#000000] via-[#25F4EE] to-[#FE2C55]',
