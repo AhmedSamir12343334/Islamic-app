@@ -176,16 +176,22 @@ export async function getAyahTimings(surah, reciter) {
         const payload = await response.json()
         const entries = Array.isArray(payload) ? payload : (payload.data || payload.ayahs || [])
         if (entries.length > 0) {
-          const timings = entries.reduce((acc, entry) => {
+          const parsedTimings = entries.reduce((acc, entry) => {
             const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
             const start = Number(entry.start_time ?? entry.start ?? entry.from)
             const end = Number(entry.end_time ?? entry.end ?? entry.to)
             if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
-              acc[ayah] = { start: start / 1000, end: end / 1000 }
+              acc.push({ ayah, start: start / 1000, end: end / 1000 })
             }
             return acc
-          }, {})
-          if (Object.keys(timings).length > 0) return timings
+          }, [])
+          if (parsedTimings.length > 0) {
+            const ordered = parsedTimings.sort((a, b) => a.start - b.start)
+            return ordered.reduce((acc, item, index) => {
+              acc[index + 1] = { start: item.start, end: item.end }
+              return acc
+            }, {})
+          }
         }
       }
     } catch (error) {
@@ -203,16 +209,22 @@ export async function getAyahTimings(surah, reciter) {
             const altPayload = await altRes.json()
             const entries = Array.isArray(altPayload) ? altPayload : (altPayload.data || altPayload.ayahs || [])
             if (entries.length > 0) {
-              const timings = entries.reduce((acc, entry) => {
+              const parsedTimings = entries.reduce((acc, entry) => {
                 const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
                 const start = Number(entry.start_time ?? entry.start ?? entry.from)
                 const end = Number(entry.end_time ?? entry.end ?? entry.to)
                 if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
-                  acc[ayah] = { start: start / 1000, end: end / 1000 }
+                  acc.push({ ayah, start: start / 1000, end: end / 1000 })
                 }
                 return acc
-              }, {})
-              if (Object.keys(timings).length > 0) return timings
+              }, [])
+              if (parsedTimings.length > 0) {
+                const ordered = parsedTimings.sort((a, b) => a.start - b.start)
+                return ordered.reduce((acc, item, index) => {
+                  acc[index + 1] = { start: item.start, end: item.end }
+                  return acc
+                }, {})
+              }
             }
           }
         } catch {

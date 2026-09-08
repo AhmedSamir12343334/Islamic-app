@@ -39,7 +39,9 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       if (cancelled) return
       const startAyah = track.startAyah || 1
       const timing = activeTimings[startAyah] || track.timings?.[startAyah]
-      if (timing && timing.start > 0) {
+      if (startAyah === 1) {
+        audio.currentTime = 0
+      } else if (timing && timing.start > 0) {
         audio.currentTime = timing.start
       }
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
@@ -63,7 +65,10 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     const audio = audioRef.current
     if (!audio || !track?.startAyah) return
     const timing = activeTimings[track.startAyah] || track.timings?.[track.startAyah]
-    if (timing) {
+    if (track.startAyah === 1) {
+      audio.currentTime = 0
+      audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+    } else if (timing) {
       audio.currentTime = timing.start
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     }
@@ -81,7 +86,9 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       if (Object.keys(generated).length > 0) {
         setActiveTimings(generated)
         // إذا كان هناك startAyah محدد
-        if (track.startAyah && generated[track.startAyah] && generated[track.startAyah].start > 0) {
+        if (track.startAyah === 1) {
+          event.currentTarget.currentTime = 0
+        } else if (track.startAyah && generated[track.startAyah] && generated[track.startAyah].start > 0) {
           event.currentTarget.currentTime = generated[track.startAyah].start
         }
       }
@@ -209,7 +216,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         }}
       />
       
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 sm:gap-4">
+      <div className="audio-player-content mx-auto flex max-w-6xl items-center justify-between gap-2 sm:gap-4">
         {/* معلومات التلاوة */}
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs sm:text-sm font-bold text-ink dark:text-white">

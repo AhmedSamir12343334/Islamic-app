@@ -371,10 +371,16 @@
 .video-js .vjs-big-play-button { background-color: #168365; border-color: #168365; border-radius: .8rem; }
 
 .audio-player {
-  bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   left: 0.5rem;
   right: 0.5rem;
   border-radius: 1rem;
+}
+.audio-player-content { min-width: 0; }
+@media (max-width: 639px) {
+  .audio-player-content { flex-wrap: wrap; }
+  .audio-player-content > .min-w-0 { flex: 1 1 100%; }
+  .audio-player-content > .shrink-0 { flex: 0 0 auto; }
 }
 .audio-player.driving-mode { padding-top: 0.75rem; padding-bottom: 0.75rem; }
 .audio-player.driving-mode .icon-button,
