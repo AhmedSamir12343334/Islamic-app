@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>دليل منصة صدقة جارية</title>
+  <style>
+    @page { size: A4; margin: 16mm 15mm; }
+    :root { --green:#0e6c53; --deep:#102b32; --gold:#b98924; --soft:#edf9f4; --line:#d4f0e4; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--deep); background:#f4f8f6; font-family:Tahoma, Arial, sans-serif; line-height:1.85; }
+    .page { max-width:900px; margin:28px auto; background:#fff; padding:42px 52px; box-shadow:0 8px 30px #102b3214; }
+    .cover { min-height:980px; display:flex; flex-direction:column; justify-content:center; text-align:center; border-top:10px solid var(--green); }
+    .mark { width:82px; height:82px; margin:0 auto 22px; display:grid; place-items:center; border-radius:22px; background:var(--green); color:#fff8e8; font-size:42px; }
+    h1,h2,h3 { color:var(--green); line-height:1.35; }
+    h1 { font-size:42px; margin:10px 0; }
+    h2 { font-size:25px; margin:0 0 18px; padding-bottom:8px; border-bottom:2px solid var(--line); }
+    h3 { font-size:18px; margin:22px 0 5px; }
+    p { margin:8px 0 14px; }
+    .subtitle { font-size:22px; color:var(--gold); font-weight:bold; }
+    .muted { color:#617277; }
+    .meta { margin:50px auto 0; padding:16px 24px; border:1px solid var(--line); border-radius:14px; background:var(--soft); max-width:480px; }
+    .section { page-break-before:always; }
+    .section:first-of-type { page-break-before:avoid; }
+    ul { margin:8px 0 18px; padding-right:24px; }
+    li { margin:5px 0; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .card { padding:15px 17px; border:1px solid var(--line); border-radius:12px; background:#fbfdfc; break-inside:avoid; }
+    .card strong { display:block; color:var(--green); margin-bottom:4px; }
+    table { width:100%; border-collapse:collapse; margin:14px 0 22px; font-size:14px; }
+    th,td { padding:9px 10px; border:1px solid var(--line); text-align:right; vertical-align:top; }
+    th { background:var(--soft); color:var(--green); }
+    code { direction:ltr; display:inline-block; padding:1px 5px; background:#eef3f1; border-radius:4px; font-family:Consolas,monospace; }
+    .note { margin:16px 0; padding:13px 16px; border-right:4px solid var(--gold); background:#fbf8ee; }
+    .footer { margin-top:36px; padding-top:12px; border-top:1px solid var(--line); color:#718084; font-size:12px; }
+    .ltr { direction:ltr; text-align:left; }
+    @media print { body { background:#fff; } .page { margin:0; max-width:none; box-shadow:none; padding:0; } .cover { min-height:250mm; } a { color:inherit; text-decoration:none; } }
+    @media (max-width:650px) { .page { margin:0; padding:24px 20px; } .grid { grid-template-columns:1fr; } h1 { font-size:32px; } }
+  </style>
+</head>
+<body>
+  <main class="page cover">
+    <div class="mark">☾</div>
+    <div class="subtitle">دليل المنصة</div>
+    <h1>صدقة جارية</h1>
+    <p class="subtitle">رفيقك اليومي للقرآن والذكر</p>
+    <p class="muted">منصة إسلامية تفاعلية تجمع القرآن الكريم، التلاوات، الأذكار، مواقيت الصلاة، القبلة، البث المباشر، ومتابعة الورد اليومي في تجربة واحدة.</p>
+    <div class="meta">
+      <strong>إعداد وتطوير</strong><br />Ahmed Samir Fazza<br /><br />
+      <strong>نوع المشروع</strong><br />تطبيق ويب عربي متجاوب وداعم للتثبيت كتطبيق PWA
+    </div>
+  </main>
+
+  <section class="page section">
+    <h2>1. نبذة عن المنصة</h2>
+    <p>«صدقة جارية» منصة ويب موجهة للمستخدم المسلم الذي يريد الوصول إلى عباداته اليومية من مكان واحد. تم تصميمها باللغة العربية وباتجاه من اليمين إلى اليسار، مع دعم كامل للشاشات الصغيرة وأجهزة الكمبيوتر.</p>
+    <p>الفكرة الأساسية هي تحويل الاستخدام اليومي إلى عادة سهلة: يفتح المستخدم القرآن، يقرأ أو يستمع، يتابع أذكاره وورده، يعرف الصلاة القادمة، ويستطيع تحديد القبلة ومتابعة الحرمين.</p>
+    <div class="note"><strong>الهدف:</strong> تقديم تجربة هادئة وعملية تساعد على الاستمرارية، مع حفظ تقدم المستخدم على جهازه دون الحاجة إلى حساب أو تسجيل دخول.</div>
+    <h3>القيمة التي تقدمها</h3>
+    <ul>
+      <li>تجميع الأدوات الدينية اليومية في منصة واحدة.</li>
+      <li>تجربة عربية واضحة تعمل على الهاتف والكمبيوتر.</li>
+      <li>حفظ التقدم والإعدادات محليًا على جهاز المستخدم.</li>
+      <li>دعم التثبيت كتطبيق مستقل على الأجهزة المتوافقة.</li>
+    </ul>
+  </section>
+
+  <section class="page section">
+    <h2>2. أقسام المنصة ومميزاتها</h2>
+    <div class="grid">
+      <div class="card"><strong>القرآن الكريم</strong>قراءة السور بالنص العثماني، البحث باسم السورة أو رقمها، الانتقال السريع، حفظ آخر موضع، واختيار حجم الخط وطريقة العرض.</div>
+      <div class="card"><strong>التلاوات</strong>مكتبة قراء، بحث وتصفية، دعم حفص وورش، مرتل ومجود، تشغيل وتحميل التلاوة، وتكرار السورة أو الآية.</div>
+      <div class="card"><strong>الأذكار</strong>أذكار الصباح والمساء والنوم وبعد الصلاة وغيرها، مع عداد لكل ذكر، إعادة ضبط، نسخ ومشاركة.</div>
+      <div class="card"><strong>الورد اليومي</strong>تحديد هدف يومي للصفحات، متابعة الإنجاز، عداد الاستمرارية، وربط الورد بأذكار الصباح والمساء.</div>
+      <div class="card"><strong>مواقيت الصلاة</strong>جلب مواقيت الصلاة حسب الموقع، عرض الصلاة القادمة، عداد تنازلي، وتخزين مؤقت لبيانات اليوم.</div>
+      <div class="card"><strong>بوصلة القبلة</strong>حساب اتجاه الكعبة والمسافة، اختيار مدينة، GPS، ودعم حساس اتجاه الهاتف عند توفره.</div>
+      <div class="card"><strong>البث المباشر</strong>عرض بث قنوات الحرمين الرسمية عبر YouTube مع خيار فتح البث خارجيًا.</div>
+      <div class="card"><strong>الإحصائيات والخطط</strong>نشاط آخر سبعة أيام، خطة ختمة خلال 7 أو 15 أو 30 يومًا، وختمة جماعية قابلة للمشاركة.</div>
+    </div>
+  </section>
+
+  <section class="page section">
+    <h2>3. تجربة المستخدم</h2>
+    <h3>التنقل</h3>
+    <p>يوجد شريط تنقل رئيسي للشاشات الكبيرة وشريط تنقل سفلي سريع للموبايل. القسم النشط يظهر بوضوح، والانتقال يعيد المستخدم إلى بداية المحتوى.</p>
+    <h3>المظهر</h3>
+    <p>يدعم التطبيق الوضع الفاتح والداكن، مع حفظ اختيار المستخدم تلقائيًا. الألوان الأساسية تجمع الأخضر الهادئ مع لمسات ذهبية مناسبة لطبيعة المحتوى.</p>
+    <h3>الصوت</h3>
+    <p>المشغل الصوتي ثابت أسفل الصفحة، ويعرض السورة والقارئ والآية الحالية، مع التحكم في التشغيل والإيقاف، التقدم، مستوى الصوت، التكرار، التنزيل، ووضع القيادة.</p>
+    <h3>الحفظ المحلي</h3>
+    <p>يتم حفظ التفضيلات والعدادات والتقدم داخل <code>localStorage</code>. لا توجد قاعدة بيانات أو حسابات مستخدمين في النسخة الحالية.</p>
+    <div class="note"><strong>ملاحظة خصوصية:</strong> الموقع الجغرافي لا يُطلب إلا عند ضغط المستخدم على زر تحديد الموقع، ولا يتم إرسال بيانات الحساب لأنه لا يوجد نظام تسجيل دخول.</div>
+  </section>
+
+  <section class="page section">
+    <h2>4. البنية التقنية</h2>
+    <table>
+      <tr><th>العنصر</th><th>التقنية أو الملف</th><th>الدور</th></tr>
+      <tr><td>واجهة التطبيق</td><td>React 18 + JSX</td><td>بناء المكونات وإدارة الحالة والتفاعلات.</td></tr>
+      <tr><td>أداة البناء</td><td>Vite</td><td>التطوير المحلي وبناء نسخة الإنتاج.</td></tr>
+      <tr><td>التصميم</td><td>Tailwind CSS + CSS</td><td>التنسيق، الاستجابة، الوضع الداكن، والمكونات البصرية.</td></tr>
+      <tr><td>الأيقونات</td><td>Lucide React</td><td>أيقونات الواجهة والأزرار.</td></tr>
+      <tr><td>PWA</td><td>vite-plugin-pwa + Workbox</td><td>manifest، Service Worker، والتخزين المؤقت.</td></tr>
+      <tr><td>اللغة</td><td>JavaScript / JSX</td><td>لغة المنطق والمكونات والخدمات.</td></tr>
+    </table>
+    <h3>هيكل الملفات الرئيسي</h3>
+    <ul>
+      <li><code>src/App.jsx</code>: إدارة التطبيق والتنقل والحالة العامة.</li>
+      <li><code>src/data.js</code>: أسماء السور والقراء والأذكار.</li>
+      <li><code>src/services/api.js</code>: التكامل مع مصادر القرآن والقراء والتوقيتات.</li>
+      <li><code>src/components/</code>: مكونات الأقسام والمشغل والإحصائيات.</li>
+      <li><code>src/index.css</code>: التصميم العام والكلاسات المخصصة.</li>
+      <li><code>vite.config.js</code>: إعداد Vite وPWA والتخزين المؤقت.</li>
+    </ul>
+  </section>
+
+  <section class="page section">
+    <h2>5. الخدمات ومصادر البيانات</h2>
+    <table>
+      <tr><th>الخدمة</th><th>الاستخدام</th><th>ملاحظات</th></tr>
+      <tr><td>Quran.com API</td><td>النص القرآني والتفاصيل</td><td>اختيارية في الإنتاج عند توفير مفاتيح البيئة.</td></tr>
+      <tr><td>AlQuran Cloud</td><td>مصدر احتياطي لنص القرآن</td><td>يُستخدم عند عدم توفر بيانات Quran.com.</td></tr>
+      <tr><td>MP3Quran</td><td>القراء والتلاوات وتوقيتات الآيات</td><td>مصدر مكتبة الصوت.</td></tr>
+      <tr><td>Aladhan API</td><td>مواقيت الصلاة</td><td>تحتاج إحداثيات الموقع.</td></tr>
+      <tr><td>YouTube</td><td>البث المباشر للحرمين</td><td>قد يتأثر بسياسات التضمين أو الشبكة.</td></tr>
+      <tr><td>Google Fonts</td><td>خطا Tajawal وNoto Naskh Arabic</td><td>يتم تخزينهما مؤقتًا في PWA.</td></tr>
+    </table>
+    <h3>متغيرات البيئة</h3>
+    <p>يمكن ضبط مفاتيح Quran.com وروابط البث وروابط التواصل من خلال ملف <code>.env</code> اعتمادًا على النموذج الموجود في <code>.env.example</code>.</p>
+  </section>
+
+  <section class="page section">
+    <h2>6. التشغيل والنشر</h2>
+    <h3>التشغيل المحلي</h3>
+    <p class="ltr"><code>npm install</code><br /><code>npm run dev</code></p>
+    <h3>إنشاء نسخة الإنتاج</h3>
+    <p class="ltr"><code>npm run build</code></p>
+    <h3>معاينة نسخة الإنتاج</h3>
+    <p class="ltr"><code>npm run preview</code></p>
+    <h3>متطلبات النشر</h3>
+    <ul>
+      <li>استضافة ملفات static تدعم تطبيقات Vite.</li>
+      <li>تشغيل الموقع عبر HTTPS للاستفادة من GPS وPWA وبعض خصائص المتصفح.</li>
+      <li>ضبط متغيرات البيئة المطلوبة قبل البناء.</li>
+      <li>التأكد من صلاحية روابط البث ومصادر الصوت وقت النشر.</li>
+    </ul>
+    <div class="note"><strong>الحالة الفنية:</strong> تم اختبار نسخة التطوير ونسخة الإنتاج، ونجح البناء بدون أخطاء، كما تم اختبار الأقسام الرئيسية على مقاسات موبايل وتابلت وسطح مكتب.</div>
+  </section>
+
+  <section class="page section">
+    <h2>7. حدود النسخة الحالية والتطوير المستقبلي</h2>
+    <ul>
+      <li>لا يوجد تسجيل دخول أو مزامنة بين الأجهزة.</li>
+      <li>التقدم محفوظ على الجهاز نفسه داخل التخزين المحلي.</li>
+      <li>بعض الخصائص مثل GPS والبوصلة تحتاج موافقة المستخدم وجهازًا يدعمها.</li>
+      <li>البث والتلاوات يعتمدان على توفر الخدمات الخارجية.</li>
+      <li>الختمة الجماعية في النسخة الحالية تعتمد على مشاركة الرمز والرابط، دون خادم مركزي لمزامنة تقدم المشاركين.</li>
+    </ul>
+    <h3>أفكار للتطوير</h3>
+    <ul>
+      <li>إضافة نظام حسابات ومزامنة سحابية.</li>
+      <li>إضافة تنبيهات مواقيت الصلاة والورد.</li>
+      <li>توسيع مكتبة الترجمات والتفاسير.</li>
+      <li>إضافة اختبارات آلية وقياس أداء مستمر.</li>
+      <li>إضافة لوحة تحكم لإدارة المحتوى والروابط.</li>
+    </ul>
+    <div class="footer">صدقة جارية — رفيقك اليومي للقرآن والذكر | إعداد وتطوير Ahmed Samir Fazza</div>
+  </section>
+</body>
+</html>
