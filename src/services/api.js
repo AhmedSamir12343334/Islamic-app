@@ -202,6 +202,8 @@ export async function getAyahTimings(surah, reciter) {
   // 2. Fallback to Quran.com timing API if matching reciter
   try {
     const reciterName = reciter?.name || ''
+    const moshafName = reciter?.moshaf?.name || ''
+    const isHafsRecitation = /حفص|hafs/i.test(moshafName)
     let qdcId = null
 
     for (const item of QURAN_COM_NAME_MAP) {
@@ -216,7 +218,7 @@ export async function getAyahTimings(surah, reciter) {
       qdcId = quranComMap[readId]
     }
 
-    if (qdcId) {
+    if (qdcId && isHafsRecitation) {
       const qdcRes = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${qdcId}/${surah}?segments=true`)
       if (qdcRes.ok) {
         const qdcData = await qdcRes.json()
