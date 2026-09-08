@@ -39,7 +39,7 @@ function loadSettings() {
   const savedFontSize = Number(getItem('noor-font'))
   return {
     surah: Number.isInteger(savedSurah) && savedSurah >= 1 && savedSurah <= 114 ? savedSurah : 1,
-    riwaya: (!savedRiwaya || savedRiwaya === 'qaloon') ? 'hafs' : savedRiwaya,
+    riwaya: savedRiwaya || 'hafs',
     style: getItem('noor-style') || 'murattal',
     fontSize: Number.isFinite(savedFontSize) && savedFontSize >= 25 && savedFontSize <= 45 ? savedFontSize : 32,
     mushafTheme: getItem('noor-mushaf-theme') || 'paper',

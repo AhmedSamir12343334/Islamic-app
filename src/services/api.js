@@ -53,6 +53,8 @@ export async function getSurah(surah) {
 const matchesRiwaya = (name = '', riwaya) => {
   const value = name.toLowerCase()
   if (riwaya === 'warsh') return value.includes('ورش') || value.includes('warsh')
+  if (riwaya === 'qaloon') return value.includes('قالون') || value.includes('qaloon') || value.includes('qalun')
+  if (riwaya === 'douri') return value.includes('الدوري') || value.includes('الدورى') || value.includes('douri') || value.includes('duri')
   return value.includes('حفص') || value.includes('hafs')
 }
 
