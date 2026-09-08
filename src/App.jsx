@@ -81,30 +81,6 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const notify = () => {
-      if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
-      try {
-        const settings = JSON.parse(localStorage.getItem('noor-notifications-v1') || 'null')
-        const reminders = settings?.reminders || (settings?.type && settings?.time ? { legacy: { enabled: settings.enabled, time: settings.time, label: settings.type } } : {})
-        const now = new Date()
-        const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-        const today = now.toLocaleDateString('en-CA')
-        Object.entries(reminders).forEach(([id, reminder]) => {
-          if (!reminder?.enabled || reminder.time !== time) return
-          const marker = `${today}-${time}-${id}`
-          if (localStorage.getItem(`noor-last-notification-${id}`) === marker) return
-          const labels = { quran: 'ورد القرآن', morning: 'أذكار الصباح', evening: 'أذكار المساء', legacy: reminder.label }
-          new Notification('صدقة جارية', { body: `حان وقت ${labels[id] || 'وردك اليومي'}` })
-          localStorage.setItem(`noor-last-notification-${id}`, marker)
-        })
-      } catch { /* التذكير اختياري */ }
-    }
-    notify()
-    const interval = window.setInterval(notify, 30 * 1000)
-    return () => window.clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
     const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
     setIsStandalone(isStandaloneMode)
 

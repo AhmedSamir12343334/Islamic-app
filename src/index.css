@@ -199,7 +199,7 @@
   .counter-button strong { @apply text-xl; }
   .counter-button span { @apply text-xs; }
   .counter-button.done { @apply border-emerald-600 bg-emerald-600 text-white; }
-  .reciter-card { @apply flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft dark:border-slate-700 dark:bg-slate-900; }
+  .reciter-card { @apply flex min-w-0 items-center gap-3 rounded-2xl border border-emerald-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft dark:border-slate-700 dark:bg-slate-900; }
   .empty-state { @apply grid min-h-52 place-content-center justify-items-center gap-3 rounded-3xl border border-dashed border-emerald-200 bg-emerald-50/30 p-5 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400; }
   .stream-placeholder { @apply grid aspect-video place-content-center justify-items-center gap-3 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900 to-ink p-6 text-center text-white; }
   .stream-placeholder p { @apply font-bold; }
