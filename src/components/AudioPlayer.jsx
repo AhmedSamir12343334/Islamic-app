@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { generateEstimatedTimings } from '../services/api'
 
 const repeatLabels = { off: 'بدون تكرار', surah: 'تكرار السورة', verse: 'تكرار الآية' }
-const AYAH_END_GRACE = 0.35
 
 export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActiveAyah }) {
   const audioRef = useRef(null)
@@ -112,34 +111,29 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
 
   const changeRepeat = () => setRepeat((value) => value === 'off' ? 'surah' : value === 'surah' ? 'verse' : 'off')
   const formatTime = (seconds) => `${Math.floor(seconds / 60) || 0}:${String(Math.floor(seconds % 60) || 0).padStart(2, '0')}`
-  const timingGrace = AYAH_END_GRACE
-
   const getAyahAtTime = (current, timingsToUse) => {
     if (!timingsToUse || Object.keys(timingsToUse).length === 0) return null
 
     const timingEntries = Object.entries(timingsToUse)
-      .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
+      .map(([k, v]) => ({ ayah: Number(k) === 0 ? 1 : Number(k), start: Number(v.start), end: Number(v.end) }))
+      .filter((entry) => Number.isFinite(entry.ayah) && Number.isFinite(entry.start) && entry.start >= 0)
       .sort((a, b) => a.start - b.start)
 
     for (let i = 0; i < timingEntries.length; i++) {
       const item = timingEntries[i]
       const nextItem = timingEntries[i + 1]
-      const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
-      const startWindow = item.start - 1.8
-      const endWindow = hasValidEnd ? item.end + timingGrace : (nextItem?.start || item.start + 60)
+      const end = Number.isFinite(item.end) && item.end > item.start
+        ? item.end
+        : (nextItem?.start ?? item.start + 60)
 
-      if (current >= startWindow && current < endWindow) {
-        return item.ayah === 0 ? 1 : item.ayah
-      }
-
-      if (nextItem && current >= item.start - 1.8 && current < nextItem.start - 0.15) {
-        return item.ayah === 0 ? 1 : item.ayah
+      if (current >= item.start && current < end) {
+        return item.ayah
       }
     }
 
     const lastItem = timingEntries[timingEntries.length - 1]
-    if (lastItem && current >= lastItem.start - 1.8) {
-      return lastItem.ayah === 0 ? 1 : lastItem.ayah
+    if (lastItem && current >= lastItem.start) {
+      return lastItem.ayah
     }
 
     return null
