@@ -378,9 +378,20 @@
 }
 .audio-player-content { min-width: 0; }
 @media (max-width: 639px) {
-  .audio-player-content { flex-wrap: wrap; }
-  .audio-player-content > .min-w-0 { flex: 1 1 100%; }
+  .audio-player-content { flex-wrap: nowrap; gap: 0.25rem; }
+  .audio-player-content > .min-w-0 { flex: 1 1 auto; min-width: 0; }
   .audio-player-content > .shrink-0 { flex: 0 0 auto; }
+  .audio-main-controls { gap: 0; }
+  .audio-extra-controls { gap: 0; }
+  .audio-extra-controls .icon-button,
+  .audio-main-controls .icon-button { width: 2rem; height: 2rem; }
+  .audio-player-content p:first-child { font-size: 0.65rem; }
+  .audio-player-content p:nth-child(2) { font-size: 0.6rem; }
+}
+@media (max-width: 380px) {
+  .audio-secondary-control { display: none; }
+  .audio-repeat-control { display: grid; }
+  .audio-player { left: 0.25rem; right: 0.25rem; padding-inline: 0.5rem; }
 }
 .audio-player.driving-mode { padding-top: 0.75rem; padding-bottom: 0.75rem; }
 .audio-player.driving-mode .icon-button,

@@ -228,7 +228,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         </div>
 
         {/* أزرار التحكم بالتشغيل */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <div className="audio-main-controls flex items-center gap-1 sm:gap-1.5 shrink-0">
           <button onClick={onNext} className="icon-button h-8 w-8 sm:h-9 sm:w-9" aria-label="السورة التالية" title="السورة التالية">
             <SkipForward size={17} />
           </button>
@@ -265,13 +265,13 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         </div>
 
         {/* أدوات إضافية: التكرار والتحميل والإغلاق */}
-        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          <button onClick={() => setDrivingMode((value) => !value)} className={`icon-button h-8 w-8 sm:h-9 sm:w-9 ${drivingMode ? 'text-emerald-600 dark:text-emerald-400' : ''}`} title="وضع القيادة" aria-label="وضع القيادة" aria-pressed={drivingMode}>
+        <div className="audio-extra-controls flex items-center gap-0.5 sm:gap-1 shrink-0">
+          <button onClick={() => setDrivingMode((value) => !value)} className={`audio-secondary-control icon-button h-8 w-8 sm:h-9 sm:w-9 ${drivingMode ? 'text-emerald-600 dark:text-emerald-400' : ''}`} title="وضع القيادة" aria-label="وضع القيادة" aria-pressed={drivingMode}>
             <CarFront size={17} />
           </button>
           <button
             onClick={changeRepeat}
-            className={`icon-button h-8 w-8 sm:h-9 sm:w-9 relative ${repeat !== 'off' ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+            className={`audio-repeat-control icon-button h-8 w-8 sm:h-9 sm:w-9 relative ${repeat !== 'off' ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
             title={repeatLabels[repeat]}
             aria-label={repeatLabels[repeat]}
           >
@@ -288,7 +288,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
             download
             target="_blank"
             rel="noreferrer"
-            className="icon-button h-8 w-8 sm:h-9 sm:w-9 hidden xs:grid"
+            className="audio-secondary-control icon-button h-8 w-8 sm:h-9 sm:w-9 hidden xs:grid"
             title="تنزيل التلاوة"
             aria-label="تنزيل التلاوة"
           >
