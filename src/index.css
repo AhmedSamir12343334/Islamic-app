@@ -8,9 +8,10 @@
     scrollbar-width: thin;
     scrollbar-color: #10b981 #f1f5f9;
   }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body { 
     margin: 0; 
+    overflow-x: hidden;
     font-family: 'Tajawal', sans-serif; 
     background-color: #f8fafc;
     color: #0f172a;
@@ -336,16 +337,17 @@
     @apply fixed bottom-0 left-0 right-0 z-50 border-t border-emerald-100/80 bg-white/95 px-2 backdrop-blur-lg transition-all duration-300 dark:border-slate-800/90 dark:bg-slate-950/95 lg:hidden;
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
-  .mobile-bottom-bar > div { @apply justify-around; }
+  .mobile-bottom-bar > div { @apply grid w-full max-w-none grid-cols-6 items-stretch gap-0; }
   .bottom-nav-btn {
-    @apply relative flex flex-1 flex-col items-center justify-center py-2 px-1 text-[11px] font-bold text-slate-500 transition-all duration-200 active:scale-90 dark:text-slate-400;
+    @apply relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 py-1.5 text-[10px] font-bold leading-tight text-slate-500 transition-all duration-200 active:scale-90 dark:text-slate-400;
   }
   .bottom-nav-btn.active {
     @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
   }
   .bottom-nav-btn .nav-icon-wrap {
-    @apply relative grid h-8 w-12 place-items-center rounded-2xl transition-all duration-200;
+    @apply relative grid h-7 w-full max-w-12 place-items-center rounded-2xl transition-all duration-200;
   }
+  .bottom-nav-btn > span:not(.nav-dot) { @apply block max-w-full text-center; }
   .bottom-nav-btn.active .nav-icon-wrap {
     @apply bg-emerald-100/70 text-emerald-700 shadow-sm dark:bg-emerald-950/80 dark:text-emerald-300;
   }
@@ -358,6 +360,11 @@
   .mobile-more-menu { @apply absolute bottom-full left-2 right-2 mb-2 grid grid-cols-2 gap-2 rounded-2xl border border-emerald-100 bg-white/95 p-2 shadow-xl backdrop-blur-lg dark:border-slate-700 dark:bg-slate-900/95; }
   .mobile-more-menu button { @apply flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-xs font-bold text-slate-600 transition hover:bg-emerald-50 dark:text-slate-200 dark:hover:bg-slate-800; }
   .mobile-more-menu button.active { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300; }
+  @media (max-width: 380px) {
+    .bottom-nav-btn { @apply text-[9px]; }
+    .bottom-nav-btn .nav-icon-wrap { @apply h-6; }
+    .bottom-nav-btn .nav-icon-wrap svg { width: 17px; height: 17px; }
+  }
 }
 
 .video-js { --vjs-theme-forest: #168365; font-family: 'Tajawal', sans-serif; }
