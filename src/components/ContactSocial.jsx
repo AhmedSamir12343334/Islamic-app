@@ -70,7 +70,7 @@ const socialChannels = [
     subtitle: 'حسابي الشخصي على تيك توك',
     icon: TikTokIcon,
     href: import.meta.env.VITE_TIKTOK_URL || 'https://www.tiktok.com/@ahmedsamirtech',
-    brandColor: 'from-[#000000] via-[#25F4EE] to-[#FE2C55]',
+    brandColor: 'from-[#111111] via-[#000000] to-[#111111]',
     hoverGlow: 'hover:shadow-[0_8px_25px_rgba(37,244,238,0.35)]'
   }
 ]
