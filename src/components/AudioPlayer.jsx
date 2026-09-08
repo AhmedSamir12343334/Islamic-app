@@ -134,9 +134,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
 
       // إذا كان الصوت في بداية التلاوة
       if (active === null && timingEntries.length > 0) {
-        if (current < timingEntries[0].start) {
-          active = timingEntries[0].ayah === 0 ? 1 : timingEntries[0].ayah
-        } else if (current >= timingEntries[timingEntries.length - 1].start) {
+        if (current >= timingEntries[timingEntries.length - 1].start) {
           active = timingEntries[timingEntries.length - 1].ayah
         }
       }
@@ -173,9 +171,6 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       if (progress >= item.start && progress < upperLimit) {
         return item.ayah === 0 ? 1 : item.ayah
       }
-    }
-    if (timingEntries.length > 0 && progress < timingEntries[0].start) {
-      return 1
     }
     return null
   })()
