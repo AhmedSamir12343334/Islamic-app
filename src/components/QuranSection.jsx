@@ -466,10 +466,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
           )}
         </div>
 
-        {/* ── Footer ثابت ── */}
-        <p className="mt-4 border-t border-gold-100 pt-3 text-center text-xs text-slate-500 shrink-0">
-          الرواية المختارة تضبط التلاوة الصوتية. النص العثماني يُجلب من مزود القرآن الموثق.
-        </p>
       </article>
     </section>
   )
