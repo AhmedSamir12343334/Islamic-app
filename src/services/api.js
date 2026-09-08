@@ -204,45 +204,6 @@ export async function getAyahTimings(surah, reciter) {
     }
   }
 
-  // 2. Fallback to Quran.com timing API if matching reciter
-  try {
-    const reciterName = reciter?.name || ''
-    const moshafName = reciter?.moshaf?.name || ''
-    const isHafsRecitation = /حفص|hafs/i.test(moshafName)
-    let qdcId = null
-
-    for (const item of QURAN_COM_NAME_MAP) {
-      if (item.test.test(reciterName)) {
-        qdcId = item.murattal
-        break
-      }
-    }
-
-    if (!qdcId) {
-      const quranComMap = { 112: 9, 113: 8, 53: 2, 118: 6, 119: 6, 54: 3, 123: 7, 31: 4, 30: 1, 102: 133 }
-      qdcId = quranComMap[readId]
-    }
-
-    if (qdcId && isHafsRecitation) {
-      const qdcRes = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${qdcId}/${surah}?segments=true`)
-      if (qdcRes.ok) {
-        const qdcData = await qdcRes.json()
-        const timestamps = qdcData?.audio_file?.timestamps
-        if (Array.isArray(timestamps) && timestamps.length > 0) {
-          return timestamps.reduce((timings, item, index) => {
-            timings[index + 1] = {
-              start: item.timestamp_from / 1000,
-              end: item.timestamp_to / 1000
-            }
-            return timings
-          }, {})
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('Fallback timing request failed.', err)
-  }
-
   return {}
 }
 

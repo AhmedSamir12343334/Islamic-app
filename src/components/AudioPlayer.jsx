@@ -70,6 +70,16 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     }
   }, [track?.startAyah, activeTimings])
 
+  useEffect(() => {
+    if (Object.keys(activeTimings).length > 0 || !track?.verses?.length || !duration) return
+    const generated = generateEstimatedTimings(duration, track.verses)
+    if (Object.keys(generated).length === 0) return
+    setActiveTimings(generated)
+    const audio = audioRef.current
+    if (!audio || !track.startAyah || track.startAyah === 1 || !generated[track.startAyah]) return
+    audio.currentTime = generated[track.startAyah].start
+  }, [track?.verses, duration, activeTimings])
+
   if (!track) return null
 
   const handleLoadedMetadata = (event) => {
