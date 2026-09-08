@@ -136,7 +136,7 @@ export default function StatsSection() {
         <div>
           <span className="eyebrow"><History size={14} /> متابعتك اليومية</span>
           <h1>الإحصائيات والخطط</h1>
-          <p>تابع تقدمك، اضبط ختمتك، وراجع نشاطك خلال الأسبوع.</p>
+          <p>تابع إنجازك اليومي، وراقب تقدم ختمتك، وحافظ على استمراريتك.</p>
         </div>
       </div>
 
