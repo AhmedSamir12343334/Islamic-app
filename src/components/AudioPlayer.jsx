@@ -62,9 +62,11 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     if (!audio || !track?.startAyah) return
     const timing = activeTimings[track.startAyah] || track.timings?.[track.startAyah]
     if (track.startAyah === 1) {
+      onActiveAyah?.(track.surah, 1)
       audio.currentTime = 0
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     } else if (timing) {
+      onActiveAyah?.(track.surah, track.startAyah)
       audio.currentTime = timing.start
       audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     }
@@ -112,6 +114,37 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
   const formatTime = (seconds) => `${Math.floor(seconds / 60) || 0}:${String(Math.floor(seconds % 60) || 0).padStart(2, '0')}`
   const timingGrace = AYAH_END_GRACE
 
+  const getAyahAtTime = (current, timingsToUse) => {
+    if (!timingsToUse || Object.keys(timingsToUse).length === 0) return null
+
+    const timingEntries = Object.entries(timingsToUse)
+      .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
+      .sort((a, b) => a.start - b.start)
+
+    for (let i = 0; i < timingEntries.length; i++) {
+      const item = timingEntries[i]
+      const nextItem = timingEntries[i + 1]
+      const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
+      const startWindow = item.start - 1.8
+      const endWindow = hasValidEnd ? item.end + timingGrace : (nextItem?.start || item.start + 60)
+
+      if (current >= startWindow && current < endWindow) {
+        return item.ayah === 0 ? 1 : item.ayah
+      }
+
+      if (nextItem && current >= item.start - 1.8 && current < nextItem.start - 0.15) {
+        return item.ayah === 0 ? 1 : item.ayah
+      }
+    }
+
+    const lastItem = timingEntries[timingEntries.length - 1]
+    if (lastItem && current >= lastItem.start - 1.8) {
+      return lastItem.ayah === 0 ? 1 : lastItem.ayah
+    }
+
+    return null
+  }
+
   /* حساب وتحديث الآية النشطة الحالية مع حركة الصوت بشكل فوري */
   const onTimeUpdate = (event) => {
     const current = event.currentTarget.currentTime
@@ -121,40 +154,9 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       ? activeTimings
       : (track.timings || {})
 
-    if (timingsToUse && Object.keys(timingsToUse).length > 0) {
-      const timingEntries = Object.entries(timingsToUse)
-        .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
-        .sort((a, b) => a.start - b.start)
-
-      let active = null
-
-      for (let i = 0; i < timingEntries.length; i++) {
-        const item = timingEntries[i]
-        const nextItem = timingEntries[i + 1]
-        const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
-        const upperLimit = hasValidEnd
-          ? item.end + timingGrace
-          : (nextItem?.start || item.start + 60)
-
-        if (current >= item.start && current < upperLimit) {
-          active = item.ayah
-          break
-        }
-      }
-
-      // إذا كان الصوت في بداية التلاوة
-      if (active === null && timingEntries.length > 0) {
-        if (current >= timingEntries[timingEntries.length - 1].start) {
-          active = timingEntries[timingEntries.length - 1].ayah
-        }
-      }
-
-      // البسملة التمهيدية (0) ترتبط بالآية الأولى
-      if (active === 0) active = 1
-
-      if (active && Number.isFinite(active)) {
-        onActiveAyah?.(track.surah, active)
-      }
+    const active = getAyahAtTime(current, timingsToUse)
+    if (active && Number.isFinite(active)) {
+      onActiveAyah?.(track.surah, active)
     }
 
     /* تكرار الآية */
@@ -166,23 +168,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
 
   const currentActiveAyah = (() => {
     const timingsToUse = (activeTimings && Object.keys(activeTimings).length > 0) ? activeTimings : (track.timings || {})
-    if (!timingsToUse || Object.keys(timingsToUse).length === 0) return null
-    const timingEntries = Object.entries(timingsToUse)
-      .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
-      .sort((a, b) => a.start - b.start)
-
-    for (let i = 0; i < timingEntries.length; i++) {
-      const item = timingEntries[i]
-      const nextItem = timingEntries[i + 1]
-      const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
-      const upperLimit = hasValidEnd
-        ? item.end + timingGrace
-        : (nextItem?.start || item.start + 60)
-      if (progress >= item.start && progress < upperLimit) {
-        return item.ayah === 0 ? 1 : item.ayah
-      }
-    }
-    return null
+    return getAyahAtTime(progress, timingsToUse)
   })()
 
   return (
