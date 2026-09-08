@@ -1,6 +1,6 @@
 import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X, ZoomIn, ZoomOut } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { RIWAYAT, SURAH_NAMES } from '../data'
+import { SURAH_NAMES } from '../data'
 import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
@@ -373,12 +373,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
               <button className={viewMode === 'text' ? 'active' : ''} onClick={() => setViewMode('text')}>نص</button>
               <button className={viewMode === 'image' ? 'active' : ''} onClick={() => setViewMode('image')} disabled={!mushafPage}>مصور</button>
             </div>
-            <label className="mushaf-riwaya-select">
-              <span>الرواية</span>
-              <select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value, reciterId: '' }))} aria-label="اختيار الرواية">
-                {RIWAYAT.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
-              </select>
-            </label>
             {currentReciter && (
               <span className="hidden text-xs text-emerald-800 dark:text-emerald-300 md:inline-block font-medium bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                 بصوت: {currentReciter.name}
