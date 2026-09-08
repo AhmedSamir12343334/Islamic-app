@@ -162,17 +162,7 @@ export default function App() {
     }
     if (!reciter) { setActive('audio'); return }
 
-    let verses = suppliedVerses
-    if (!verses || verses.length === 0) {
-      try {
-        verses = await getSurah(surah)
-      } catch {
-        verses = []
-      }
-    }
-
-    const timings = await getAyahTimings(surah, reciter)
-    if (requestId !== playbackRequest.current) return
+    const verses = suppliedVerses || []
     setActiveAyah(startAyah)
     setActiveSurah(surah)
     const position = { surah, ayah: startAyah, name: SURAH_NAMES[surah - 1], updatedAt: Date.now() }
@@ -182,13 +172,23 @@ export default function App() {
       url: makeAudioUrl(reciter, surah),
       surah,
       startAyah,
-      timings,
+      timings: {},
       verses,
       surahName: `سورة ${SURAH_NAMES[surah - 1]}`,
       reciterName: reciter.name,
       riwaya: reciter.moshaf.name,
       reciter
     })
+
+    const versesPromise = suppliedVerses?.length
+      ? Promise.resolve(suppliedVerses)
+      : getSurah(surah).catch(() => [])
+    const timingsPromise = getAyahTimings(surah, reciter).catch(() => ({}))
+    const [loadedVerses, timings] = await Promise.all([versesPromise, timingsPromise])
+    if (requestId !== playbackRequest.current) return
+    setTrack((current) => current && current.url === makeAudioUrl(reciter, surah)
+      ? { ...current, verses: loadedVerses, timings }
+      : current)
   }
 
   const navigateTrack = (offset) => {
