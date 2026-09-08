@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { generateEstimatedTimings } from '../services/api'
 
 const repeatLabels = { off: 'بدون تكرار', surah: 'تكرار السورة', verse: 'تكرار الآية' }
+const AYAH_START_LEAD = 0.45
 
 export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActiveAyah }) {
   const audioRef = useRef(null)
@@ -126,13 +127,13 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         ? item.end
         : (nextItem?.start ?? item.start + 60)
 
-      if (current >= item.start && current < end) {
+      if (current >= item.start - AYAH_START_LEAD && current < end) {
         return item.ayah
       }
     }
 
     const lastItem = timingEntries[timingEntries.length - 1]
-    if (lastItem && current >= lastItem.start) {
+    if (lastItem && current >= lastItem.start - AYAH_START_LEAD) {
       return lastItem.ayah
     }
 
