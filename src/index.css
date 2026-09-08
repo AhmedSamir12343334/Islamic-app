@@ -307,6 +307,21 @@
   .contact-social p:not(.eyebrow) { @apply mt-1 text-sm text-slate-500 dark:text-slate-400; }
   .social-link { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-100 bg-white px-3 py-2.5 text-sm font-bold text-emerald-700 transition dark:border-slate-700 dark:bg-slate-950 dark:text-emerald-300; }
   .contact-social .social-link { @apply h-10 w-10 px-0; }
+  .contact-panel { @apply grid gap-6 rounded-3xl border border-emerald-100 bg-white p-5 shadow-soft dark:border-slate-700 dark:bg-slate-900 sm:p-7 lg:grid-cols-[minmax(220px,.7fr)_minmax(0,1.3fr)]; }
+  .contact-panel-heading { @apply flex items-start gap-3 text-right; }
+  .contact-panel-heading h2 { @apply mt-1 text-2xl font-extrabold text-ink dark:text-white; }
+  .contact-panel-heading p { @apply mt-2 max-w-sm text-sm leading-7 text-slate-500 dark:text-slate-400; }
+  .contact-panel-mark { @apply grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300; }
+  .contact-panel-actions { @apply min-w-0; }
+  .contact-channel-grid { @apply grid gap-2 sm:grid-cols-2; }
+  .contact-channel { @apply flex min-w-0 items-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 p-2.5 text-right transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-white hover:shadow-sm dark:border-slate-700 dark:bg-slate-800/70 dark:hover:border-emerald-700 dark:hover:bg-slate-800; }
+  .contact-channel-icon { @apply grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white shadow-sm; }
+  .contact-channel strong { @apply block truncate text-sm font-extrabold text-ink dark:text-white; }
+  .contact-channel small { @apply mt-0.5 block truncate text-[10px] text-slate-500 dark:text-slate-400; }
+  .contact-channel-arrow { @apply mr-auto shrink-0 text-slate-400 transition group-hover:text-emerald-600; }
+  .contact-utility-actions { @apply mt-3 flex flex-wrap items-center gap-2; }
+  .contact-install-button { @apply inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3.5 py-2.5 text-xs font-extrabold text-white shadow-sm transition hover:bg-amber-600; }
+  .contact-details-button { @apply inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-emerald-700 dark:hover:text-emerald-300; }
   .share-app-button { @apply inline-flex items-center gap-2 rounded-xl bg-ink px-3 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500; }
   .share-app-button span { @apply grid h-4 w-4 place-items-center; }
   .contact-open-button { @apply inline-flex items-center gap-2 rounded-xl border border-gold-400 px-3 py-2.5 text-sm font-bold text-gold-500 transition hover:bg-gold-50 dark:hover:bg-slate-800; }

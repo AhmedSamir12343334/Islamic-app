@@ -1,4 +1,4 @@
-import { Check, ExternalLink, Heart, Send, Share2, Sparkles, X, Download } from 'lucide-react'
+import { Check, ExternalLink, Heart, Send, Share2, X, Download } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 /* ── الأيقونات الرسمية بدقة ونقاء عالي (Branded SVGs) ── */
@@ -115,7 +115,7 @@ function ShareButton({ className = '' }) {
       ) : (
         <>
           <Share2 size={18} />
-          <span>شارك تؤجر 🌿</span>
+          <span>شارك المنصة</span>
         </>
       )}
     </button>
@@ -142,80 +142,45 @@ export default function ContactSocial({ onInstallClick, isStandalone, canInstall
   return (
     <>
       <section
-        className="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/20 to-teal-50/30 p-6 shadow-soft transition-all dark:border-slate-800 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900/90 dark:to-emerald-950/20 sm:p-8"
+        className="contact-panel"
         aria-label="قسم التواصل والمشاركة"
       >
-        {/* خلفية تجميلية بلمسة نورانية */}
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-teal-500/10 blur-3xl" />
+        <div className="contact-panel-heading">
+          <div className="contact-panel-mark"><Heart size={20} /></div>
+          <div>
+            <span className="eyebrow">مساحتك للتواصل</span>
+            <h2>كن قريبًا من صدقة جارية</h2>
+            <p>رسالتك أو مشاركتك تساعد المنصة على الوصول إلى مزيد من الناس.</p>
+          </div>
+        </div>
 
-        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-
-          {/* النصوص الترحيبية */}
-          <div className="text-right space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/70 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
-              <Sparkles size={14} className="text-emerald-600 dark:text-emerald-400" />
-              <span>الدال على الخير كفاعله</span>
-            </div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-ink dark:text-white sm:text-3xl">
-              تواصل معنا وشارك الأجر
-            </h2>
-            <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
-              نسعد باستقبال اقتراحاتكم، ونرحب بمشاركتكم التطبيق ليكون صدقة جارية.
-            </p>
+        <div className="contact-panel-actions">
+          <div className="contact-channel-grid">
+            {socialChannels.map((item) => {
+              const Icon = item.icon
+                return (
+                <a key={item.id} href={item.href} target="_blank" rel="noreferrer" className="contact-channel group" aria-label={item.title} title={item.title}>
+                  <span className={`contact-channel-icon bg-gradient-to-tr ${item.brandColor}`}><Icon size={20} /></span>
+                  <span><strong>{item.title}</strong><small>{item.subtitle}</small></span>
+                  <ExternalLink size={15} className="contact-channel-arrow" />
+                </a>
+              )
+            })}
           </div>
 
-          {/* أزرار السوشيال والتثبيت التفاعلية المميزة */}
-          <div className="flex flex-wrap items-center gap-3">
-
-            {/* زر تثبيت التطبيق لكافة الأجهزة */}
+          <div className="contact-utility-actions">
             {!isStandalone && onInstallClick && canInstall && (
               <button
                 onClick={onInstallClick}
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-600/25 transition-all hover:scale-[1.03] hover:shadow-amber-600/40 active:scale-95 animate-pulse"
+                className="contact-install-button"
                 title="تثبيت التطبيق على جهازك"
               >
                 <Download size={18} />
-                <span>تثبيت التطبيق</span>
+                <span>ثبّت التطبيق للوصول السريع</span>
               </button>
             )}
-
-            {/* أيقونات التواصل المصممة بشكل أنيق */}
-            <div className="flex items-center gap-2.5">
-              {socialChannels.map((item) => {
-                const Icon = item.icon
-                return (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:text-white ${item.hoverGlow} dark:bg-slate-800 dark:text-slate-200`}
-                    aria-label={item.title}
-                    title={item.title}
-                  >
-                    {/* خلفية التدرج عند الـ Hover */}
-                    <span
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-tr ${item.brandColor} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
-                    />
-                    <Icon className="relative z-10 h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
-                  </a>
-                )
-              })}
-            </div>
-
-            {/* زر المشاركة الرئيسي */}
             <ShareButton />
-
-            {/* زر فتح النافذة التفصيلية */}
-            <button
-              onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-bold text-slate-700 backdrop-blur transition-all hover:border-emerald-300 hover:bg-white hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200 dark:hover:border-emerald-700 dark:hover:text-emerald-400"
-            >
-              <Send size={16} />
-              <span>تفاصيل التواصل</span>
-            </button>
-
+            <button onClick={() => setOpen(true)} className="contact-details-button"><Send size={16} /><span>عرض كل القنوات</span></button>
           </div>
         </div>
       </section>
@@ -245,13 +210,13 @@ export default function ContactSocial({ onInstallClick, isStandalone, canInstall
             <div className="text-right">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
                 <Heart size={14} className="fill-emerald-600 text-emerald-600" />
-                <span>قنوات التواصل الرسمية</span>
+                <span>مساحتك للتواصل</span>
               </div>
               <h2 id="contact-modal-title" className="mt-2 text-2xl font-extrabold text-ink dark:text-white">
-                تواصل معنا مباشرة
+                تابعنا بالطريقة التي تناسبك
               </h2>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                اختر المنصة المناسبة لك للتواصل أو متابعة المحتوى:
+                اختر قناة واحدة للوصول السريع إلى المحتوى أو إرسال رسالتك.
               </p>
             </div>
 
