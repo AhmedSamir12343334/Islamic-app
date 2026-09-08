@@ -50,8 +50,9 @@ export async function getSurah(surah) {
   }))
 }
 
-const matchesRiwaya = (name = '', riwaya) => {
+const matchesRiwaya = (name = '', riwaya, style = 'murattal') => {
   const value = name.toLowerCase()
+  if (style === 'mujawwad' && /مجود|mujawwad/i.test(value)) return riwaya === 'hafs'
   if (riwaya === 'warsh') return value.includes('ورش') || value.includes('warsh')
   return value.includes('حفص') || value.includes('hafs')
 }
@@ -82,7 +83,7 @@ export async function getReciters(riwaya, style = 'murattal') {
     const payload = await response.json()
     const reciters = payload.reciters.flatMap((reciter) => {
       const matchingMoshafs = reciter.moshaf
-        .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya))
+        .filter((moshaf) => matchesRiwaya(moshaf.name, riwaya, style))
         .filter((moshaf) => style === 'mujawwad' ? /مجود|mujawwad/i.test(moshaf.name) : !/مجود|mujawwad/i.test(moshaf.name))
 
       if (!matchingMoshafs.length) return []
@@ -116,10 +117,10 @@ export async function getReciters(riwaya, style = 'murattal') {
       })
       return reciters
     }
-    return FALLBACK_RECITERS[riwaya] || []
+    return style === 'mujawwad' ? [] : (FALLBACK_RECITERS[riwaya] || [])
   } catch (error) {
     console.warn('MP3Quran request failed; using local choices.', error)
-    return FALLBACK_RECITERS[riwaya] || []
+    return style === 'mujawwad' ? [] : (FALLBACK_RECITERS[riwaya] || [])
   }
 }
 
