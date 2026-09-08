@@ -265,6 +265,22 @@
   .stat-card strong { @apply text-2xl font-black text-ink dark:text-white; }
   .stat-card span { @apply text-xs font-bold text-slate-500 dark:text-slate-400; }
   .stats-layout { @apply grid gap-5 xl:grid-cols-2; }
+  .activity-grid { @apply grid gap-5 xl:grid-cols-2; }
+  .activity-card { @apply min-w-0; }
+  .activity-chart { @apply mt-6 flex h-40 items-end justify-around gap-2 border-b border-emerald-100 px-2 dark:border-slate-700; }
+  .activity-day { @apply flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2; }
+  .activity-bars { @apply flex h-full items-end gap-1; }
+  .activity-bar { @apply block w-2.5 rounded-t-full transition-all; }
+  .activity-bar.pages, .activity-legend i.pages { @apply bg-emerald-500; }
+  .activity-bar.adhkar, .activity-legend i.adhkar { @apply bg-gold-500; }
+  .activity-day strong { @apply text-[10px] font-bold text-slate-500 dark:text-slate-400; }
+  .activity-legend { @apply mt-3 flex justify-center gap-5 text-[11px] font-bold text-slate-500 dark:text-slate-400; }
+  .activity-legend span { @apply flex items-center gap-1.5; }
+  .activity-legend i { @apply block h-2.5 w-2.5 rounded-full; }
+  .activity-history { @apply mt-5 divide-y divide-emerald-100 dark:divide-slate-700; }
+  .activity-history-row { @apply grid grid-cols-3 items-center gap-2 py-3 text-xs; }
+  .activity-history-row strong { @apply text-ink dark:text-white; }
+  .activity-history-row span { @apply text-left text-slate-500 dark:text-slate-400; }
   .settings-grid { @apply grid gap-5 xl:grid-cols-2; }
   .settings-choice { @apply flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right text-slate-500 transition hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300; }
   .settings-choice.active { @apply border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300; }

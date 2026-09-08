@@ -4,6 +4,7 @@ import { ADHKAR } from '../data'
 
 /* ─── استرجاع وحفظ العداد يومياً ─── */
 const STORAGE_KEY = 'noor-adhkar-counts'
+const ACTIVITY_KEY = 'noor-activity-v1'
 const todayKey = () => new Date().toLocaleDateString('en-CA')
 
 function loadCounts() {
@@ -17,7 +18,15 @@ function loadCounts() {
 }
 
 function saveCounts(counts) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), counts })) } catch { /* التخزين اختياري */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: todayKey(), counts }))
+    const activity = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '{}')
+    activity[todayKey()] = {
+      ...(activity[todayKey()] || {}),
+      adhkar: Object.values(counts).reduce((sum, count) => sum + Number(count || 0), 0)
+    }
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activity))
+  } catch { /* التخزين اختياري */ }
 }
 
 export default function AdhkarSection({ initialCategory }) {

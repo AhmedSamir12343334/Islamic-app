@@ -5,6 +5,7 @@ const KHATMA_KEY = 'noor-khatma-v1'
 const LAST_POSITION_KEY = 'noor-last-position'
 const ADHKAR_KEY = 'noor-adhkar-counts'
 const WIRD_KEY = 'noor-wird-v3'
+const ACTIVITY_KEY = 'noor-activity-v1'
 const KHATMA_DAYS = [7, 15, 30]
 const TELEGRAM_GROUP_URL = import.meta.env.VITE_TELEGRAM_GROUP_URL || 'https://t.me/+FXjbrGYE7uRmMmM0'
 const todayKey = () => new Date().toLocaleDateString('en-CA')
@@ -37,15 +38,34 @@ function getStats() {
   }
 }
 
+function getWeeklyActivity() {
+  const saved = readJson(ACTIVITY_KEY, {})
+  const current = getStats()
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date()
+    date.setHours(12, 0, 0, 0)
+    date.setDate(date.getDate() - (6 - index))
+    const key = date.toLocaleDateString('en-CA')
+    const day = saved[key] || (index === 6 ? { pages: current.pages, adhkar: current.adhkarCompleted } : {})
+    return {
+      key,
+      label: new Intl.DateTimeFormat('ar-EG', { weekday: 'short' }).format(date),
+      pages: Number(day.pages || 0),
+      adhkar: Number(day.adhkar || 0)
+    }
+  })
+}
+
 export default function StatsSection() {
   const [khatma, setKhatma] = useState(getInitialKhatma)
   const [selectedDays, setSelectedDays] = useState(khatma?.days || 30)
   const [stats, setStats] = useState(getStats)
+  const [activity, setActivity] = useState(getWeeklyActivity)
   const [notice, setNotice] = useState('')
   const [groupId, setGroupId] = useState(() => readJson('noor-group-khatma-v1', null)?.id || '')
 
   useEffect(() => {
-    const sync = () => { setStats(getStats()); setKhatma(getInitialKhatma()) }
+    const sync = () => { setStats(getStats()); setActivity(getWeeklyActivity()); setKhatma(getInitialKhatma()) }
     window.addEventListener('storage', sync)
     window.addEventListener('adhkar-counts-updated', sync)
     return () => {
@@ -107,6 +127,8 @@ export default function StatsSection() {
   }
 
   const progress = Math.min(100, Math.round((stats.pages / Math.max(1, stats.goal)) * 100))
+  const maxPages = Math.max(stats.goal, ...activity.map((day) => day.pages), 1)
+  const maxAdhkar = Math.max(...activity.map((day) => day.adhkar), 1)
 
   return (
     <section className="space-y-5 pb-28">
@@ -114,7 +136,7 @@ export default function StatsSection() {
         <div>
           <span className="eyebrow"><History size={14} /> متابعتك اليومية</span>
           <h1>الإحصائيات والخطط</h1>
-          <p>تابع تقدمك، اضبط ختمتك، واختر تذكيراً يناسب يومك.</p>
+          <p>تابع تقدمك، اضبط ختمتك، وراجع نشاطك خلال الأسبوع.</p>
         </div>
       </div>
 
@@ -125,6 +147,21 @@ export default function StatsSection() {
         <article className="stat-card"><Target size={20} /><strong>{progress}%</strong><span>إنجاز الورد</span></article>
         <article className="stat-card"><Flame size={20} /><strong>{stats.streak}</strong><span>أيام متتالية</span></article>
         <article className="stat-card"><Check size={20} /><strong>{stats.adhkarCompleted}</strong><span>أذكار مكتملة</span></article>
+      </div>
+
+      <div className="activity-grid">
+        <article className="utility-card activity-card">
+          <div className="utility-heading"><div><span className="eyebrow"><History size={14} /> آخر 7 أيام</span><h2>نشاطك الأسبوعي</h2></div></div>
+          <div className="activity-chart" aria-label="رسم نشاط الورد والأذكار خلال آخر سبعة أيام">
+            {activity.map((day) => <div key={day.key} className="activity-day"><div className="activity-bars"><span className="activity-bar pages" style={{ height: `${Math.max(day.pages ? 10 : 3, (day.pages / maxPages) * 100)}%` }} title={`${day.pages} صفحة`} /><span className="activity-bar adhkar" style={{ height: `${Math.max(day.adhkar ? 10 : 3, (day.adhkar / maxAdhkar) * 100)}%` }} title={`${day.adhkar} ذكر`} /></div><strong>{day.label}</strong></div>)}
+          </div>
+          <div className="activity-legend"><span><i className="pages" /> صفحات</span><span><i className="adhkar" /> أذكار</span></div>
+        </article>
+
+        <article className="utility-card activity-card">
+          <div className="utility-heading"><div><span className="eyebrow"><History size={14} /> سجل الالتزام</span><h2>ملخص الأيام</h2></div></div>
+          <div className="activity-history">{activity.slice().reverse().map((day) => <div key={day.key} className="activity-history-row"><strong>{day.label}</strong><span>{day.pages} صفحة</span><span>{day.adhkar} ذكر</span></div>)}</div>
+        </article>
       </div>
 
       <div className="stats-layout">

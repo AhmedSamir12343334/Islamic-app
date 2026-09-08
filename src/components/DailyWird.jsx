@@ -12,6 +12,7 @@ const MOTIVATIONS = [
 
 const STORAGE_KEY = 'noor-wird-v3'
 const ADHKAR_STORAGE_KEY = 'noor-adhkar-counts'
+const ACTIVITY_KEY = 'noor-activity-v1'
 const todayStr = () => new Date().toLocaleDateString('en-CA')
 
 function loadWird() {
@@ -29,7 +30,12 @@ function loadWird() {
 }
 
 function saveWird(data) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch { /* التخزين اختياري */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    const activity = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '{}')
+    activity[todayStr()] = { ...(activity[todayStr()] || {}), pages: data.progress }
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activity))
+  } catch { /* التخزين اختياري */ }
 }
 
 function loadAdhkarCounts() {
