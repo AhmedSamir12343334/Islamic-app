@@ -4,9 +4,7 @@ export const SURAH_NAMES = [
 
 export const RIWAYAT = [
   { id: 'hafs', apiId: 1, label: 'حفص عن عاصم' },
-  { id: 'warsh', apiId: null, label: 'ورش عن نافع' },
-  { id: 'qaloon', apiId: null, label: 'قالون عن نافع' },
-  { id: 'douri', apiId: null, label: 'الدوري عن أبي عمرو' }
+  { id: 'warsh', apiId: null, label: 'ورش عن نافع' }
 ]
 
 const ALL_SURAH_LIST = Array.from({ length: 114 }, (_, i) => i + 1).join(',')
