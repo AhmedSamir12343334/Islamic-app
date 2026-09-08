@@ -161,7 +161,7 @@ export default function App() {
     if (!reciter) { setActive('audio'); return }
 
     const verses = suppliedVerses || []
-    setActiveAyah(startAyah === 1 ? null : startAyah)
+    setActiveAyah(startAyah)
     setActiveSurah(surah)
     const position = { surah, ayah: startAyah, name: SURAH_NAMES[surah - 1], updatedAt: Date.now() }
     saveItem(LAST_POSITION_KEY, JSON.stringify(position))
