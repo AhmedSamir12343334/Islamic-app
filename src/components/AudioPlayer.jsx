@@ -7,6 +7,9 @@ const AYAH_START_LEAD = 0.45
 
 export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActiveAyah }) {
   const audioRef = useRef(null)
+  const syncFrameRef = useRef(null)
+  const lastActiveAyahRef = useRef(null)
+  const activeTimingsRef = useRef({})
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -19,8 +22,10 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     if (!track) return
     if (track.timings && Object.keys(track.timings).length > 0) {
       setActiveTimings(track.timings)
+      activeTimingsRef.current = track.timings
     } else {
       setActiveTimings({})
+      activeTimingsRef.current = {}
     }
   }, [track?.url, track?.timings])
 
@@ -53,6 +58,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
       cancelled = true
       audio.removeEventListener('loadeddata', onCanPlay)
       audio.pause()
+      stopSyncLoop()
     }
   }, [track?.url])
 
@@ -77,6 +83,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     const generated = generateEstimatedTimings(duration, track.verses)
     if (Object.keys(generated).length === 0) return
     setActiveTimings(generated)
+    activeTimingsRef.current = generated
     const audio = audioRef.current
     if (!audio || !track.startAyah || track.startAyah === 1 || !generated[track.startAyah]) return
     audio.currentTime = generated[track.startAyah].start
@@ -140,19 +147,42 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     return null
   }
 
+  const syncActiveAyah = (audio) => {
+    const timingsToUse = (activeTimingsRef.current && Object.keys(activeTimingsRef.current).length > 0)
+      ? activeTimingsRef.current
+      : (track.timings || {})
+    const active = getAyahAtTime(audio.currentTime, timingsToUse)
+    if (active && Number.isFinite(active) && active !== lastActiveAyahRef.current) {
+      lastActiveAyahRef.current = active
+      onActiveAyah?.(track.surah, active)
+    }
+  }
+
+  const stopSyncLoop = () => {
+    if (syncFrameRef.current) cancelAnimationFrame(syncFrameRef.current)
+    syncFrameRef.current = null
+  }
+
+  const startSyncLoop = (audio) => {
+    stopSyncLoop()
+    const tick = () => {
+      if (audio.paused || audio.ended) {
+        syncFrameRef.current = null
+        return
+      }
+      syncActiveAyah(audio)
+      syncFrameRef.current = requestAnimationFrame(tick)
+    }
+    syncFrameRef.current = requestAnimationFrame(tick)
+  }
+
   /* حساب وتحديث الآية النشطة الحالية مع حركة الصوت بشكل فوري */
   const onTimeUpdate = (event) => {
     const current = event.currentTarget.currentTime
     setProgress(current)
+    syncActiveAyah(event.currentTarget)
 
-    const timingsToUse = (activeTimings && Object.keys(activeTimings).length > 0)
-      ? activeTimings
-      : (track.timings || {})
-
-    const active = getAyahAtTime(current, timingsToUse)
-    if (active && Number.isFinite(active)) {
-      onActiveAyah?.(track.surah, active)
-    }
+    const timingsToUse = (activeTimings && Object.keys(activeTimings).length > 0) ? activeTimings : (track.timings || {})
 
     /* تكرار الآية */
     if (repeat === 'verse' && track.startAyah && timingsToUse[track.startAyah] && current >= timingsToUse[track.startAyah].end) {
@@ -192,6 +222,8 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
         src={track.url}
         loop={repeat === 'surah'}
         onTimeUpdate={onTimeUpdate}
+        onPlay={() => startSyncLoop(audioRef.current)}
+        onPause={() => stopSyncLoop()}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => {
           if (repeat === 'verse' && !activeTimings[track.startAyah]) audioRef.current?.play()
