@@ -321,14 +321,6 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
               <input type="range" min="25" max="45" value={settings.fontSize}
                 onChange={(event) => setSettings((old) => ({ ...old, fontSize: Number(event.target.value) }))} />
             </div>
-            <label className="input-wrap">
-              <span>شكل المصحف</span>
-              <select value={settings.mushafTheme} onChange={(event) => setSettings((old) => ({ ...old, mushafTheme: event.target.value }))}>
-                <option value="paper">ورق دافئ</option>
-                <option value="cream">كريمي هادئ</option>
-                <option value="night">ليلي مريح</option>
-              </select>
-            </label>
           </div>
         )}
       </div>
@@ -358,7 +350,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         <DailyWird />
       </div>
 
-      <article className={`quran-paper quran-reader-card ${viewMode === 'text' ? 'text-mode' : 'image-mode'} mushaf-${settings.mushafTheme || 'paper'} flex flex-col`}>
+      <article className={`quran-paper quran-reader-card ${viewMode === 'text' ? 'text-mode' : 'image-mode'} flex flex-col`}>
 
         <div className="mushaf-banner shrink-0">
           <span className="mushaf-banner-line" />

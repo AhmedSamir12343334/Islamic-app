@@ -42,7 +42,6 @@ function loadSettings() {
     riwaya: savedRiwaya === 'warsh' ? 'warsh' : 'hafs',
     style: getItem('noor-style') || 'murattal',
     fontSize: Number.isFinite(savedFontSize) && savedFontSize >= 25 && savedFontSize <= 45 ? savedFontSize : 32,
-    mushafTheme: getItem('noor-mushaf-theme') || 'paper',
     reciterId: validReciter
   }
 }
@@ -149,7 +148,6 @@ export default function App() {
     saveItem('noor-riwaya', settings.riwaya)
     saveItem('noor-style', settings.style)
     saveItem('noor-font', settings.fontSize)
-    saveItem('noor-mushaf-theme', settings.mushafTheme)
     if (settings.reciterId) saveItem('noor-reciter', settings.reciterId)
   }, [settings])
 
