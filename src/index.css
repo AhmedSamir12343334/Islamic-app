@@ -369,7 +369,7 @@
 .video-js .vjs-big-play-button { background-color: #168365; border-color: #168365; border-radius: .8rem; }
 
 .audio-player {
-  bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(3.75rem + env(safe-area-inset-bottom, 0px));
   left: 0.5rem;
   right: 0.5rem;
   border-radius: 1rem;
