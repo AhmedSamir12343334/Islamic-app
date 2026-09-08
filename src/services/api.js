@@ -185,8 +185,15 @@ export async function getAyahTimings(surah, reciter) {
           }, [])
           if (parsedTimings.length > 0) {
             const ordered = parsedTimings.sort((a, b) => a.start - b.start)
+            const hasLocalAyahNumbers = ordered.some((item) => item.ayah === 1)
+            if (hasLocalAyahNumbers) {
+              return ordered.reduce((acc, item) => {
+                if (item.ayah > 0) acc[item.ayah] = { start: item.start, end: item.end }
+                return acc
+              }, {})
+            }
             return ordered.reduce((acc, item, index) => {
-              acc[index + 1] = { start: item.start, end: item.end }
+              if (item.ayah > 0) acc[index + 1] = { start: item.start, end: item.end }
               return acc
             }, {})
           }
