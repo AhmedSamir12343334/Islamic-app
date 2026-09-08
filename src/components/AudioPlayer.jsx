@@ -3,11 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { generateEstimatedTimings } from '../services/api'
 
 const repeatLabels = { off: 'بدون تكرار', surah: 'تكرار السورة', verse: 'تكرار الآية' }
-const MOBILE_AYAH_END_GRACE = 0.45
-
-function isMobileDevice() {
-  return typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches
-}
+const AYAH_END_GRACE = 0.35
 
 export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActiveAyah }) {
   const audioRef = useRef(null)
@@ -104,7 +100,7 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
 
   const changeRepeat = () => setRepeat((value) => value === 'off' ? 'surah' : value === 'surah' ? 'verse' : 'off')
   const formatTime = (seconds) => `${Math.floor(seconds / 60) || 0}:${String(Math.floor(seconds % 60) || 0).padStart(2, '0')}`
-  const timingGrace = isMobileDevice() ? MOBILE_AYAH_END_GRACE : 0
+  const timingGrace = AYAH_END_GRACE
 
   /* حساب وتحديث الآية النشطة الحالية مع حركة الصوت بشكل فوري */
   const onTimeUpdate = (event) => {

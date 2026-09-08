@@ -199,42 +199,7 @@ export async function getAyahTimings(surah, reciter) {
     }
   }
 
-  // 2. Try alternative moshaf for the same reciter if available in reciter object
-  if (reciter?.allMoshafs && Array.isArray(reciter.allMoshafs)) {
-    for (const altMoshaf of reciter.allMoshafs) {
-      if (altMoshaf.id !== readId) {
-        try {
-          const altRes = await fetch(`${MP3QURAN_BASE}/ayat_timing?surah=${surah}&read=${altMoshaf.id}`)
-          if (altRes.ok) {
-            const altPayload = await altRes.json()
-            const entries = Array.isArray(altPayload) ? altPayload : (altPayload.data || altPayload.ayahs || [])
-            if (entries.length > 0) {
-              const parsedTimings = entries.reduce((acc, entry) => {
-                const ayah = Number(entry.ayah ?? entry.ayah_number ?? entry.id)
-                const start = Number(entry.start_time ?? entry.start ?? entry.from)
-                const end = Number(entry.end_time ?? entry.end ?? entry.to)
-                if (Number.isFinite(ayah) && Number.isFinite(start) && Number.isFinite(end) && end > start) {
-                  acc.push({ ayah, start: start / 1000, end: end / 1000 })
-                }
-                return acc
-              }, [])
-              if (parsedTimings.length > 0) {
-                const ordered = parsedTimings.sort((a, b) => a.start - b.start)
-                return ordered.reduce((acc, item, index) => {
-                  acc[index + 1] = { start: item.start, end: item.end }
-                  return acc
-                }, {})
-              }
-            }
-          }
-        } catch {
-          // ignore alternative moshaf failure
-        }
-      }
-    }
-  }
-
-  // 3. Fallback to Quran.com timing API if matching reciter
+  // 2. Fallback to Quran.com timing API if matching reciter
   try {
     const reciterName = reciter?.name || ''
     let qdcId = null
