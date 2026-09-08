@@ -1,6 +1,6 @@
 import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp, Play, Search, Settings2, Type, X, ZoomIn, ZoomOut } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { SURAH_NAMES } from '../data'
+import { RIWAYAT, SURAH_NAMES } from '../data'
 import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
@@ -301,6 +301,12 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
                 {reciters.map((r) => (
                   <option key={r.id} value={r.id}>{r.name}</option>
                 ))}
+              </select>
+            </label>
+            <label className="input-wrap">
+              <span>الرواية</span>
+              <select value={settings.riwaya} onChange={(event) => setSettings((old) => ({ ...old, riwaya: event.target.value, reciterId: '' }))}>
+                {RIWAYAT.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
               </select>
             </label>
             <label className="input-wrap">
