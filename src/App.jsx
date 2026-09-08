@@ -306,7 +306,7 @@ export default function App() {
             canInstall={isIosDevice() || Boolean(installPrompt)}
           />
           <p className="mt-6 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            صدقة جارية · اجعل لك ورداً من كتاب الله كل يوم
+            نورٌ تقرأه اليوم، وأجرٌ يبقى غدًا.
           </p>
           <p className="mt-2 text-center text-[11px] sm:text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-300">
             تم تصميم وتطوير هذه المنصة بواسطة Ahmed Samir Fazza.
