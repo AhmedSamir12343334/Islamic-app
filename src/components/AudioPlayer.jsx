@@ -118,38 +118,31 @@ export default function AudioPlayer({ track, onClose, onNext, onPrevious, onActi
     if (!timingsToUse || Object.keys(timingsToUse).length === 0) return null
 
     const timingEntries = Object.entries(timingsToUse)
-      .map(([k, v]) => ({ ayah: Number(k), start: Number(v.start), end: Number(v.end) }))
-      .filter((entry) => Number.isFinite(entry.ayah) && entry.ayah > 0 && Number.isFinite(entry.start) && entry.start >= 0)
+      .map(([k, v]) => ({ ayah: Number(k), start: v.start, end: v.end }))
       .sort((a, b) => a.start - b.start)
-
-    if (timingEntries.length === 0) return null
-
-    const first = timingEntries[0]
-    if (current < first.start) return first.ayah
-
-    let active = first.ayah
-    let bestDistance = Number.POSITIVE_INFINITY
 
     for (let i = 0; i < timingEntries.length; i++) {
       const item = timingEntries[i]
-      const next = timingEntries[i + 1]
-      const end = Number.isFinite(item.end) && item.end > item.start ? item.end : (next?.start ?? item.start + 60)
+      const nextItem = timingEntries[i + 1]
+      const hasValidEnd = Number.isFinite(item.end) && item.end > item.start
+      const startWindow = item.start - 1.8
+      const endWindow = hasValidEnd ? item.end + timingGrace : (nextItem?.start || item.start + 60)
 
-      if (current >= item.start && current < end) {
-        return item.ayah
+      if (current >= startWindow && current < endWindow) {
+        return item.ayah === 0 ? 1 : item.ayah
       }
 
-      const distance = Math.abs(current - item.start)
-      if (distance < bestDistance) {
-        bestDistance = distance
-        active = item.ayah
+      if (nextItem && current >= item.start - 1.8 && current < nextItem.start - 0.15) {
+        return item.ayah === 0 ? 1 : item.ayah
       }
     }
 
-    const last = timingEntries[timingEntries.length - 1]
-    if (current >= last.start && current >= last.end) return last.ayah
+    const lastItem = timingEntries[timingEntries.length - 1]
+    if (lastItem && current >= lastItem.start - 1.8) {
+      return lastItem.ayah === 0 ? 1 : lastItem.ayah
+    }
 
-    return active
+    return null
   }
 
   /* حساب وتحديث الآية النشطة الحالية مع حركة الصوت بشكل فوري */
