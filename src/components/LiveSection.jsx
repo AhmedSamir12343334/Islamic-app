@@ -8,8 +8,8 @@ const CHANNELS = [
     title: 'قناة القرآن الكريم',
     subtitle: 'بث مباشر من المسجد الحرام — مكة المكرمة',
     location: 'مكة المكرمة',
-    channelId: 'UCTy3ULXaFo373ABUgDZDXTg',
-    officialUrl: 'https://www.youtube.com/@makkahlive1/streams',
+    videoId: 'uU7h-Vp7hkI',
+    officialUrl: 'https://www.youtube.com/watch?v=uU7h-Vp7hkI',
     gradient: 'from-emerald-950 via-teal-900 to-slate-950',
     accentColor: '#10b981',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
