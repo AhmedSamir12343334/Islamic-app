@@ -2,6 +2,7 @@ import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp,
 import { useEffect, useRef, useState } from 'react'
 import { RIWAYAT, SURAH_NAMES } from '../data'
 import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
+import DailyVerse from './DailyVerse'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
 import TodayStatus from './TodayStatus'
@@ -346,6 +347,7 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         <div className="space-y-5">
           <PrayerTimes />
           <TodayStatus />
+          <DailyVerse />
         </div>
         <DailyWird />
       </div>
