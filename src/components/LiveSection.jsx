@@ -8,8 +8,8 @@ const CHANNELS = [
     title: 'قناة القرآن الكريم',
     subtitle: 'بث مباشر من المسجد الحرام — مكة المكرمة',
     location: 'مكة المكرمة',
-    videoId: 'eC4LfEVxvKg',
-    officialUrl: 'https://www.youtube.com/watch?v=eC4LfEVxvKg',
+    videoId: 'uU7h-Vp7hkI',
+    officialUrl: 'https://www.youtube.com/watch?v=uU7h-Vp7hkI',
     gradient: 'from-emerald-950 via-teal-900 to-slate-950',
     accentColor: '#10b981',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
@@ -31,7 +31,7 @@ const CHANNELS = [
 function StreamCard({ title, subtitle, location, videoId, channelId, officialUrl, gradient, accentColor, badgeColor }) {
   const [status, setStatus] = useState('idle') // idle | loading | playing | blocked
   const iframeRef = useRef(null)
-  const useDirectLinkOnly = videoId === 'uU7h-Vp7hkI'
+  const useDirectLinkOnly = videoId === 'uU7h-Vp7hkI' || videoId === 'radio-quran'
 
   const embedSrc = useDirectLinkOnly
     ? null
