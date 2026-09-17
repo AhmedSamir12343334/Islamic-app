@@ -1,4 +1,4 @@
-import { BookOpen, Check, Copy, Flame, History, RotateCcw, Send, Share2, Target } from 'lucide-react'
+import { BookOpen, Check, Flame, History, RotateCcw, Target } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 const KHATMA_KEY = 'noor-khatma-v1'
@@ -7,7 +7,6 @@ const ADHKAR_KEY = 'noor-adhkar-counts'
 const WIRD_KEY = 'noor-wird-v3'
 const ACTIVITY_KEY = 'noor-activity-v1'
 const KHATMA_DAYS = [7, 15, 30]
-const TELEGRAM_GROUP_URL = import.meta.env.VITE_TELEGRAM_GROUP_URL || 'https://t.me/+FXjbrGYE7uRmMmM0'
 const todayKey = () => new Date().toLocaleDateString('en-CA')
 
 function readJson(key, fallback) {
@@ -62,7 +61,6 @@ export default function StatsSection() {
   const [stats, setStats] = useState(getStats)
   const [activity, setActivity] = useState(getWeeklyActivity)
   const [notice, setNotice] = useState('')
-  const [groupId, setGroupId] = useState(() => readJson('noor-group-khatma-v1', null)?.id || '')
 
   useEffect(() => {
     const sync = () => { setStats(getStats()); setActivity(getWeeklyActivity()); setKhatma(getInitialKhatma()) }
@@ -96,34 +94,6 @@ export default function StatsSection() {
     setKhatma(null)
     window.dispatchEvent(new Event('wird-updated'))
     setNotice('تم إيقاف خطة الختمة.')
-  }
-
-  const createGroupKhatma = () => {
-    const id = Math.random().toString(36).slice(2, 8).toUpperCase()
-    saveJson('noor-group-khatma-v1', { id, createdAt: todayKey(), days: selectedDays })
-    setGroupId(id)
-    setNotice(`تم إنشاء ختمة جماعية برمز ${id}. شارك الرابط مع من تريد.`)
-  }
-
-  const shareGroupKhatma = async () => {
-    if (!groupId) return
-    const url = `${window.location.origin}${window.location.pathname}#group-khatma=${groupId}`
-    try {
-      if (navigator.share) await navigator.share({ title: 'ختمة جماعية', text: `انضم إلى ختمتنا الجماعية: ${groupId}`, url })
-      else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); setNotice('تم نسخ رابط الختمة الجماعية.') }
-    } catch { /* أُلغيَت المشاركة */ }
-  }
-
-  const shareOnTelegram = () => {
-    if (!groupId) return
-    const url = `${window.location.origin}${window.location.pathname}#group-khatma=${groupId}`
-    const text = `انضم إلى ختمتنا الجماعية 🤍\nرمز الختمة: ${groupId}`
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
-    window.open(telegramUrl, '_blank', 'noopener,noreferrer')
-  }
-
-  const joinTelegramGroup = () => {
-    window.open(TELEGRAM_GROUP_URL, '_blank', 'noopener,noreferrer')
   }
 
   const progress = Math.min(100, Math.round((stats.pages / Math.max(1, stats.goal)) * 100))
@@ -184,15 +154,6 @@ export default function StatsSection() {
             </div>
           )}
         </article>
-        <article className="utility-card">
-          <div className="utility-heading"><div><span className="eyebrow"><Share2 size={14} /> ختمتنا معاً</span><h2>ختمتنا معاً</h2></div></div>
-          <div className="mt-5 space-y-4">
-            <p className="text-sm leading-7 text-slate-500 dark:text-slate-400">شارك أهلك وأصدقاءك في ختم القرآن، واختر مدة الختمة ثم شارك الدعوة عبر تليجرام.</p>
-            {groupId ? <div className="group-khatma-code"><span>رمز الختمة</span><strong>{groupId}</strong></div> : <button className="button-primary w-full" onClick={createGroupKhatma}><Share2 size={17} /> إنشاء ختمة جماعية</button>}
-            {groupId && <div className="grid gap-2 sm:grid-cols-2"><button className="button-secondary justify-center py-2" onClick={shareGroupKhatma}><Share2 size={16} /> مشاركة الرابط</button><button className="button-secondary justify-center py-2" onClick={shareOnTelegram}><Send size={16} /> مشاركة بتليجرام</button><button className="button-secondary justify-center py-2" onClick={joinTelegramGroup}><Send size={16} /> انضم للمجموعة</button><button className="button-secondary justify-center py-2" onClick={async () => { await navigator.clipboard?.writeText(groupId); setNotice('تم نسخ رمز الختمة.') }}><Copy size={16} /> نسخ الرمز</button></div>}
-          </div>
-        </article>
-
       </div>
 
       {stats.lastPosition && <article className="bookmark-callout"><BookOpen size={18} /><span className="mr-0">آخر موضع تلقائي: سورة {stats.lastPosition.name}، آية {stats.lastPosition.ayah}</span></article>}
