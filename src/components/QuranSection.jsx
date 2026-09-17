@@ -2,7 +2,6 @@ import { AlertCircle, BookOpen, Bookmark, BookmarkCheck, ChevronDown, ChevronUp,
 import { useEffect, useRef, useState } from 'react'
 import { RIWAYAT, SURAH_NAMES } from '../data'
 import { getReciters, getSurah, makeMushafImageUrl } from '../services/api'
-import DailyVerse from './DailyVerse'
 import DailyWird from './DailyWird'
 import PrayerTimes from './PrayerTimes'
 import TodayStatus from './TodayStatus'
@@ -326,30 +325,36 @@ export default function QuranSection({ settings, setSettings, onPlay, activeAyah
         )}
       </div>
 
-      {lastPosition && (
-        <button onClick={() => {
-          setSettings((old) => ({ ...old, surah: lastPosition.surah }))
-          onPlay(lastPosition.surah, undefined, lastPosition.ayah)
-        }} className="bookmark-callout">
-          <BookmarkCheck size={18} /> استئناف القراءة: سورة {lastPosition.name}، آية {lastPosition.ayah}
-          <span>متابعة</span>
-        </button>
+      {(lastPosition || bookmark) && (
+        <div className="mb-5 space-y-3">
+          {lastPosition && (
+            <button onClick={() => {
+              setSettings((old) => ({ ...old, surah: lastPosition.surah }))
+              onPlay(lastPosition.surah, undefined, lastPosition.ayah)
+            }} className="bookmark-callout">
+              <BookmarkCheck size={18} /> استئناف القراءة: سورة {lastPosition.name}، آية {lastPosition.ayah}
+              <span>متابعة</span>
+            </button>
+          )}
+
+          {bookmark && (
+            <button onClick={() => changeSurah(bookmark.surah)} className="bookmark-callout">
+              <BookmarkCheck size={18} /> آخر موضع محفوظ: سورة {bookmark.name}
+              <span>متابعة</span>
+            </button>
+          )}
+        </div>
       )}
 
-      {bookmark && (
-        <button onClick={() => changeSurah(bookmark.surah)} className="bookmark-callout">
-          <BookmarkCheck size={18} /> آخر موضع محفوظ: سورة {bookmark.name}
-          <span>متابعة</span>
-        </button>
-      )}
-
-      <div className="grid items-start gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-5">
           <PrayerTimes />
           <TodayStatus />
-          <DailyVerse />
         </div>
-        <DailyWird />
+
+        <div className="space-y-5">
+          <DailyWird />
+        </div>
       </div>
 
       <article className={`quran-paper quran-reader-card ${viewMode === 'text' ? 'text-mode' : 'image-mode'} flex flex-col`}>
