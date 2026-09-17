@@ -8,8 +8,8 @@ const CHANNELS = [
     title: 'قناة القرآن الكريم',
     subtitle: 'بث مباشر من المسجد الحرام — مكة المكرمة',
     location: 'مكة المكرمة',
-    videoId: 'uU7h-Vp7hkI',
-    officialUrl: 'https://www.youtube.com/watch?v=uU7h-Vp7hkI',
+    videoId: 'eC4LfEVxvKg',
+    officialUrl: 'https://www.youtube.com/watch?v=eC4LfEVxvKg',
     gradient: 'from-emerald-950 via-teal-900 to-slate-950',
     accentColor: '#10b981',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
@@ -31,10 +31,13 @@ const CHANNELS = [
 function StreamCard({ title, subtitle, location, videoId, channelId, officialUrl, gradient, accentColor, badgeColor }) {
   const [status, setStatus] = useState('idle') // idle | loading | playing | blocked
   const iframeRef = useRef(null)
+  const useDirectLinkOnly = videoId === 'uU7h-Vp7hkI'
 
-  const embedSrc = videoId
-    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
-    : `https://www.youtube-nocookie.com/embed/live_stream?channel=${channelId}&autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
+  const embedSrc = useDirectLinkOnly
+    ? null
+    : videoId
+      ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
+      : `https://www.youtube-nocookie.com/embed/live_stream?channel=${channelId}&autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1`
 
   /* مهلة انتظار كافية لشبكات الهاتف */
   useEffect(() => {
@@ -95,12 +98,18 @@ function StreamCard({ title, subtitle, location, videoId, channelId, officialUrl
               {/* أزرار الإجراءات */}
               <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
                 <button
-                  onClick={() => setStatus('loading')}
+                  onClick={() => {
+                    if (useDirectLinkOnly) {
+                      window.open(officialUrl, '_blank', 'noopener,noreferrer')
+                      return
+                    }
+                    setStatus('loading')
+                  }}
                   className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg transition-all hover:scale-105 active:scale-95"
                   style={{ backgroundColor: accentColor }}
                 >
                   <Play size={15} fill="currentColor" />
-                  <span>تشغيل البث</span>
+                  <span>{useDirectLinkOnly ? 'فتح البث مباشرة' : 'تشغيل البث'}</span>
                 </button>
 
                 <a
@@ -127,19 +136,34 @@ function StreamCard({ title, subtitle, location, videoId, channelId, officialUrl
                 <p className="text-xs text-slate-300">جارٍ تهيئة البث المباشر...</p>
               </div>
             )}
-            <iframe
-              ref={iframeRef}
-              src={embedSrc}
-              title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              onLoad={handleLoad}
-              className="absolute inset-0 h-full w-full border-0"
-              style={{
-                opacity: status === 'playing' ? 1 : 0,
-                transition: 'opacity 0.4s ease'
-              }}
-            />
+            {embedSrc ? (
+              <iframe
+                ref={iframeRef}
+                src={embedSrc}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                onLoad={handleLoad}
+                className="absolute inset-0 h-full w-full border-0"
+                style={{
+                  opacity: status === 'playing' ? 1 : 0,
+                  transition: 'opacity 0.4s ease'
+                }}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-950 p-4 text-center text-white">
+                <a
+                  href={officialUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white shadow-lg"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  <ExternalLink size={16} />
+                  <span>فتح البث المباشر الآن</span>
+                </a>
+              </div>
+            )}
           </>
         )}
 
